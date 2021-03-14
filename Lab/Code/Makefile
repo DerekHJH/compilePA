@@ -1,3 +1,16 @@
+.PHONY: vim, run
+run:
+	@flex lexical.l
+	@gcc lex.yy.c -lfl -o scanner
+	@./scanner ../Test/test2.cmm
+
+vim:
+	@vim lexical.l
+
+
+
+
+
 # GNU make手册：http://www.gnu.org/software/make/manual/make.html
 # ************ 遇到不明白的地方请google以及阅读手册 *************
 
