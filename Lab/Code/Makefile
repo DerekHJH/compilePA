@@ -2,7 +2,7 @@
 run:
 	@flex lexical.l
 	@gcc lex.yy.c -lfl -o scanner
-	@./scanner ../Test/test3.cmm
+	@./scanner ../Test/test.cmm
 
 vim:
 	@vim lexical.l

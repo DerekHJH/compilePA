@@ -49,7 +49,7 @@ FLOAT ({digits}{fraction}?{exponent}?)
 
 
 %%
-{ws} {printf("ws detected!\n");}
+{ws} {}
 {SEMI} {printf("We recognize [%s] as SEMI\n", yytext);}
 {COMMA} {printf("We recognize [%s] as COMMA\n", yytext);}
 {ASSIGNOP} {printf("We recognize [%s] as ASSIGNOP\n", yytext);}
