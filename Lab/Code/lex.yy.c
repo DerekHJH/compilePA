@@ -1,5 +1,6 @@
+#line 2 "./lex.yy.c"
 
-#line 3 "lex.yy.c"
+#line 4 "./lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -499,11 +500,11 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lexical.l"
-#line 2 "lexical.l"
-	#include <stdio.h>
-#line 506 "lex.yy.c"
-#line 507 "lex.yy.c"
+#line 1 "./lexical.l"
+#line 2 "./lexical.l"
+	#include "sytax.tab.h"
+#line 507 "./lex.yy.c"
+#line 508 "./lex.yy.c"
 
 #define INITIAL 0
 
@@ -720,9 +721,9 @@ YY_DECL
 		}
 
 	{
-#line 51 "lexical.l"
+#line 51 "./lexical.l"
 
-#line 726 "lex.yy.c"
+#line 727 "./lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -782,155 +783,155 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 52 "lexical.l"
+#line 52 "./lexical.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 53 "lexical.l"
+#line 53 "./lexical.l"
 {printf("We recognize [%s] as SEMI\n", yytext);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 54 "lexical.l"
+#line 54 "./lexical.l"
 {printf("We recognize [%s] as COMMA\n", yytext);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 55 "lexical.l"
+#line 55 "./lexical.l"
 {printf("We recognize [%s] as ASSIGNOP\n", yytext);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 56 "lexical.l"
+#line 56 "./lexical.l"
 {printf("We recognize [%s] as RELOP\n", yytext);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 57 "lexical.l"
+#line 57 "./lexical.l"
 {printf("We recognize [%s] as PLUS\n", yytext);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 58 "lexical.l"
+#line 58 "./lexical.l"
 {printf("We recognize [%s] as MINUS\n", yytext);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 59 "lexical.l"
+#line 59 "./lexical.l"
 {printf("We recognize [%s] as STAR\n", yytext);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 60 "lexical.l"
+#line 60 "./lexical.l"
 {printf("We recognize [%s] as DIV\n", yytext);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 61 "lexical.l"
+#line 61 "./lexical.l"
 {printf("We recognize [%s] as AND\n", yytext);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 62 "lexical.l"
+#line 62 "./lexical.l"
 {printf("We recognize [%s] as OR\n", yytext);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 63 "lexical.l"
+#line 63 "./lexical.l"
 {printf("We recognize [%s] as DOT\n", yytext);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 64 "lexical.l"
+#line 64 "./lexical.l"
 {printf("We recognize [%s] as NOT\n", yytext);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 65 "lexical.l"
+#line 65 "./lexical.l"
 {printf("We recognize [%s] as TYPE\n", yytext);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 66 "lexical.l"
+#line 66 "./lexical.l"
 {printf("We recognize [%s] as LP\n", yytext);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 67 "lexical.l"
+#line 67 "./lexical.l"
 {printf("We recognize [%s] as RP\n", yytext);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 68 "lexical.l"
+#line 68 "./lexical.l"
 {printf("We recognize [%s] as LB\n", yytext);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 69 "lexical.l"
+#line 69 "./lexical.l"
 {printf("We recognize [%s] as RB\n", yytext);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 70 "lexical.l"
+#line 70 "./lexical.l"
 {printf("We recognize [%s] as LC\n", yytext);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 71 "lexical.l"
+#line 71 "./lexical.l"
 {printf("We recognize [%s] as RC\n", yytext);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 72 "lexical.l"
+#line 72 "./lexical.l"
 {printf("We recognize [%s] as STRUCT\n", yytext);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 73 "lexical.l"
+#line 73 "./lexical.l"
 {printf("We recognize [%s] as RETURN\n", yytext);}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 74 "lexical.l"
+#line 74 "./lexical.l"
 {printf("We recognize [%s] as IF\n", yytext);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 75 "lexical.l"
+#line 75 "./lexical.l"
 {printf("We recognize [%s] as ELSE\n", yytext);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 76 "lexical.l"
+#line 76 "./lexical.l"
 {printf("We recognize [%s] as WHILE\n", yytext);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 77 "lexical.l"
+#line 77 "./lexical.l"
 {printf("We recognize [%s] as ID\n", yytext);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 78 "lexical.l"
+#line 78 "./lexical.l"
 {printf("We recognize [%s] as INT\n", yytext);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 79 "lexical.l"
+#line 79 "./lexical.l"
 {printf("We recognize [%s] as FLOAT\n", yytext);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 80 "lexical.l"
+#line 80 "./lexical.l"
 {printf("Error type A at line %d: Mysterious characters [%s], with length %d\n", yylineno, yytext, yyleng);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 82 "lexical.l"
+#line 82 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 934 "lex.yy.c"
+#line 935 "./lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1935,21 +1936,21 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 82 "lexical.l"
+#line 82 "./lexical.l"
 
 
-int main(int argc, char** argv)
-{
-	if(argc > 1)
-	{
-		if(!(yyin = fopen(argv[1], "r")))
-		{
-			perror(argv[1]);
-			return 1;
-		}
-	}
-	yylex();
-	printf("finish\n");
-	return 0;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

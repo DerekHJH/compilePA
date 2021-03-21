@@ -1,7 +1,7 @@
 .PHONY: vim, run
 run:
 	@flex lexical.l
-	@gcc lex.yy.c -lfl -o scanner
+	@gcc main.c lex.yy.c -lfl -o scanner
 	@./scanner ../Test/test.cmm
 
 vim:
