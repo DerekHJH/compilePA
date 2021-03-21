@@ -502,7 +502,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "./lexical.l"
 #line 2 "./lexical.l"
-	#include "sytax.tab.h"
+	#include "syntax.tab.h"
 #line 507 "./lex.yy.c"
 #line 508 "./lex.yy.c"
 
@@ -789,142 +789,142 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 53 "./lexical.l"
-{printf("We recognize [%s] as SEMI\n", yytext);}
+{return SEMI;} 
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 54 "./lexical.l"
-{printf("We recognize [%s] as COMMA\n", yytext);}
+{return COMMA;} 
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 55 "./lexical.l"
-{printf("We recognize [%s] as ASSIGNOP\n", yytext);}
+{return ASSIGNOP;} 
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 56 "./lexical.l"
-{printf("We recognize [%s] as RELOP\n", yytext);}
+{return RELOP;} 
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 57 "./lexical.l"
-{printf("We recognize [%s] as PLUS\n", yytext);}
+{return PLUS;} 
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 58 "./lexical.l"
-{printf("We recognize [%s] as MINUS\n", yytext);}
+{return MINUS;} 
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 59 "./lexical.l"
-{printf("We recognize [%s] as STAR\n", yytext);}
+{return STAR;} 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 60 "./lexical.l"
-{printf("We recognize [%s] as DIV\n", yytext);}
+{return DIV;} 
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 61 "./lexical.l"
-{printf("We recognize [%s] as AND\n", yytext);}
+{return AND;} 
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 62 "./lexical.l"
-{printf("We recognize [%s] as OR\n", yytext);}
+{return OR;} 
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 63 "./lexical.l"
-{printf("We recognize [%s] as DOT\n", yytext);}
+{return DOT;} 
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 64 "./lexical.l"
-{printf("We recognize [%s] as NOT\n", yytext);}
+{return NOT;} 
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 65 "./lexical.l"
-{printf("We recognize [%s] as TYPE\n", yytext);}
+{return TYPE;} 
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 66 "./lexical.l"
-{printf("We recognize [%s] as LP\n", yytext);}
+{return LP;} 
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 67 "./lexical.l"
-{printf("We recognize [%s] as RP\n", yytext);}
+{return RP;} 
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 68 "./lexical.l"
-{printf("We recognize [%s] as LB\n", yytext);}
+{return LB;} 
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 69 "./lexical.l"
-{printf("We recognize [%s] as RB\n", yytext);}
+{return RB;} 
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 70 "./lexical.l"
-{printf("We recognize [%s] as LC\n", yytext);}
+{return LC;} 
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 71 "./lexical.l"
-{printf("We recognize [%s] as RC\n", yytext);}
+{return RC;} 
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 72 "./lexical.l"
-{printf("We recognize [%s] as STRUCT\n", yytext);}
+{return STRUCT;} 
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 73 "./lexical.l"
-{printf("We recognize [%s] as RETURN\n", yytext);}
+{return RETURN;} 
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 74 "./lexical.l"
-{printf("We recognize [%s] as IF\n", yytext);}
+{return IF;} 
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 75 "./lexical.l"
-{printf("We recognize [%s] as ELSE\n", yytext);}
+{return ELSE;} 
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 76 "./lexical.l"
-{printf("We recognize [%s] as WHILE\n", yytext);}
+{return WHILE;} 
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 77 "./lexical.l"
-{printf("We recognize [%s] as ID\n", yytext);}
+{return ID;} 
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 78 "./lexical.l"
-{printf("We recognize [%s] as INT\n", yytext);}
+{yylval = atoi(yytext); return INT;} 
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 79 "./lexical.l"
-{printf("We recognize [%s] as FLOAT\n", yytext);}
+{return FLOAT;} 
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 80 "./lexical.l"
-{printf("Error type A at line %d: Mysterious characters [%s], with length %d\n", yylineno, yytext, yyleng);}
+{}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
@@ -1937,20 +1937,6 @@ void yyfree (void * ptr )
 #define YYTABLES_NAME "yytables"
 
 #line 82 "./lexical.l"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
