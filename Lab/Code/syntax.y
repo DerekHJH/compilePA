@@ -16,7 +16,7 @@ Calc:
 | Exp {printf("expression = %d\n", $1);}
 ;
 Exp: Factor
-| Exp PLUS Factor {$$ = $1 + $2;}
+| Exp PLUS Factor {$$ = $1 + $3;}
 | Exp MINUS Factor {$$ = $1 - $3;}
 ;
 Factor: INT
