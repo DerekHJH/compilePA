@@ -91,7 +91,7 @@
 # define YY_YY_SYNTAX_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -128,7 +128,8 @@ extern int yydebug;
     WHILE = 281,
     INT = 282,
     FLOAT = 283,
-    ID = 284
+    ID = 284,
+    LOWER_THAN_ELSE = 285
   };
 #endif
 
@@ -143,7 +144,7 @@ union YYSTYPE
 	float type_float;
 	double type_double;
 
-#line 147 "./syntax.tab.c" /* yacc.c:355  */
+#line 148 "./syntax.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -174,7 +175,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 178 "./syntax.tab.c" /* yacc.c:358  */
+#line 179 "./syntax.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -421,7 +422,7 @@ union yyalloc
 #define YYLAST   11
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  30
+#define YYNTOKENS  31
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
@@ -432,7 +433,7 @@ union yyalloc
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   284
+#define YYMAXUTOK   285
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -469,15 +470,15 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29
+      25,    26,    27,    28,    29,    30
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    27,    27,    28,    30,    32,    34,    37,    39,    41,
-      44,    46
+       0,    40,    40,    41,    43,    44,    45,    47,    48,    49,
+      51,    52
 };
 #endif
 
@@ -489,7 +490,8 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "SEMI", "COMMA", "ASSIGNOP", "RELOP",
   "PLUS", "MINUS", "STAR", "DIV", "AND", "OR", "DOT", "NOT", "TYPE", "LP",
   "RP", "LB", "RB", "LC", "RC", "STRUCT", "RETURN", "IF", "ELSE", "WHILE",
-  "INT", "FLOAT", "ID", "$accept", "Calc", "Exp", "Factor", "Term", YY_NULLPTR
+  "INT", "FLOAT", "ID", "LOWER_THAN_ELSE", "$accept", "Calc", "Exp",
+  "Factor", "Term", YY_NULLPTR
 };
 #endif
 
@@ -500,7 +502,8 @@ static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,   282,   283,   284
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285
 };
 # endif
 
@@ -562,15 +565,15 @@ static const yytype_int8 yycheck[] =
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    27,    28,    31,    32,    33,    34,     0,     7,     8,
-       9,    10,    33,    33,    34,    34
+       0,    27,    28,    32,    33,    34,    35,     0,     7,     8,
+       9,    10,    34,    34,    35,    35
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    30,    31,    31,    32,    32,    32,    33,    33,    33,
-      34,    34
+       0,    31,    32,    32,    33,    33,    33,    34,    34,    34,
+      35,    35
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1347,70 +1350,61 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 28 "./syntax.y" /* yacc.c:1646  */
+#line 41 "./syntax.y" /* yacc.c:1646  */
     {printf("Calc: Exp.......expression = %f\n", (yyvsp[0].type_double)); YYLTYPE haha = (yylsp[0]); printf("location of final expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
-#line 1353 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1356 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 30 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[0].type_double);
-printf("Exp: Factor %lf\n", (yyvsp[0].type_double));}
-#line 1360 "./syntax.tab.c" /* yacc.c:1646  */
+#line 43 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[0].type_double);}
+#line 1362 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 32 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[-2].type_double) + (yyvsp[0].type_double); 
-YYLTYPE haha = (yylsp[-1]); printf("Exp: Exp PLUS Factor %lf......location of plus is %d %d %d %d\n", (yyval.type_double), haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
-#line 1367 "./syntax.tab.c" /* yacc.c:1646  */
+#line 44 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[-2].type_double) + (yyvsp[0].type_double);}
+#line 1368 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 34 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[-2].type_double) - (yyvsp[0].type_double); 
-printf("Exp: Exp MINUS Factor %lf\n", (yyval.type_double));}
+#line 45 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[-2].type_double) - (yyvsp[0].type_double);}
 #line 1374 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 37 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[0].type_double);
-printf("Factor: Term %lf\n", (yyval.type_double));}
-#line 1381 "./syntax.tab.c" /* yacc.c:1646  */
+#line 47 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[0].type_double);}
+#line 1380 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 39 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[-2].type_double) * (yyvsp[0].type_double); 
-printf("Factor: Factor STAR Term %lf\n", (yyval.type_double));}
-#line 1388 "./syntax.tab.c" /* yacc.c:1646  */
+#line 48 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[-2].type_double) * (yyvsp[0].type_double);}
+#line 1386 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 41 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[-2].type_double) / (yyvsp[0].type_double); 
-printf("Factor: Factor DIV Term %lf\n", (yyval.type_double));}
-#line 1395 "./syntax.tab.c" /* yacc.c:1646  */
+#line 49 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[-2].type_double) / (yyvsp[0].type_double);}
+#line 1392 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 44 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[0].type_int);
-printf("Term: INT %d\n", (yyvsp[0].type_int));}
-#line 1402 "./syntax.tab.c" /* yacc.c:1646  */
+#line 51 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[0].type_int);}
+#line 1398 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 46 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = (yyvsp[0].type_float);
-printf("Term: FLOAT %f\n", (yyvsp[0].type_float));
-YYLTYPE haha = (yylsp[0]); printf("location of float is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
-#line 1410 "./syntax.tab.c" /* yacc.c:1646  */
+#line 52 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = (yyvsp[0].type_float);}
+#line 1404 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1414 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1408 "./syntax.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1645,7 +1639,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 50 "./syntax.y" /* yacc.c:1906  */
+#line 54 "./syntax.y" /* yacc.c:1906  */
 
 int yyerror(char *msg)
 {

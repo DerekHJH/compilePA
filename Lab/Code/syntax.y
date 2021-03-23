@@ -23,29 +23,92 @@
 
 %type <type_double> Exp Factor Term
 
+%right ASSIGNOP
+%left PLUS MINUS
+%left STAR DIV
+%left LP RP
+
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
+
+
+
+
+
+
 %%
+Program: ExtDefList
+;
+ExtDefList: 
+| ExtDef ExtDefList
+;
+ExtDef: Specifier ExtDecList SEMI
+| Specifier SEMI
+| Specifier FunDec CompSt
+;
+ExtDecList: VarDec
+| VarDec COMMA ExtDecList
+;
+
+
+Specifier: TYPE
+| StructSpecifier
+;
+StructSpecifier: STRUCT OptTag LC DefList RC
+| STRUCT Tag
+;
+OptTag: 
+| ID
+;
+Tag: ID
+;
+
+
+VarDec: ID
+| VarDec LB INT RB
+;
+FunDec: ID LP VarList RP
+| ID LP RP
+;
+VarList: ParamDec COMMA VarList
+| ParamDec
+;
+ParamDec: Specifier VarDec
+;
+
+
+CompSt: LC DefList StmtList RC
+;
+StmtList: 
+| Stmt StmtList
+;
+Stmt: Exp SEMI
+| CompSt
+| RETURN Exp SEMI
+| IF LP Exp RP Stmt
+| IF LP Exp RP Stmt ELSE Stmt
+| WHILE LP Exp RP Stmt
+;
+
+
+
+
+
+
+
 Calc: 
 | Exp {printf("Calc: Exp.......expression = %f\n", $1); YYLTYPE haha = @1; printf("location of final expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
 ;
-Exp: Factor {$$ = $1;
-printf("Exp: Factor %lf\n", $1);}
-| Exp PLUS Factor {$$ = $1 + $3; 
-YYLTYPE haha = @2; printf("Exp: Exp PLUS Factor %lf......location of plus is %d %d %d %d\n", $$, haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
-| Exp MINUS Factor {$$ = $1 - $3; 
-printf("Exp: Exp MINUS Factor %lf\n", $$);}
+Exp: Factor {$$ = $1;}
+| Exp PLUS Factor {$$ = $1 + $3;}
+| Exp MINUS Factor {$$ = $1 - $3;}
 ;
-Factor: Term {$$ = $1;
-printf("Factor: Term %lf\n", $$);}
-| Factor STAR Term {$$ = $1 * $3; 
-printf("Factor: Factor STAR Term %lf\n", $$);}
-| Factor DIV Term {$$ = $1 / $3; 
-printf("Factor: Factor DIV Term %lf\n", $$);}
+Factor: Term {$$ = $1;}
+| Factor STAR Term {$$ = $1 * $3;}
+| Factor DIV Term {$$ = $1 / $3;}
 ;
-Term: INT {$$ = $1;
-printf("Term: INT %d\n", $1);}
-| FLOAT	{$$ = $1;
-printf("Term: FLOAT %f\n", $1);
-YYLTYPE haha = @1; printf("location of float is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+Term: INT {$$ = $1;}
+| FLOAT	{$$ = $1;}
 ;
 %%
 int yyerror(char *msg)

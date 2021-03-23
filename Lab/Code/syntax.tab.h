@@ -34,7 +34,7 @@
 # define YY_YY_SYNTAX_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -71,7 +71,8 @@ extern int yydebug;
     WHILE = 281,
     INT = 282,
     FLOAT = 283,
-    ID = 284
+    ID = 284,
+    LOWER_THAN_ELSE = 285
   };
 #endif
 
@@ -86,7 +87,7 @@ union YYSTYPE
 	float type_float;
 	double type_double;
 
-#line 90 "./syntax.tab.h" /* yacc.c:1909  */
+#line 91 "./syntax.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
