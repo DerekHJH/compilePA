@@ -1,11 +1,6 @@
-.PHONY: vim, run
-run:
-	@flex lexical.l
-	@gcc main.c lex.yy.c -lfl -o scanner
-	@./scanner ../Test/test.cmm
-
-vim:
-	@vim lexical.l
+.PHONY: run
+run: parser
+	@./parser ../Test/testexp.cmm
 
 
 

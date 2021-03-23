@@ -1,27 +1,26 @@
 Terminals unused in grammar
 
-    SEMI
-    COMMA
-    ASSIGNOP
-    RELOP
-    AND
-    OR
-    DOT
-    NOT
-    TYPE
-    LP
-    RP
-    LB
-    RB
-    LC
-    RC
-    STRUCT
-    RETURN
-    IF
-    ELSE
-    WHILE
-    FLOAT
-    ID
+   SEMI
+   COMMA
+   ASSIGNOP
+   RELOP
+   AND
+   OR
+   DOT
+   NOT
+   TYPE
+   LP
+   RP
+   LB
+   RB
+   LC
+   RC
+   STRUCT
+   RETURN
+   IF
+   ELSE
+   WHILE
+   ID
 
 
 Grammar
@@ -35,182 +34,210 @@ Grammar
     4    | Exp PLUS Factor
     5    | Exp MINUS Factor
 
-    6 Factor: INT
-    7       | Factor STAR INT
-    8       | Factor DIV INT
+    6 Factor: Term
+    7       | Factor STAR Term
+    8       | Factor DIV Term
+
+    9 Term: INT
+   10     | FLOAT
 
 
 Terminals, with rules where they appear
 
-    $end (0) 0
-    error (256)
-    SEMI (258)
-    COMMA (259)
-    ASSIGNOP (260)
-    RELOP (261)
-    PLUS (262) 4
-    MINUS (263) 5
-    STAR (264) 7
-    DIV (265) 8
-    AND (266)
-    OR (267)
-    DOT (268)
-    NOT (269)
-    TYPE (270)
-    LP (271)
-    RP (272)
-    LB (273)
-    RB (274)
-    LC (275)
-    RC (276)
-    STRUCT (277)
-    RETURN (278)
-    IF (279)
-    ELSE (280)
-    WHILE (281)
-    INT (282) 6 7 8
-    FLOAT (283)
-    ID (284)
+$end (0) 0
+error (256)
+SEMI (258)
+COMMA (259)
+ASSIGNOP (260)
+RELOP (261)
+PLUS (262) 4
+MINUS (263) 5
+STAR (264) 7
+DIV (265) 8
+AND (266)
+OR (267)
+DOT (268)
+NOT (269)
+TYPE (270)
+LP (271)
+RP (272)
+LB (273)
+RB (274)
+LC (275)
+RC (276)
+STRUCT (277)
+RETURN (278)
+IF (279)
+ELSE (280)
+WHILE (281)
+INT (282) 9
+FLOAT (283) 10
+ID (284)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (30)
-        on left: 0
-    Calc (31)
-        on left: 1 2
-        on right: 0
-    Exp (32)
-        on left: 3 4 5
-        on right: 2 4 5
-    Factor (33)
-        on left: 6 7 8
-        on right: 3 4 5 7 8
+$accept (30)
+    on left: 0
+Calc (31)
+    on left: 1 2, on right: 0
+Exp (32)
+    on left: 3 4 5, on right: 2 4 5
+Factor (33)
+    on left: 6 7 8, on right: 3 4 5 7 8
+Term (34)
+    on left: 9 10, on right: 6 7 8
 
 
 State 0
 
     0 $accept: . Calc $end
 
-    INT  shift, and go to state 1
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
 
     $default  reduce using rule 1 (Calc)
 
-    Calc    go to state 2
-    Exp     go to state 3
-    Factor  go to state 4
+    Calc    go to state 3
+    Exp     go to state 4
+    Factor  go to state 5
+    Term    go to state 6
 
 
 State 1
 
-    6 Factor: INT .
+    9 Term: INT .
 
-    $default  reduce using rule 6 (Factor)
+    $default  reduce using rule 9 (Term)
 
 
 State 2
 
-    0 $accept: Calc . $end
+   10 Term: FLOAT .
 
-    $end  shift, and go to state 5
+    $default  reduce using rule 10 (Term)
 
 
 State 3
+
+    0 $accept: Calc . $end
+
+    $end  shift, and go to state 7
+
+
+State 4
 
     2 Calc: Exp .
     4 Exp: Exp . PLUS Factor
     5    | Exp . MINUS Factor
 
-    PLUS   shift, and go to state 6
-    MINUS  shift, and go to state 7
+    PLUS   shift, and go to state 8
+    MINUS  shift, and go to state 9
 
     $default  reduce using rule 2 (Calc)
 
 
-State 4
+State 5
 
     3 Exp: Factor .
-    7 Factor: Factor . STAR INT
-    8       | Factor . DIV INT
+    7 Factor: Factor . STAR Term
+    8       | Factor . DIV Term
 
-    STAR  shift, and go to state 8
-    DIV   shift, and go to state 9
+    STAR  shift, and go to state 10
+    DIV   shift, and go to state 11
 
     $default  reduce using rule 3 (Exp)
 
 
-State 5
+State 6
+
+    6 Factor: Term .
+
+    $default  reduce using rule 6 (Factor)
+
+
+State 7
 
     0 $accept: Calc $end .
 
     $default  accept
 
 
-State 6
+State 8
 
     4 Exp: Exp PLUS . Factor
 
-    INT  shift, and go to state 1
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
 
-    Factor  go to state 10
-
-
-State 7
-
-    5 Exp: Exp MINUS . Factor
-
-    INT  shift, and go to state 1
-
-    Factor  go to state 11
-
-
-State 8
-
-    7 Factor: Factor STAR . INT
-
-    INT  shift, and go to state 12
+    Factor  go to state 12
+    Term    go to state 6
 
 
 State 9
 
-    8 Factor: Factor DIV . INT
+    5 Exp: Exp MINUS . Factor
 
-    INT  shift, and go to state 13
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+
+    Factor  go to state 13
+    Term    go to state 6
 
 
 State 10
 
-    4 Exp: Exp PLUS Factor .
-    7 Factor: Factor . STAR INT
-    8       | Factor . DIV INT
+    7 Factor: Factor STAR . Term
 
-    STAR  shift, and go to state 8
-    DIV   shift, and go to state 9
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
 
-    $default  reduce using rule 4 (Exp)
+    Term  go to state 14
 
 
 State 11
 
-    5 Exp: Exp MINUS Factor .
-    7 Factor: Factor . STAR INT
-    8       | Factor . DIV INT
+    8 Factor: Factor DIV . Term
 
-    STAR  shift, and go to state 8
-    DIV   shift, and go to state 9
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
 
-    $default  reduce using rule 5 (Exp)
+    Term  go to state 15
 
 
 State 12
 
-    7 Factor: Factor STAR INT .
+    4 Exp: Exp PLUS Factor .
+    7 Factor: Factor . STAR Term
+    8       | Factor . DIV Term
 
-    $default  reduce using rule 7 (Factor)
+    STAR  shift, and go to state 10
+    DIV   shift, and go to state 11
+
+    $default  reduce using rule 4 (Exp)
 
 
 State 13
 
-    8 Factor: Factor DIV INT .
+    5 Exp: Exp MINUS Factor .
+    7 Factor: Factor . STAR Term
+    8       | Factor . DIV Term
+
+    STAR  shift, and go to state 10
+    DIV   shift, and go to state 11
+
+    $default  reduce using rule 5 (Exp)
+
+
+State 14
+
+    7 Factor: Factor STAR Term .
+
+    $default  reduce using rule 7 (Factor)
+
+
+State 15
+
+    8 Factor: Factor DIV Term .
 
     $default  reduce using rule 8 (Factor)

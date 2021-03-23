@@ -1,7 +1,22 @@
 %{
 	#include "syntax.tab.h"
+	#include <stdlib.h>
+	int yycolumn = 1;
+	#define YY_USER_ACTION \
+	yylloc.first_line = yylloc.last_line = yylineno; \
+	yylloc.first_column = yycolumn; \
+	yylloc.last_column = yycolumn + yyleng - 1; \
+	yycolumn += yyleng;
+
 %}
-delim ([ \t\n])
+
+%option yylineno
+
+
+
+
+newline (\n)
+delim ([ \t])
 ws ({delim}+)
 
 SEMI (;)
@@ -36,9 +51,9 @@ letter_ ([_a-zA-Z])
 
 ID ({letter_}({letter_}|{digit})*)
 
-DEC ({digit1}{digit}*|0)
 OCT (0[0-7][0-7]*)
 HEX ((0x|0X)[0-9a-fA-F][0-9a-fA-F]*)
+DEC (({digit1}{digit}*)|(0))
 INT ({DEC}|{OCT}|{HEX})
 
 digits ({digit}+)
@@ -49,12 +64,14 @@ FLOAT ({digits}{fraction}?{exponent}?)
 
 
 %%
+{newline} {yycolumn = 1;}
 {ws} {}
 {SEMI} {return SEMI;} 
 {COMMA} {return COMMA;} 
 {ASSIGNOP} {return ASSIGNOP;} 
 {RELOP} {return RELOP;} 
-{PLUS} {return PLUS;} 
+{PLUS} {//printf("PLUS\n"); 
+return PLUS;} 
 {MINUS} {return MINUS;} 
 {STAR} {return STAR;} 
 {DIV} {return DIV;} 
@@ -75,8 +92,14 @@ FLOAT ({digits}{fraction}?{exponent}?)
 {ELSE} {return ELSE;} 
 {WHILE} {return WHILE;} 
 {ID} {return ID;} 
-{INT} {yylval = atoi(yytext); return INT;} 
-{FLOAT} {return FLOAT;} 
+{INT} {//printf("INT\n");
+yylval = (YYSTYPE)atoi(yytext); 
+//printf("INT value is %d\n", yylval);
+return INT;} 
+{FLOAT} {//printf("FLOAT\n"); 
+yylval = (YYSTYPE)((float)atof(yytext));
+//printf("FLOAT value is %f\n", yylval);
+return FLOAT;} 
 . {}
 
 %%
