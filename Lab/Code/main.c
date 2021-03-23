@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 			return 1;
 		}
 	}
-	yydebug = 1;
+	//yydebug = 1;
 	//yylex();
 	yyparse();
 	return 0;

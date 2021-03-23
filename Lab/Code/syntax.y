@@ -21,12 +21,16 @@
 %token <type_float> FLOAT 
 %token ID
 
-%type <type_double> Exp Factor Term
+%type <type_double> Exp
 
 %right ASSIGNOP
-%left PLUS MINUS
+%left OR
+%left AND
+%left RELOP 
+%left PLUS
 %left STAR DIV
-%left LP RP
+%right MINUS NOT
+%left LP RP LB RB DOT
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -85,7 +89,7 @@ StmtList:
 Stmt: Exp SEMI
 | CompSt
 | RETURN Exp SEMI
-| IF LP Exp RP Stmt
+| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE
 | IF LP Exp RP Stmt ELSE Stmt
 | WHILE LP Exp RP Stmt
 ;
@@ -103,7 +107,7 @@ Dec: VarDec
 | VarDec ASSIGNOP Exp
 ;
 
-Exp: Exp ASSIGNOP Exp {printf("Calc: Exp.......expression = %f\n", $1); YYLTYPE haha = @1; printf("location of final expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+Exp: Exp ASSIGNOP Exp {printf("expression = %f\n", $1); YYLTYPE haha = @1; printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
 | Exp AND Exp
 | Exp OR Exp
 | Exp RELOP Exp

@@ -1,6 +1,6 @@
 .PHONY: run git
 run: parser
-	@./parser ../Test/testexp.cmm
+	@./parser ../Test/test1.cmm
 git:
 	git add ~/compilePA
 	git commit -m "haha"
@@ -39,7 +39,7 @@ lexical: $(LFILE)
 	$(FLEX) -o $(LFC) $(LFILE)
 
 syntax-c: $(YFILE)
-	$(BISON) -o $(YFC) -d -t $(YFILE)
+	$(BISON) -o $(YFC) -d -v $(YFILE)
 
 -include $(patsubst %.o, %.d, $(OBJS))
 
