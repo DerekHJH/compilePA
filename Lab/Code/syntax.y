@@ -91,25 +91,42 @@ Stmt: Exp SEMI
 ;
 
 
-
-
-
-
-
-Calc: 
-| Exp {printf("Calc: Exp.......expression = %f\n", $1); YYLTYPE haha = @1; printf("location of final expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+DefList: 
+| Def DefList
 ;
-Exp: Factor {$$ = $1;}
-| Exp PLUS Factor {$$ = $1 + $3;}
-| Exp MINUS Factor {$$ = $1 - $3;}
+Def: Specifier DecList SEMI
 ;
-Factor: Term {$$ = $1;}
-| Factor STAR Term {$$ = $1 * $3;}
-| Factor DIV Term {$$ = $1 / $3;}
+DecList: Dec
+| Dec COMMA DecList
 ;
-Term: INT {$$ = $1;}
-| FLOAT	{$$ = $1;}
+Dec: VarDec
+| VarDec ASSIGNOP Exp
 ;
+
+Exp: Exp ASSIGNOP Exp {printf("Calc: Exp.......expression = %f\n", $1); YYLTYPE haha = @1; printf("location of final expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+| Exp AND Exp
+| Exp OR Exp
+| Exp RELOP Exp
+| Exp PLUS Exp
+| Exp MINUS Exp
+| Exp STAR Exp
+| Exp DIV Exp
+| LP Exp RP
+| MINUS Exp
+| NOT Exp
+| ID LP Args RP
+| ID LP RP
+| Exp LB Exp RB
+| Exp DOT ID
+| ID
+| INT
+| FLOAT
+;
+Args: Exp COMMA Args
+| Exp
+;
+
+
 %%
 int yyerror(char *msg)
 {
