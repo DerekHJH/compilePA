@@ -1,11 +1,6 @@
-.PHONY: run git
+.PHONY: run
 run: parser
 	@./parser ../Test/test1.cmm
-git:
-	git add ~/compilePA
-	git commit -m "haha"
-	sudo git push origin master
-
 
 
 

@@ -107,24 +107,26 @@ Dec: VarDec
 | VarDec ASSIGNOP Exp
 ;
 
-Exp: Exp ASSIGNOP Exp {printf("expression = %f\n", $1); YYLTYPE haha = @1; printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
-| Exp AND Exp
-| Exp OR Exp
-| Exp RELOP Exp
-| Exp PLUS Exp
-| Exp MINUS Exp
-| Exp STAR Exp
-| Exp DIV Exp
-| LP Exp RP
-| MINUS Exp
-| NOT Exp
-| ID LP Args RP
-| ID LP RP
-| Exp LB Exp RB
-| Exp DOT ID
-| ID
-| INT
-| FLOAT
+Exp: Exp ASSIGNOP Exp {printf("expression = %f\n", $$); YYLTYPE haha = @1; printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+| Exp AND Exp {$$ = ($1 && $3);}
+| Exp OR Exp {$$ = ($1 || $3);}
+| Exp RELOP Exp {}
+| Exp PLUS Exp {$$ = $1 + $3;}
+| Exp MINUS Exp {$$ = $1 - $3;}
+| Exp STAR Exp {$$ = $1 * $3;}
+| Exp DIV Exp {$$ = $1 / $3;}
+| LP Exp RP {$$ = ($2);}
+| MINUS Exp {$$ = -($2);}
+| NOT Exp {$$ = !($2);}
+| ID LP Args RP {}
+| ID LP RP {}
+| Exp LB Exp RB {}
+| Exp DOT ID {}
+| ID {}
+| INT {//printf("INT is %d\n", $1);
+$$ = $1;}
+| FLOAT {//printf("FLOAT is %f\n", $1);
+$$ = $1;}
 ;
 Args: Exp COMMA Args
 | Exp
