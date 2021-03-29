@@ -41,21 +41,21 @@
 
 
 %%
-Program: ExtDefList
+Program: ExtDefList {printf("right!\n");}
 ;
 ExtDefList: 
 | ExtDef ExtDefList
 ;
 ExtDef: Specifier ExtDecList SEMI
 | Specifier SEMI
-| Specifier FunDec CompSt
+| Specifier FunDec CompSt {printf("Specifer FunDec Compt\n");}
 ;
 ExtDecList: VarDec
 | VarDec COMMA ExtDecList
 ;
 
 
-Specifier: TYPE
+Specifier: TYPE {printf("Type\n");}
 | StructSpecifier
 ;
 StructSpecifier: STRUCT OptTag LC DefList RC
@@ -107,7 +107,8 @@ Dec: VarDec
 | VarDec ASSIGNOP Exp
 ;
 
-Exp: Exp ASSIGNOP Exp {printf("expression = %f\n", $$); YYLTYPE haha = @1; printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+Exp: Exp ASSIGNOP Exp {$$ = ($1 = $3);
+printf("expression = %f\n", $$); YYLTYPE haha = @1; printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
 | Exp AND Exp {$$ = ($1 && $3);}
 | Exp OR Exp {$$ = ($1 || $3);}
 | Exp RELOP Exp {}
@@ -122,7 +123,7 @@ Exp: Exp ASSIGNOP Exp {printf("expression = %f\n", $$); YYLTYPE haha = @1; print
 | ID LP RP {}
 | Exp LB Exp RB {}
 | Exp DOT ID {}
-| ID {}
+| ID {printf("ID\n");}
 | INT {//printf("INT is %d\n", $1);
 $$ = $1;}
 | FLOAT {//printf("FLOAT is %f\n", $1);

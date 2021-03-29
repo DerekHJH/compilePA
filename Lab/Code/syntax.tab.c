@@ -481,8 +481,8 @@ static const yytype_uint8 yyrline[] =
       58,    59,    61,    62,    64,    65,    67,    71,    72,    74,
       75,    77,    78,    80,    84,    86,    87,    89,    90,    91,
       92,    93,    94,    98,    99,   101,   103,   104,   106,   107,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   128,   131,   132
+     110,   112,   113,   114,   115,   116,   117,   118,   119,   120,
+     121,   122,   123,   124,   125,   126,   127,   129,   132,   133
 };
 #endif
 
@@ -1439,118 +1439,137 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 40:
-#line 110 "./syntax.y" /* yacc.c:1646  */
-    {printf("expression = %f\n", (yyval.type_double)); YYLTYPE haha = (yylsp[-2]); printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+        case 2:
+#line 44 "./syntax.y" /* yacc.c:1646  */
+    {printf("right!\n");}
 #line 1446 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 41:
-#line 111 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = ((yyvsp[-2].type_double) && (yyvsp[0].type_double));}
+  case 7:
+#line 51 "./syntax.y" /* yacc.c:1646  */
+    {printf("Specifer FunDec Compt\n");}
 #line 1452 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 42:
-#line 112 "./syntax.y" /* yacc.c:1646  */
-    {(yyval.type_double) = ((yyvsp[-2].type_double) || (yyvsp[0].type_double));}
+  case 10:
+#line 58 "./syntax.y" /* yacc.c:1646  */
+    {printf("Type\n");}
 #line 1458 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
-  case 43:
+  case 40:
+#line 110 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = ((yyvsp[-2].type_double) = (yyvsp[0].type_double));
+printf("expression = %f\n", (yyval.type_double)); YYLTYPE haha = (yylsp[-2]); printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
+#line 1465 "./syntax.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 41:
+#line 112 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = ((yyvsp[-2].type_double) && (yyvsp[0].type_double));}
+#line 1471 "./syntax.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 42:
 #line 113 "./syntax.y" /* yacc.c:1646  */
+    {(yyval.type_double) = ((yyvsp[-2].type_double) || (yyvsp[0].type_double));}
+#line 1477 "./syntax.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 43:
+#line 114 "./syntax.y" /* yacc.c:1646  */
     {}
-#line 1464 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1483 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 114 "./syntax.y" /* yacc.c:1646  */
+#line 115 "./syntax.y" /* yacc.c:1646  */
     {(yyval.type_double) = (yyvsp[-2].type_double) + (yyvsp[0].type_double);}
-#line 1470 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1489 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 115 "./syntax.y" /* yacc.c:1646  */
+#line 116 "./syntax.y" /* yacc.c:1646  */
     {(yyval.type_double) = (yyvsp[-2].type_double) - (yyvsp[0].type_double);}
-#line 1476 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1495 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 116 "./syntax.y" /* yacc.c:1646  */
+#line 117 "./syntax.y" /* yacc.c:1646  */
     {(yyval.type_double) = (yyvsp[-2].type_double) * (yyvsp[0].type_double);}
-#line 1482 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1501 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 117 "./syntax.y" /* yacc.c:1646  */
+#line 118 "./syntax.y" /* yacc.c:1646  */
     {(yyval.type_double) = (yyvsp[-2].type_double) / (yyvsp[0].type_double);}
-#line 1488 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1507 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 118 "./syntax.y" /* yacc.c:1646  */
+#line 119 "./syntax.y" /* yacc.c:1646  */
     {(yyval.type_double) = ((yyvsp[-1].type_double));}
-#line 1494 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1513 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 119 "./syntax.y" /* yacc.c:1646  */
+#line 120 "./syntax.y" /* yacc.c:1646  */
     {(yyval.type_double) = -((yyvsp[0].type_double));}
-#line 1500 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1519 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 120 "./syntax.y" /* yacc.c:1646  */
+#line 121 "./syntax.y" /* yacc.c:1646  */
     {(yyval.type_double) = !((yyvsp[0].type_double));}
-#line 1506 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1525 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 121 "./syntax.y" /* yacc.c:1646  */
+#line 122 "./syntax.y" /* yacc.c:1646  */
     {}
-#line 1512 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1531 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 122 "./syntax.y" /* yacc.c:1646  */
+#line 123 "./syntax.y" /* yacc.c:1646  */
     {}
-#line 1518 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1537 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 123 "./syntax.y" /* yacc.c:1646  */
-    {}
-#line 1524 "./syntax.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 54:
 #line 124 "./syntax.y" /* yacc.c:1646  */
     {}
-#line 1530 "./syntax.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 55:
-#line 125 "./syntax.y" /* yacc.c:1646  */
-    {}
-#line 1536 "./syntax.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 56:
-#line 126 "./syntax.y" /* yacc.c:1646  */
-    {//printf("INT is %d\n", $1);
-(yyval.type_double) = (yyvsp[0].type_int);}
 #line 1543 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
+  case 54:
+#line 125 "./syntax.y" /* yacc.c:1646  */
+    {}
+#line 1549 "./syntax.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 55:
+#line 126 "./syntax.y" /* yacc.c:1646  */
+    {printf("ID\n");}
+#line 1555 "./syntax.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 56:
+#line 127 "./syntax.y" /* yacc.c:1646  */
+    {//printf("INT is %d\n", $1);
+(yyval.type_double) = (yyvsp[0].type_int);}
+#line 1562 "./syntax.tab.c" /* yacc.c:1646  */
+    break;
+
   case 57:
-#line 128 "./syntax.y" /* yacc.c:1646  */
+#line 129 "./syntax.y" /* yacc.c:1646  */
     {//printf("FLOAT is %f\n", $1);
 (yyval.type_double) = (yyvsp[0].type_float);}
-#line 1550 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1569 "./syntax.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1554 "./syntax.tab.c" /* yacc.c:1646  */
+#line 1573 "./syntax.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1785,7 +1804,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 136 "./syntax.y" /* yacc.c:1906  */
+#line 137 "./syntax.y" /* yacc.c:1906  */
 
 int yyerror(char *msg)
 {
