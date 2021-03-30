@@ -2028,12 +2028,13 @@ yyreturn:
 
 void insert_node(struct _node *father, struct _node *child)
 {
+	if(father == NULL || child == NULL)return;
 	child->right = father->left;
 	father->left = child;
-
 }
 void print_tree(struct _node *cur, int Width)
 {
+	if(cur->text == NULL && cur->left == NULL && cur->right == NULL)return;
 	for(int i = 1; i <= Width; i++)
 		printf(" ");
 	printf("%s", cur->token_name);

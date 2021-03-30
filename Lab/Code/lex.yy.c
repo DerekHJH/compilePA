@@ -2037,7 +2037,16 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 		sprintf(temp->token_name, "%s", token_name);
 	}
 	else temp->token_name = NULL;
-	if(strcmp(token_name, "INT") == 0)temp->int_val = atoi(text);
+	if(strcmp(token_name, "INT") == 0)
+	{	
+		int l = strlen(text);
+		if(l == 1)temp->int_val = strtol(text, NULL, 10);
+		else 
+		{
+			if(text[0] == '0' && (text[1] == 'x' || text[1] == 'X'))temp->int_val = strtol(text, NULL, 16);
+			else temp->int_val = strtol(text, NULL, 8);
+		}
+	}
 	else if(strcmp(token_name, "FLOAT") == 0)temp->float_val = atof(text);
 	temp->left = NULL;
 	temp->right = NULL;
