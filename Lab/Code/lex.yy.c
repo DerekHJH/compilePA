@@ -537,11 +537,11 @@ char *yytext;
 	yylloc.last_column = yycolumn + yyleng - 1; \
 	yycolumn += yyleng;
 	
-	#define MAKE_NODE_RETURN(token_name)\
+	#define MAKE_NODE_RETURN(token_id, token_name)\
 	do\
 	{\
-		yylval.type_node = make_node(#token_name, yytext, yylineno); \
-		return token_name;\
+		yylval.type_node = make_node(token_name, yytext, yylineno); \
+		return token_id;\
 	}while(0)
 
 
@@ -859,137 +859,137 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 91 "./lexical.l"
-{printf("SEMI"); MAKE_NODE_RETURN(SEMI);}
+{MAKE_NODE_RETURN(SEMI, "SEMI");}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 92 "./lexical.l"
-{MAKE_NODE_RETURN(COMMA);} 
+{MAKE_NODE_RETURN(COMMA, "COMMA");} 
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 93 "./lexical.l"
-{MAKE_NODE_RETURN(ASSIGNOP);} 
+{MAKE_NODE_RETURN(ASSIGNOP, "ASSIGNOP");} 
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 94 "./lexical.l"
-{MAKE_NODE_RETURN(RELOP);} 
+{MAKE_NODE_RETURN(RELOP, "RELOP");} 
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 95 "./lexical.l"
-{MAKE_NODE_RETURN(PLUS);} 
+{MAKE_NODE_RETURN(PLUS, "PLUS");} 
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 96 "./lexical.l"
-{MAKE_NODE_RETURN(MINUS);} 
+{MAKE_NODE_RETURN(MINUS, "MINUS");} 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 97 "./lexical.l"
-{MAKE_NODE_RETURN(STAR);} 
+{MAKE_NODE_RETURN(STAR, "STAR");} 
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 98 "./lexical.l"
-{MAKE_NODE_RETURN(DIV);} 
+{MAKE_NODE_RETURN(DIV, "DIV");} 
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 99 "./lexical.l"
-{MAKE_NODE_RETURN(AND);} 
+{MAKE_NODE_RETURN(AND, "AND");} 
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 100 "./lexical.l"
-{MAKE_NODE_RETURN(OR);} 
+{MAKE_NODE_RETURN(OR, "OR");} 
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 101 "./lexical.l"
-{MAKE_NODE_RETURN(DOT);} 
+{MAKE_NODE_RETURN(DOT, "DOT");} 
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 102 "./lexical.l"
-{MAKE_NODE_RETURN(NOT);} 
+{MAKE_NODE_RETURN(NOT, "NOT");} 
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 103 "./lexical.l"
-{MAKE_NODE_RETURN(TYPE);} 
+{MAKE_NODE_RETURN(TYPE, "TYPE");} 
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 104 "./lexical.l"
-{MAKE_NODE_RETURN(LP);} 
+{MAKE_NODE_RETURN(LP, "LP");} 
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 105 "./lexical.l"
-{MAKE_NODE_RETURN(RP);} 
+{MAKE_NODE_RETURN(RP, "RP");} 
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 106 "./lexical.l"
-{MAKE_NODE_RETURN(LB);} 
+{MAKE_NODE_RETURN(LB, "LB");} 
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 107 "./lexical.l"
-{MAKE_NODE_RETURN(RB);} 
+{MAKE_NODE_RETURN(RB, "RB");} 
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 108 "./lexical.l"
-{MAKE_NODE_RETURN(LC);} 
+{MAKE_NODE_RETURN(LC, "LC");} 
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 109 "./lexical.l"
-{MAKE_NODE_RETURN(RC);} 
+{MAKE_NODE_RETURN(RC, "RC");} 
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 110 "./lexical.l"
-{MAKE_NODE_RETURN(STRUCT);} 
+{MAKE_NODE_RETURN(STRUCT, "STRUCT");} 
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 111 "./lexical.l"
-{MAKE_NODE_RETURN(RETURN);} 
+{MAKE_NODE_RETURN(RETURN, "RETURN");} 
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 112 "./lexical.l"
-{MAKE_NODE_RETURN(IF);} 
+{MAKE_NODE_RETURN(IF, "IF");} 
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 113 "./lexical.l"
-{MAKE_NODE_RETURN(ELSE);} 
+{MAKE_NODE_RETURN(ELSE, "ELSE");} 
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 114 "./lexical.l"
-{MAKE_NODE_RETURN(WHILE);} 
+{MAKE_NODE_RETURN(WHILE, "WHILE");} 
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 115 "./lexical.l"
-{MAKE_NODE_RETURN(ID);} 
+{MAKE_NODE_RETURN(ID, "ID");} 
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 116 "./lexical.l"
-{MAKE_NODE_RETURN(INT);} 
+{MAKE_NODE_RETURN(INT, "INT");} 
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 117 "./lexical.l"
-{MAKE_NODE_RETURN(FLOAT);} 
+{MAKE_NODE_RETURN(FLOAT, "FLOAT");} 
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
@@ -2024,8 +2024,8 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 {
 	struct _node *temp = malloc(sizeof(struct _node));
 	temp->lineno = lineno;
-	sprintf(temp->text, "%s", text);
-	sprintf(temp->token_name, "%s", token_name);
+	if(text != NULL)sprintf(temp->text, "%s", text);
+	if(token_name != NULL)sprintf(temp->token_name, "%s", token_name);
 	if(strcmp(token_name, "INT") == 0)temp->int_val = atoi(text);
 	else if(strcmp(token_name, "FLOAT") == 0)temp->float_val = atof(text);
 	temp->left = NULL;

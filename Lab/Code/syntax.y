@@ -3,14 +3,11 @@
 	#include "syntax.tab.h"
 	int yyerror(char* msg);
 	void insert_node(struct _node *father, struct _node *child);
-	struct node * Root = NULL;
+	struct _node *Root;
 %}
 
 %union
 {
-	int type_int;
-	float type_float;
-	double type_double; 
 	struct _node* type_node;
 }
 
@@ -149,6 +146,10 @@ void insert_node(struct _node *father, struct _node *child)
 	child->right = father->left;
 	father->left = child;
 
+}
+void print_tree()
+{
+	struct node *cur = Root;
 }
 int yyerror(char *msg)
 {

@@ -3,6 +3,7 @@ extern FILE* yyin;
 extern int yylex();
 extern int yyparse();
 extern int yydebug;
+void print_tree();
 int main(int argc, char** argv)
 {
 	if(argc > 1)
@@ -16,6 +17,7 @@ int main(int argc, char** argv)
 	//yydebug = 1;
 	//yylex();
 	yyparse();
+	print_tree();
 	return 0;
 }
 

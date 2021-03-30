@@ -9,11 +9,11 @@
 	yylloc.last_column = yycolumn + yyleng - 1; \
 	yycolumn += yyleng;
 	
-	#define MAKE_NODE_RETURN(token_name)\
+	#define MAKE_NODE_RETURN(token_id, token_name)\
 	do\
 	{\
-		yylval.type_node = make_node(#token_name, yytext, yylineno); \
-		return token_name;\
+		yylval.type_node = make_node(token_name, yytext, yylineno); \
+		return token_id;\
 	}while(0)
 
 
@@ -88,33 +88,33 @@ FLOAT ({digits}{fraction}?{exponent}?)
 %%
 {newline} {yycolumn = 1;}
 {ws} {}
-{SEMI} {MAKE_NODE_RETURN(SEMI);}
-{COMMA} {MAKE_NODE_RETURN(COMMA);} 
-{ASSIGNOP} {MAKE_NODE_RETURN(ASSIGNOP);} 
-{RELOP} {MAKE_NODE_RETURN(RELOP);} 
-{PLUS} {MAKE_NODE_RETURN(PLUS);} 
-{MINUS} {MAKE_NODE_RETURN(MINUS);} 
-{STAR} {MAKE_NODE_RETURN(STAR);} 
-{DIV} {MAKE_NODE_RETURN(DIV);} 
-{AND} {MAKE_NODE_RETURN(AND);} 
-{OR} {MAKE_NODE_RETURN(OR);} 
-{DOT} {MAKE_NODE_RETURN(DOT);} 
-{NOT} {MAKE_NODE_RETURN(NOT);} 
-{TYPE} {MAKE_NODE_RETURN(TYPE);} 
-{LP} {MAKE_NODE_RETURN(LP);} 
-{RP} {MAKE_NODE_RETURN(RP);} 
-{LB} {MAKE_NODE_RETURN(LB);} 
-{RB} {MAKE_NODE_RETURN(RB);} 
-{LC} {MAKE_NODE_RETURN(LC);} 
-{RC} {MAKE_NODE_RETURN(RC);} 
-{STRUCT} {MAKE_NODE_RETURN(STRUCT);} 
-{RETURN} {MAKE_NODE_RETURN(RETURN);} 
-{IF} {MAKE_NODE_RETURN(IF);} 
-{ELSE} {MAKE_NODE_RETURN(ELSE);} 
-{WHILE} {MAKE_NODE_RETURN(WHILE);} 
-{ID} {MAKE_NODE_RETURN(ID);} 
-{INT} {MAKE_NODE_RETURN(INT);} 
-{FLOAT} {MAKE_NODE_RETURN(FLOAT);} 
+{SEMI} {MAKE_NODE_RETURN(SEMI, "SEMI");}
+{COMMA} {MAKE_NODE_RETURN(COMMA, "COMMA");} 
+{ASSIGNOP} {MAKE_NODE_RETURN(ASSIGNOP, "ASSIGNOP");} 
+{RELOP} {MAKE_NODE_RETURN(RELOP, "RELOP");} 
+{PLUS} {MAKE_NODE_RETURN(PLUS, "PLUS");} 
+{MINUS} {MAKE_NODE_RETURN(MINUS, "MINUS");} 
+{STAR} {MAKE_NODE_RETURN(STAR, "STAR");} 
+{DIV} {MAKE_NODE_RETURN(DIV, "DIV");} 
+{AND} {MAKE_NODE_RETURN(AND, "AND");} 
+{OR} {MAKE_NODE_RETURN(OR, "OR");} 
+{DOT} {MAKE_NODE_RETURN(DOT, "DOT");} 
+{NOT} {MAKE_NODE_RETURN(NOT, "NOT");} 
+{TYPE} {MAKE_NODE_RETURN(TYPE, "TYPE");} 
+{LP} {MAKE_NODE_RETURN(LP, "LP");} 
+{RP} {MAKE_NODE_RETURN(RP, "RP");} 
+{LB} {MAKE_NODE_RETURN(LB, "LB");} 
+{RB} {MAKE_NODE_RETURN(RB, "RB");} 
+{LC} {MAKE_NODE_RETURN(LC, "LC");} 
+{RC} {MAKE_NODE_RETURN(RC, "RC");} 
+{STRUCT} {MAKE_NODE_RETURN(STRUCT, "STRUCT");} 
+{RETURN} {MAKE_NODE_RETURN(RETURN, "RETURN");} 
+{IF} {MAKE_NODE_RETURN(IF, "IF");} 
+{ELSE} {MAKE_NODE_RETURN(ELSE, "ELSE");} 
+{WHILE} {MAKE_NODE_RETURN(WHILE, "WHILE");} 
+{ID} {MAKE_NODE_RETURN(ID, "ID");} 
+{INT} {MAKE_NODE_RETURN(INT, "INT");} 
+{FLOAT} {MAKE_NODE_RETURN(FLOAT, "FLOAT");} 
 . {printf("Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext);}
 
 %%
@@ -122,8 +122,8 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 {
 	struct _node *temp = malloc(sizeof(struct _node));
 	temp->lineno = lineno;
-	sprintf(temp->text, "%s", text);
-	sprintf(temp->token_name, "%s", token_name);
+	if(text != NULL)sprintf(temp->text, "%s", text);
+	if(token_name != NULL)sprintf(temp->token_name, "%s", token_name);
 	if(strcmp(token_name, "INT") == 0)temp->int_val = atoi(text);
 	else if(strcmp(token_name, "FLOAT") == 0)temp->float_val = atof(text);
 	temp->left = NULL;
