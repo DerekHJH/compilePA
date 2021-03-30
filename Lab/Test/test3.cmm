@@ -1,10 +1,5 @@
-int main()
+int inc()
 {
-	int i = 0, ans = 0;
-	while(i < 9)
-	{
-		i++;
-		ans = ans + 1;
-	}
-	return 0;
+	int i;
+	i = i + 1;
 }

@@ -25,7 +25,8 @@
     		float float_val;
     	};
     	int lineno;
-    	char text[64], token_name[32];
+    	char *text;
+		char *token_name;
 		struct _node *left;
 		struct _node *right;
     };
@@ -122,8 +123,18 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 {
 	struct _node *temp = malloc(sizeof(struct _node));
 	temp->lineno = lineno;
-	if(text != NULL)sprintf(temp->text, "%s", text);
-	if(token_name != NULL)sprintf(temp->token_name, "%s", token_name);
+	if(text != NULL)
+	{
+		temp->text = malloc(strlen(text) + 1);
+		sprintf(temp->text, "%s", text);
+	}
+	else temp->text = NULL;
+	if(token_name != NULL)
+	{
+		temp->token_name = malloc(strlen(token_name) + 1);
+		sprintf(temp->token_name, "%s", token_name);
+	}
+	else temp->token_name = NULL;
 	if(strcmp(token_name, "INT") == 0)temp->int_val = atoi(text);
 	else if(strcmp(token_name, "FLOAT") == 0)temp->float_val = atof(text);
 	temp->left = NULL;

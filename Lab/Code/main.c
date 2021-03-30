@@ -3,7 +3,8 @@ extern FILE* yyin;
 extern int yylex();
 extern int yyparse();
 extern int yydebug;
-void print_tree();
+void print_tree(struct _node *cur, int Width);
+extern struct _node *Root;
 int main(int argc, char** argv)
 {
 	if(argc > 1)
@@ -17,7 +18,7 @@ int main(int argc, char** argv)
 	//yydebug = 1;
 	//yylex();
 	yyparse();
-	print_tree();
+	print_tree(Root, 0);
 	return 0;
 }
 
