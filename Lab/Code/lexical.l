@@ -1,6 +1,7 @@
 %{
 	#include "syntax.tab.h"
 	#include <stdlib.h>
+	#include <string.h>
 	int yycolumn = 1;
 	#define YY_USER_ACTION \
 	yylloc.first_line = yylloc.last_line = yylineno; \
@@ -8,18 +9,27 @@
 	yylloc.last_column = yycolumn + yyleng - 1; \
 	yycolumn += yyleng;
 	
-	typedef struct
+	#define MAKE_NODE_RETURN(token_name)\
+	do\
+	{\
+		yylval.type_node = make_node(#token_name, yytext, yylineno); \
+		return token_name;\
+	}while(0)
+
+
+	struct _node
     {
     	union
     	{
     		int int_val;
     		float float_val;
     	};
-    	int token_id;
-    	char content[15];
-		_node *left;
-		_node *right;
-    }_node;
+    	int lineno;
+    	char text[64], token_name[32];
+		struct _node *left;
+		struct _node *right;
+    };
+	struct _node *make_node(char *token_name, char *content, int lineno);
 %}
 
 %option yylineno
@@ -78,47 +88,45 @@ FLOAT ({digits}{fraction}?{exponent}?)
 %%
 {newline} {yycolumn = 1;}
 {ws} {}
-{SEMI} {return SEMI;} 
-{COMMA} {return COMMA;} 
-{ASSIGNOP} {return ASSIGNOP;} 
-{RELOP} {return RELOP;} 
-{PLUS} {//printf("PLUS\n"); 
-return PLUS;} 
-{MINUS} {return MINUS;} 
-{STAR} {return STAR;} 
-{DIV} {return DIV;} 
-{AND} {return AND;} 
-{OR} {return OR;} 
-{DOT} {return DOT;} 
-{NOT} {return NOT;} 
-{TYPE} {return TYPE;} 
-{LP} {return LP;} 
-{RP} {return RP;} 
-{LB} {return LB;} 
-{RB} {return RB;} 
-{LC} {return LC;} 
-{RC} {return RC;} 
-{STRUCT} {return STRUCT;} 
-{RETURN} {return RETURN;} 
-{IF} {return IF;} 
-{ELSE} {return ELSE;} 
-{WHILE} {return WHILE;} 
-{ID} {return ID;} 
-{INT} {//printf("INT\n");
-yylval.type_node = make_node(INT, yytext); 
-return INT;} 
-{FLOAT} {//printf("FLOAT\n"); 
-yylval.type_node = make_node(FLOAT, yytext);
-return FLOAT;} 
+{SEMI} {MAKE_NODE_RETURN(SEMI);}
+{COMMA} {MAKE_NODE_RETURN(COMMA);} 
+{ASSIGNOP} {MAKE_NODE_RETURN(ASSIGNOP);} 
+{RELOP} {MAKE_NODE_RETURN(RELOP);} 
+{PLUS} {MAKE_NODE_RETURN(PLUS);} 
+{MINUS} {MAKE_NODE_RETURN(MINUS);} 
+{STAR} {MAKE_NODE_RETURN(STAR);} 
+{DIV} {MAKE_NODE_RETURN(DIV);} 
+{AND} {MAKE_NODE_RETURN(AND);} 
+{OR} {MAKE_NODE_RETURN(OR);} 
+{DOT} {MAKE_NODE_RETURN(DOT);} 
+{NOT} {MAKE_NODE_RETURN(NOT);} 
+{TYPE} {MAKE_NODE_RETURN(TYPE);} 
+{LP} {MAKE_NODE_RETURN(LP);} 
+{RP} {MAKE_NODE_RETURN(RP);} 
+{LB} {MAKE_NODE_RETURN(LB);} 
+{RB} {MAKE_NODE_RETURN(RB);} 
+{LC} {MAKE_NODE_RETURN(LC);} 
+{RC} {MAKE_NODE_RETURN(RC);} 
+{STRUCT} {MAKE_NODE_RETURN(STRUCT);} 
+{RETURN} {MAKE_NODE_RETURN(RETURN);} 
+{IF} {MAKE_NODE_RETURN(IF);} 
+{ELSE} {MAKE_NODE_RETURN(ELSE);} 
+{WHILE} {MAKE_NODE_RETURN(WHILE);} 
+{ID} {MAKE_NODE_RETURN(ID);} 
+{INT} {MAKE_NODE_RETURN(INT);} 
+{FLOAT} {MAKE_NODE_RETURN(FLOAT);} 
 . {printf("Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext);}
 
 %%
-_node *make_node(int token_id, char *content)
+struct _node *make_node(char *token_name, char *text, int lineno)
 {
-	_node *temp = malloc(sizeof(_node));
-	temp->token_id = token_id;
-	sprintf(temp->content, "%s", content);
-	if(token_id == INT)temp->int_val = atoi(content);
-	else if(token_id == FLOAT)temp->float_val = atof(content);
+	struct _node *temp = malloc(sizeof(struct _node));
+	temp->lineno = lineno;
+	sprintf(temp->text, "%s", text);
+	sprintf(temp->token_name, "%s", token_name);
+	if(strcmp(token_name, "INT") == 0)temp->int_val = atoi(text);
+	else if(strcmp(token_name, "FLOAT") == 0)temp->float_val = atof(text);
+	temp->left = NULL;
+	temp->right = NULL;
 	return temp;
 }
