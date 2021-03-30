@@ -1,27 +1,38 @@
 %{
 	#include "lex.yy.c"
 	int yyerror(char* msg);
+	typedef struct
+	{
+		union
+		{
+			int int_val;
+			float float_val;
+		};
+		int token_id;
+		char name[15];
+	}_node;
 %}
 
 %union
 {
 	int type_int;
 	float type_float;
-	double type_double;
+	double type_double; 
+	_node *type_node;
 }
 
 
-%token SEMI COMMA ASSIGNOP RELOP 
-%token PLUS MINUS STAR DIV 
-%token AND OR DOT NOT 
-%token TYPE 
-%token LP RP LB RB LC RC
-%token STRUCT RETURN IF ELSE WHILE
-%token <type_int> INT 
-%token <type_float> FLOAT 
-%token ID
+%token <type_node> SEMI COMMA ASSIGNOP RELOP 
+%token <type_node> PLUS MINUS STAR DIV 
+%token <type_node> AND OR DOT NOT 
+%token <type_node> TYPE 
+%token <type_node> LP RP LB RB LC RC
+%token <type_node> STRUCT RETURN IF ELSE WHILE
+%token <type_node> INT 
+%token <type_node> FLOAT 
+%token <type_node> ID
 
-%type <type_double> Exp
+%type <type_node> Exp
 
 %right ASSIGNOP
 %left OR
@@ -41,21 +52,24 @@
 
 
 %%
-Program: ExtDefList {printf("right!\n");}
+Program: ExtDefList {//printf("right!\n");
+}
 ;
 ExtDefList: 
 | ExtDef ExtDefList
 ;
 ExtDef: Specifier ExtDecList SEMI
 | Specifier SEMI
-| Specifier FunDec CompSt {printf("Specifer FunDec Compt\n");}
+| Specifier FunDec CompSt {//printf("Specifer FunDec Compt\n");
+}
 ;
 ExtDecList: VarDec
 | VarDec COMMA ExtDecList
 ;
 
 
-Specifier: TYPE {printf("Type\n");}
+Specifier: TYPE {//printf("Type\n");
+}
 | StructSpecifier
 ;
 StructSpecifier: STRUCT OptTag LC DefList RC
@@ -109,21 +123,22 @@ Dec: VarDec
 
 Exp: Exp ASSIGNOP Exp {$$ = ($1 = $3);
 printf("expression = %f\n", $$); YYLTYPE haha = @1; printf("location of expression is %d %d %d %d\n", haha.first_line, haha.last_line, haha.first_column, haha.last_column);}
-| Exp AND Exp {$$ = ($1 && $3);}
-| Exp OR Exp {$$ = ($1 || $3);}
+| Exp AND Exp {$$ = $1;}
+| Exp OR Exp {$$ = $1;}
 | Exp RELOP Exp {}
-| Exp PLUS Exp {$$ = $1 + $3;}
-| Exp MINUS Exp {$$ = $1 - $3;}
-| Exp STAR Exp {$$ = $1 * $3;}
-| Exp DIV Exp {$$ = $1 / $3;}
-| LP Exp RP {$$ = ($2);}
-| MINUS Exp {$$ = -($2);}
-| NOT Exp {$$ = !($2);}
+| Exp PLUS Exp {$$ = $1;}
+| Exp MINUS Exp {$$ = $1;}
+| Exp STAR Exp {$$ = $1;}
+| Exp DIV Exp {$$ = $1;}
+| LP Exp RP {$$ = $1;}
+| MINUS Exp {$$ = $1;}
+| NOT Exp {$$ = $1;}
 | ID LP Args RP {}
 | ID LP RP {}
 | Exp LB Exp RB {}
 | Exp DOT ID {}
-| ID {printf("ID\n");}
+| ID {//printf("ID\n");
+}
 | INT {//printf("INT is %d\n", $1);
 $$ = $1;}
 | FLOAT {//printf("FLOAT is %f\n", $1);

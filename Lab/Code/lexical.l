@@ -7,7 +7,19 @@
 	yylloc.first_column = yycolumn; \
 	yylloc.last_column = yycolumn + yyleng - 1; \
 	yycolumn += yyleng;
-
+	
+	typedef struct
+    {
+    	union
+    	{
+    		int int_val;
+    		float float_val;
+    	};
+    	int token_id;
+    	char content[15];
+		_node *left;
+		_node *right;
+    }_node;
 %}
 
 %option yylineno
@@ -93,14 +105,20 @@ return PLUS;}
 {WHILE} {return WHILE;} 
 {ID} {return ID;} 
 {INT} {//printf("INT\n");
-yylval = (YYSTYPE)atoi(yytext); 
-//printf("INT value is %d\n", yylval);
+yylval.type_node = make_node(INT, yytext); 
 return INT;} 
 {FLOAT} {//printf("FLOAT\n"); 
-yylval = (YYSTYPE)((float)atof(yytext));
-//printf("FLOAT value is %f\n", yylval);
+yylval.type_node = make_node(FLOAT, yytext);
 return FLOAT;} 
-. {}
+. {printf("Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext);}
 
 %%
-
+_node *make_node(int token_id, char *content)
+{
+	_node *temp = malloc(sizeof(_node));
+	temp->token_id = token_id;
+	sprintf(temp->content, "%s", content);
+	if(token_id == INT)temp->int_val = atoi(content);
+	else if(token_id == FLOAT)temp->float_val = atof(content);
+	return temp;
+}
