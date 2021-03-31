@@ -21,7 +21,7 @@
     {
     	union
     	{
-    		int int_val;
+    		long long int_val;
     		float float_val;
     	};
     	int lineno;
@@ -83,7 +83,7 @@ INT ({DEC}|{OCT}|{HEX})
 digits ({digit}+)
 fraction (\.{digits})
 exponent ([eE][+-]?{DEC})
-FLOAT ({DEC}{fraction}?{exponent}?)
+FLOAT (({DEC}{fraction}?{exponent}?)|({fraction}{exponent}?))
 
 
 
@@ -157,11 +157,11 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 	if(strcmp(token_name, "INT") == 0)
 	{	
 		int l = strlen(text);
-		if(l == 1)temp->int_val = strtol(text, NULL, 10);
+		if(l == 1 || text[0] != '0')temp->int_val = strtoll(text, NULL, 10);
 		else 
 		{
-			if(text[0] == '0' && (text[1] == 'x' || text[1] == 'X'))temp->int_val = strtol(text, NULL, 16);
-			else temp->int_val = strtol(text, NULL, 8);
+			if(text[0] == '0' && (text[1] == 'x' || text[1] == 'X'))temp->int_val = strtoll(text, NULL, 16);
+			else temp->int_val = strtoll(text, NULL, 8);
 		}
 	}
 	else if(strcmp(token_name, "FLOAT") == 0)temp->float_val = atof(text);
