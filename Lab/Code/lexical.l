@@ -52,7 +52,7 @@ MINUS (-)
 STAR (\*)
 DIV (\/)
 AND (&&)
-OR \|\|
+OR (\|\|)
 DOT (\.)
 NOT (!)
 TYPE (int|float)
@@ -88,6 +88,8 @@ FLOAT ({digits}{fraction}?{exponent}?)
 
 
 %%
+"//".* {}
+"/*"(\n|.)*"*/" {}
 {newline} {yycolumn = 1;}
 {ws} {}
 {SEMI} {MAKE_NODE_RETURN(SEMI, "SEMI");}

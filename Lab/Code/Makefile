@@ -31,7 +31,7 @@ syntax: lexical syntax-c
 	$(CC) -c $(YFC) -o $(YFO)
 
 lexical: $(LFILE)
-	$(FLEX) -o $(LFC) $(LFILE)
+	$(FLEX) -d -o $(LFC) $(LFILE)
 
 syntax-c: $(YFILE)
 	$(BISON) -o $(YFC) -d -v $(YFILE)
