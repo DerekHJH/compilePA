@@ -1,6 +1,6 @@
 .PHONY: run
 run: parser
-	@./parser ../Test/test9.cmm
+	@./parser ../Test/test6.cmm
 
 
 
@@ -31,7 +31,7 @@ syntax: lexical syntax-c
 	$(CC) -c $(YFC) -o $(YFO)
 
 lexical: $(LFILE)
-	$(FLEX) -d -o $(LFC) $(LFILE)
+	$(FLEX) -o $(LFC) $(LFILE)
 
 syntax-c: $(YFILE)
 	$(BISON) -o $(YFC) -d -v $(YFILE)

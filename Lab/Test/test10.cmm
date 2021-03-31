@@ -1,9 +1,10 @@
 int main()
 {
-	// line comment
 	/*
-	block comment
+	comment
+	/*
+	nested comment
+	*/
 	*/
 	int i = 1;
-
 }

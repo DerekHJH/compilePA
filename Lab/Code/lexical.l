@@ -82,14 +82,30 @@ INT ({DEC}|{OCT}|{HEX})
 
 digits ({digit}+)
 fraction (\.{digits})
-exponent ([eE][+-]?{digits})
-FLOAT ({digits}{fraction}?{exponent}?)
+exponent ([eE][+-]?{DEC})
+FLOAT ({DEC}{fraction}?{exponent}?)
 
 
 
 %%
-"//".* {}
-"/*"(\n|.)*"*/" {}
+"//" {char c = input(); while(c != '\n')c = input();}
+"/*" {char c = input(); 
+while(c!= EOF)
+{ 
+	if(c == '*')
+	{
+		c = input();
+		if(c == '/')break;
+	}
+	else c = input();
+}
+if(c != '/')
+{
+	fprintf(stderr, "Error type A at Line %d: Dangling \"/*\".\n", yylineno);
+	is_print_tree = 0;
+}
+}
+"*/" {fprintf(stderr, "Error type A at Line %d: Dangling \"*/\".\n", yylineno); is_print_tree = 0;}
 {newline} {yycolumn = 1;}
 {ws} {}
 {SEMI} {MAKE_NODE_RETURN(SEMI, "SEMI");}
@@ -119,7 +135,7 @@ FLOAT ({digits}{fraction}?{exponent}?)
 {ID} {MAKE_NODE_RETURN(ID, "ID");} 
 {INT} {MAKE_NODE_RETURN(INT, "INT");} 
 {FLOAT} {MAKE_NODE_RETURN(FLOAT, "FLOAT");} 
-. {printf("Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext); is_print_tree = 0;}
+. {fprintf(stderr, "Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext); is_print_tree = 0;}
 
 %%
 struct _node *make_node(char *token_name, char *text, int lineno)

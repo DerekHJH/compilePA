@@ -2055,5 +2055,6 @@ void print_tree(struct _node *cur, int Width)
 }
 int yyerror(char *msg)
 {
-	fprintf(stderr, "error: %s\n", msg);
+	is_print_tree = 0;
+	fprintf(stderr, "Error type B at Line %d: Use your brain!\n", yylineno);
 }
