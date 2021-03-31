@@ -31,6 +31,7 @@
 		struct _node *right;
     };
 	struct _node *make_node(char *token_name, char *content, int lineno);
+	extern int is_print_tree;
 %}
 
 %option yylineno
@@ -116,7 +117,7 @@ FLOAT ({digits}{fraction}?{exponent}?)
 {ID} {MAKE_NODE_RETURN(ID, "ID");} 
 {INT} {MAKE_NODE_RETURN(INT, "INT");} 
 {FLOAT} {MAKE_NODE_RETURN(FLOAT, "FLOAT");} 
-. {printf("Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext);}
+. {printf("Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext); is_print_tree = 0;}
 
 %%
 struct _node *make_node(char *token_name, char *text, int lineno)
@@ -148,5 +149,6 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 	else if(strcmp(token_name, "FLOAT") == 0)temp->float_val = atof(text);
 	temp->left = NULL;
 	temp->right = NULL;
+
 	return temp;
 }

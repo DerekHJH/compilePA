@@ -72,7 +72,8 @@ extern int yydebug;
     INT = 282,
     FLOAT = 283,
     ID = 284,
-    LOWER_THAN_ELSE = 285
+    UMINUS = 285,
+    LOWER_THAN_ELSE = 286
   };
 #endif
 
@@ -85,7 +86,7 @@ union YYSTYPE
 
 	struct _node* type_node;
 
-#line 89 "./syntax.tab.h" /* yacc.c:1909  */
+#line 90 "./syntax.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -5,6 +5,7 @@ extern int yyparse();
 extern int yydebug;
 void print_tree(struct _node *cur, int Width);
 extern struct _node *Root;
+int is_print_tree = 1;
 int main(int argc, char** argv)
 {
 	if(argc > 1)
@@ -18,7 +19,7 @@ int main(int argc, char** argv)
 	//yydebug = 1;
 	//yylex();
 	yyparse();
-	print_tree(Root, 0);
+	if(is_print_tree == 1)print_tree(Root, 0);
 	return 0;
 }
 

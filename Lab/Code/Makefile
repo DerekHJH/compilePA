@@ -1,6 +1,6 @@
 .PHONY: run
 run: parser
-	@./parser ../Test/test4.cmm
+	@./parser ../Test/test9.cmm
 
 
 

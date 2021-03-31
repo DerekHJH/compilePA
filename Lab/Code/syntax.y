@@ -34,9 +34,9 @@
 %left OR
 %left AND
 %left RELOP 
-%left PLUS
+%left PLUS MINUS
 %left STAR DIV
-%right MINUS NOT
+%right UMINUS NOT
 %left LP RP LB RB DOT
 
 %nonassoc LOWER_THAN_ELSE
@@ -123,7 +123,7 @@ Exp: Exp ASSIGNOP Exp {$$ = make_node("Exp", NULL, @$.first_line); insert_node($
 | Exp STAR Exp {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | Exp DIV Exp {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | LP Exp RP {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
-| MINUS Exp {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
+| MINUS Exp %prec UMINUS{$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
 | NOT Exp {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
 | ID LP Args RP {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | ID LP RP {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
@@ -147,7 +147,11 @@ void insert_node(struct _node *father, struct _node *child)
 }
 void print_tree(struct _node *cur, int Width)
 {
-	if(cur->text == NULL && cur->left == NULL && cur->right == NULL)return;
+	if(cur->text == NULL && cur->left == NULL)
+	{
+		if(cur->right != NULL)print_tree(cur->right, Width);
+		return;
+	}
 	for(int i = 1; i <= Width; i++)
 		printf(" ");
 	printf("%s", cur->token_name);
