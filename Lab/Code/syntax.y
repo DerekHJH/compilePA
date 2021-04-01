@@ -56,6 +56,8 @@ ExtDefList: {$$ = make_node("ExtDefList", NULL, @$.first_line); }
 ExtDef: Specifier ExtDecList SEMI {$$ = make_node("ExtDef", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | Specifier SEMI {$$ = make_node("ExtDef", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
 | Specifier FunDec CompSt {$$ = make_node("ExtDef", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| error SEMI {}
+| error FunDec CompSt {}
 ;
 ExtDecList: VarDec {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $1);}
 | VarDec COMMA ExtDecList {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
@@ -67,6 +69,7 @@ Specifier: TYPE {$$ = make_node("Specifier", NULL, @$.first_line); insert_node($
 ;
 StructSpecifier: STRUCT OptTag LC DefList RC {$$ = make_node("StructSpecifier", NULL, @$.first_line); insert_node($$, $5); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | STRUCT Tag {$$ = make_node("StructSpecifier", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
+| STRUCT OptTag LC error RC {}
 ;
 OptTag: {$$ = make_node("OptTag", NULL, @$.first_line); }
 | ID {$$ = make_node("OptTag", NULL, @$.first_line); insert_node($$, $1);}
@@ -80,8 +83,8 @@ VarDec: ID {$$ = make_node("VarDec", NULL, @$.first_line); insert_node($$, $1);}
 | VarDec LB error RB {}
 ;
 FunDec: ID LP VarList RP {$$ = make_node("FunDec", NULL, @$.first_line); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
-| ID LP error RP {}
 | ID LP RP {$$ = make_node("FunDec", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| error RP {}
 ;
 VarList: ParamDec COMMA VarList {$$ = make_node("VarList", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | ParamDec {$$ = make_node("VarList", NULL, @$.first_line); insert_node($$, $1);}
@@ -91,6 +94,7 @@ ParamDec: Specifier VarDec {$$ = make_node("ParamDec", NULL, @$.first_line); ins
 
 
 CompSt: LC DefList StmtList RC {$$ = make_node("CompSt", NULL, @$.first_line); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| LC DefList error RC {}
 ;
 StmtList: {$$ = make_node("StmtList", NULL, @$.first_line); }
 | Stmt StmtList {$$ = make_node("StmtList", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
@@ -98,9 +102,13 @@ StmtList: {$$ = make_node("StmtList", NULL, @$.first_line); }
 Stmt: Exp SEMI {$$ = make_node("Stmt", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
 | CompSt {$$ = make_node("Stmt", NULL, @$.first_line); insert_node($$, $1);}
 | RETURN Exp SEMI {$$ = make_node("Stmt", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
-| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE {$$ = make_node("Stmt", NULL, @$.first_line); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE {$$ = make_node("Stmt", NULL, @$.first_line); insert_node($$, $5); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | IF LP Exp RP Stmt ELSE Stmt {$$ = make_node("Stmt", NULL, @$.first_line); insert_node($$, $7); insert_node($$, $6); insert_node($$, $5); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | WHILE LP Exp RP Stmt {$$ = make_node("Stmt", NULL, @$.first_line); insert_node($$, $5); insert_node($$, $4); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| error SEMI {}
+| IF LP error RP Stmt %prec LOWER_THAN_ELSE {}
+| IF LP error RP Stmt ELSE Stmt {}
+| WHILE LP error RP Stmt {}
 ;
 
 
@@ -108,12 +116,14 @@ DefList: {$$ = make_node("DefList", NULL, @$.first_line); }
 | Def DefList {$$ = make_node("DefList", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
 ;
 Def: Specifier DecList SEMI {$$ = make_node("Def", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| Specifier error SEMI {}
 ;
 DecList: Dec {$$ = make_node("DecList", NULL, @$.first_line); insert_node($$, $1);}
 | Dec COMMA DecList {$$ = make_node("DecList", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 ;
 Dec: VarDec {$$ = make_node("Dec", NULL, @$.first_line); insert_node($$, $1);}
 | VarDec ASSIGNOP Exp {$$ = make_node("Dec", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| error ASSIGNOP Exp {}
 ;
 
 Exp: Exp ASSIGNOP Exp {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
@@ -134,6 +144,15 @@ Exp: Exp ASSIGNOP Exp {$$ = make_node("Exp", NULL, @$.first_line); insert_node($
 | ID {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $1);}
 | INT {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $1);}
 | FLOAT {$$ = make_node("Exp", NULL, @$.first_line); insert_node($$, $1);}
+| LP error RP {}
+| LP error SEMI {}
+| LP error RC {}
+| ID LP error RP {}
+| ID LP error SEMI {}
+| ID LP error RC {}
+| Exp LB error RB {}
+| Exp LB error SEMI {}
+| Exp LB error RC {}
 ;
 Args: Exp COMMA Args {$$ = make_node("Args", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | Exp {$$ = make_node("Args", NULL, @$.first_line); insert_node($$, $1);}

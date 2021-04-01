@@ -81,21 +81,20 @@ DEC (({digit1}{digit}*)|(0))
 INT ({DEC}|{OCT}|{HEX})
 
 digits ({digit}+)
-fraction (\.{digits})
-exponent ([eE][+-]?{DEC})
-FLOAT (({DEC}{fraction}?{exponent}?)|({fraction}{exponent}?))
+exponent ([eE][+-]?{digits})
+FLOAT (({digits}\.{digits}?{exponent}?)|(\.{digits}{exponent}?))
 
 
 
 %%
 "//" {char c = input(); while(c != '\n')c = input();}
 "/*" {char c = input(); 
-while(c!= EOF)
+while(c && c!= EOF)
 { 
 	if(c == '*')
 	{
 		c = input();
-		if(c == '/')break;
+		if(c == '/')break;	
 	}
 	else c = input();
 }
