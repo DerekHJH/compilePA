@@ -17,19 +17,7 @@
 	}while(0)
 
 
-	struct _node
-    {
-    	union
-    	{
-    		long long int_val;
-    		float float_val;
-    	};
-    	int lineno;
-    	char *text;
-		char *token_name;
-		struct _node *left;
-		struct _node *right;
-    };
+	#include "common.h"
 	struct _node *make_node(char *token_name, char *content, int lineno);
 	extern int is_print_tree;
 %}
@@ -100,11 +88,11 @@ while(c && c!= EOF)
 }
 if(c != '/')
 {
-	fprintf(stderr, "Error type A at Line %d: Dangling \"/*\".\n", yylineno);
+	fprintf(stdout, "Error type B at Line %d: Dangling \"/*\".\n", yylineno);
 	is_print_tree = 0;
 }
 }
-"*/" {fprintf(stderr, "Error type A at Line %d: Dangling \"*/\".\n", yylineno); is_print_tree = 0;}
+"*/" {fprintf(stdout, "Error type B at Line %d: Dangling \"*/\".\n", yylineno); is_print_tree = 0;}
 {newline} {yycolumn = 1;}
 {ws} {}
 {SEMI} {MAKE_NODE_RETURN(SEMI, "SEMI");}
@@ -134,7 +122,7 @@ if(c != '/')
 {ID} {MAKE_NODE_RETURN(ID, "ID");} 
 {INT} {MAKE_NODE_RETURN(INT, "INT");} 
 {FLOAT} {MAKE_NODE_RETURN(FLOAT, "FLOAT");} 
-. {fprintf(stderr, "Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext); is_print_tree = 0;}
+. {fprintf(stdout, "Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext); is_print_tree = 0;}
 
 %%
 struct _node *make_node(char *token_name, char *text, int lineno)

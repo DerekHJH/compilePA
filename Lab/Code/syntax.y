@@ -1,6 +1,7 @@
 %{
 	#include "lex.yy.c"
 	#include "syntax.tab.h"
+	#include "common.h"
 	int yyerror(char* msg);
 	void insert_node(struct _node *father, struct _node *child);
 	struct _node * Root = NULL;
@@ -189,5 +190,5 @@ void print_tree(struct _node *cur, int Width)
 int yyerror(char *msg)
 {
 	is_print_tree = 0;
-	fprintf(stderr, "Error type B at Line %d: syntax error.\n", yylineno);
+	fprintf(stdout, "Error type B at Line %d: syntax error.\n", yylineno);
 }
