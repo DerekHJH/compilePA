@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include "common.h"
 extern FILE* yyin;
-extern int yylex();
 extern int yyparse();
-extern int yydebug;
 extern struct _node *Root;
 int main(int argc, char** argv)
 {
