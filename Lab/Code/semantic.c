@@ -1,19 +1,32 @@
-struct _Type
+struct type_t
 {
 	enum{BASIC, ARRAY, STRUCTURE} kind;
 	union
 	{
 		int basic;
-		struct {struct _Type *elem; int size;} *array;
-		struct _FieldList *structure;
+		struct {struct type_t *elem; int size;} *array;
+		struct fieldlist_t *structure;
 	}u;
 };
-struct _FieldList
+struct fieldlist_t
 {
 	char *name;
-	struct _Type *type;
-	struct _FieldList *next;
+	struct type_t *type;
+	struct fieldlist_t *next;
 };
+
+struct bucket_t
+{
+	char *name;
+	void *addr;
+
+	struct bucket_t *down;
+	struct bucket_t *right;
+};
+
+struct bucket_t *hash_table[0x3fff] = {0};
+struct bucket_t *stack_table[0x3fff] = {0};
+int stack_top = 0;
 
 unsigned int hash_pjw(char *name)
 {
@@ -27,6 +40,31 @@ unsigned int hash_pjw(char *name)
 	return val;
 }
 
+void hash_insert(int pos, struct type_t *a)
+{
+	if(a == NULL)return;
+	a->right = hash_table[pos];
+	hash_table[pos] = a;
+	a->down = stack_table[stack_top];
+	stack_table[stack_top] = a;
+}
+
+void stack_new()
+{
+	stack_top++;
+	stack_table[stack_top] = NULL;
+}
+
+void stack_delete()
+{
+	struct bucket_t *cur = stack_table[stack_top];
+	while(cur)
+	{
+		
+	}
+	stack_table[stack_top] = NULL;
+	stack_top--;
+}
 
 
 void parse_tree(struct _node *cur)
