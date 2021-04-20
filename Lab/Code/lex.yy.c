@@ -554,9 +554,8 @@ char *yytext;
 
 	#include "common.h"
 	struct _node *make_node(char *token_name, char *content, int lineno);
-	extern int is_print_tree;
+#line 558 "./lex.yy.c"
 #line 559 "./lex.yy.c"
-#line 560 "./lex.yy.c"
 
 #define INITIAL 0
 
@@ -773,9 +772,9 @@ YY_DECL
 		}
 
 	{
-#line 77 "./lexical.l"
+#line 76 "./lexical.l"
 
-#line 779 "./lex.yy.c"
+#line 778 "./lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -844,12 +843,12 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 78 "./lexical.l"
+#line 77 "./lexical.l"
 {char c = input(); while(c != '\n')c = input();}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 79 "./lexical.l"
+#line 78 "./lexical.l"
 {char c = input(); 
 while(c && c!= EOF)
 { 
@@ -863,172 +862,171 @@ while(c && c!= EOF)
 if(c != '/')
 {
 	fprintf(stdout, "Error type B at Line %d: Dangling \"/*\".\n", yylineno);
-	is_print_tree = 0;
 }
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 95 "./lexical.l"
-{fprintf(stdout, "Error type B at Line %d: Dangling \"*/\".\n", yylineno); is_print_tree = 0;}
+#line 93 "./lexical.l"
+{fprintf(stdout, "Error type B at Line %d: Dangling \"*/\".\n", yylineno);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 96 "./lexical.l"
+#line 94 "./lexical.l"
 {yycolumn = 1;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 97 "./lexical.l"
+#line 95 "./lexical.l"
 {}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 98 "./lexical.l"
+#line 96 "./lexical.l"
 {MAKE_NODE_RETURN(SEMI, "SEMI");}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 99 "./lexical.l"
+#line 97 "./lexical.l"
 {MAKE_NODE_RETURN(COMMA, "COMMA");} 
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 100 "./lexical.l"
+#line 98 "./lexical.l"
 {MAKE_NODE_RETURN(ASSIGNOP, "ASSIGNOP");} 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 101 "./lexical.l"
+#line 99 "./lexical.l"
 {MAKE_NODE_RETURN(RELOP, "RELOP");} 
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 102 "./lexical.l"
+#line 100 "./lexical.l"
 {MAKE_NODE_RETURN(PLUS, "PLUS");} 
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 103 "./lexical.l"
+#line 101 "./lexical.l"
 {MAKE_NODE_RETURN(MINUS, "MINUS");} 
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 104 "./lexical.l"
+#line 102 "./lexical.l"
 {MAKE_NODE_RETURN(STAR, "STAR");} 
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 105 "./lexical.l"
+#line 103 "./lexical.l"
 {MAKE_NODE_RETURN(DIV, "DIV");} 
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 106 "./lexical.l"
+#line 104 "./lexical.l"
 {MAKE_NODE_RETURN(AND, "AND");} 
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 107 "./lexical.l"
+#line 105 "./lexical.l"
 {MAKE_NODE_RETURN(OR, "OR");} 
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 108 "./lexical.l"
+#line 106 "./lexical.l"
 {MAKE_NODE_RETURN(DOT, "DOT");} 
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 109 "./lexical.l"
+#line 107 "./lexical.l"
 {MAKE_NODE_RETURN(NOT, "NOT");} 
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 110 "./lexical.l"
+#line 108 "./lexical.l"
 {MAKE_NODE_RETURN(TYPE, "TYPE");} 
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 111 "./lexical.l"
+#line 109 "./lexical.l"
 {MAKE_NODE_RETURN(LP, "LP");} 
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 112 "./lexical.l"
+#line 110 "./lexical.l"
 {MAKE_NODE_RETURN(RP, "RP");} 
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 113 "./lexical.l"
+#line 111 "./lexical.l"
 {MAKE_NODE_RETURN(LB, "LB");} 
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 114 "./lexical.l"
+#line 112 "./lexical.l"
 {MAKE_NODE_RETURN(RB, "RB");} 
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 115 "./lexical.l"
+#line 113 "./lexical.l"
 {MAKE_NODE_RETURN(LC, "LC");} 
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 116 "./lexical.l"
+#line 114 "./lexical.l"
 {MAKE_NODE_RETURN(RC, "RC");} 
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 117 "./lexical.l"
+#line 115 "./lexical.l"
 {MAKE_NODE_RETURN(STRUCT, "STRUCT");} 
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 118 "./lexical.l"
+#line 116 "./lexical.l"
 {MAKE_NODE_RETURN(RETURN, "RETURN");} 
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 119 "./lexical.l"
+#line 117 "./lexical.l"
 {MAKE_NODE_RETURN(IF, "IF");} 
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 120 "./lexical.l"
+#line 118 "./lexical.l"
 {MAKE_NODE_RETURN(ELSE, "ELSE");} 
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 121 "./lexical.l"
+#line 119 "./lexical.l"
 {MAKE_NODE_RETURN(WHILE, "WHILE");} 
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 122 "./lexical.l"
+#line 120 "./lexical.l"
 {MAKE_NODE_RETURN(ID, "ID");} 
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 123 "./lexical.l"
+#line 121 "./lexical.l"
 {MAKE_NODE_RETURN(INT, "INT");} 
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 124 "./lexical.l"
+#line 122 "./lexical.l"
 {MAKE_NODE_RETURN(FLOAT, "FLOAT");} 
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 125 "./lexical.l"
-{fprintf(stdout, "Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext); is_print_tree = 0;}
+#line 123 "./lexical.l"
+{fprintf(stdout, "Error type A at Line %d: Mysterious character \"%s\".\n", yylineno, yytext);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 127 "./lexical.l"
+#line 125 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 1032 "./lex.yy.c"
+#line 1030 "./lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2045,7 +2043,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 127 "./lexical.l"
+#line 125 "./lexical.l"
 
 struct _node *make_node(char *token_name, char *text, int lineno)
 {
