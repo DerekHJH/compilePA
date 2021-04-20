@@ -10,6 +10,7 @@ struct _node
 	int lineno;
 	char *text;
 	char *token_name;
+
 	struct _node *left;
 	struct _node *right;
 };

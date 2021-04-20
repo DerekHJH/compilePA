@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <assert.h>
+#include <stdlib.h>
+#include "common.h"
 struct type_t
 {
 	enum{BASIC, ARRAY, STRUCTURE} kind;
@@ -20,8 +24,11 @@ struct bucket_t
 	char *name;
 	void *addr;
 
+	
 	struct bucket_t *down;
 	struct bucket_t *right;
+	int hash_pos;
+	int stack_pos;
 };
 
 struct bucket_t *hash_table[0x3fff] = {0};
@@ -40,13 +47,15 @@ unsigned int hash_pjw(char *name)
 	return val;
 }
 
-void hash_insert(int pos, struct type_t *a)
+void hash_insert(int pos, struct bucket_t *a)
 {
 	if(a == NULL)return;
 	a->right = hash_table[pos];
 	hash_table[pos] = a;
 	a->down = stack_table[stack_top];
 	stack_table[stack_top] = a;
+	a->hash_pos = pos;
+	a->stack_pos = stack_top;
 }
 
 void stack_new()
@@ -60,30 +69,22 @@ void stack_delete()
 	struct bucket_t *cur = stack_table[stack_top];
 	while(cur)
 	{
-		
+		assert(hash_table[cur->hash_pos] == cur);
+		hash_table[cur->hash_pos] = cur->right;
+		cur = cur->down;
 	}
 	stack_table[stack_top] = NULL;
 	stack_top--;
 }
 
+void add_entry(char *name)
+{
+	struct bucket_t *temp = malloc(sizeof(struct bucket_t));
+	temp->name = name;
+}
 
 void parse_tree(struct _node *cur)
 {
-	if(cur->text == NULL && cur->left == NULL)
-	{
-		if(cur->right != NULL)print_tree(cur->right, Width);
-		return;
-	}
-	for(int i = 1; i <= Width; i++)
-		printf(" ");
-	printf("%s", cur->token_name);
-	if(cur->text == NULL)printf(" (%d)\n", cur->lineno);
-	else if(strcmp(cur->token_name, "ID") == 0)printf(": %s\n", cur->text);
-	else if(strcmp(cur->token_name, "TYPE") == 0)printf(": %s\n", cur->text);
-	else if(strcmp(cur->token_name, "INT") == 0)printf(": %lld\n", cur->int_val);
-	else if(strcmp(cur->token_name, "FLOAT") == 0)printf(": %f\n", cur->float_val);
-	else printf("\n");
 
-	if(cur->left != NULL)print_tree(cur->left, Width + 2);
-	if(cur->right != NULL)print_tree(cur->right, Width);
+
 }

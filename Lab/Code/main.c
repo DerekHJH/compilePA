@@ -3,6 +3,7 @@
 extern FILE* yyin;
 extern int yyparse();
 extern struct _node *Root;
+void parse_tree(struct _node *cur);
 int main(int argc, char** argv)
 {
 	if(argc > 1)
@@ -14,6 +15,7 @@ int main(int argc, char** argv)
 		}
 	}
 	yyparse();
+	parse_tree(Root);
 	return 0;
 }
 
