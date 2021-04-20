@@ -5,7 +5,7 @@ struct _node
 	union
 	{
 		long long int_val;
-		float float_val;
+		double float_val;
 	};
 	int lineno;
 	char *text;
