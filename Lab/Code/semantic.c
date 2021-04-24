@@ -126,18 +126,38 @@ void parse_tree(struct _node *cur)
 		parse_tree(cur->right);
 		cur->type = cur->right->right->type;
 
-		char *name = malloc(LEN_NAME);
-        if(cur->left != NULL)sprintf(name, "hujunhao%s", cur->left->text);
-        else 
-        {
-        	sprintf(name, "hujunhao%d", hujunhao);
-        	hujunhao++;
-        }
-		add_entry(name, cur->type);
+		if(cur->type != NULL)
+		{
+			char *name = malloc(LEN_NAME);
+			if(cur->left != NULL)sprintf(name, "hujunhao%s", cur->left->text);
+			else 
+			{
+				sprintf(name, "hujunhao%d", hujunhao);
+				hujunhao++;
+			}
+			add_entry(name, cur->type);
+		}
 	}
 	else if(strcmp(cur->token_name, "DefList") == 0)
 	{
+		if(cur->right != NULL && strcmp(cur->right->token_name, "RC") == 0)
+		{
+			MALLOC(struct type_t);
+			temp->kind = STRUCTURE;
+
+			cur->type = temp;
+			if(cur->left != NULL)
+			{
+				cur->left->type = temp;
+				cur->left->right->type = temp;
+				parse_tree(cur->left);
+			}
+		}
 		//TODO();
+		
+	}
+	else if(strcmp(cur->token_name, "Def") == 0)
+	{
 		
 	}
 	else if(strcmp(cur->token_name, "Tag") == 0)
@@ -199,8 +219,11 @@ void parse_tree(struct _node *cur)
 			}
 		}
 	}
+	else
+	{
 
-	if(cur->left != NULL)parse_tree(cur->left);
-	if(cur->right != NULL)parse_tree(cur->right);
+		if(cur->left != NULL)parse_tree(cur->left);
+		if(cur->right != NULL)parse_tree(cur->right);
+	}
 
 }
