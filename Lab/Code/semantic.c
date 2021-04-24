@@ -47,7 +47,7 @@ struct entry_t *hash_search(char *name)
 void hash_insert(struct entry_t *e)
 {
 	if(e == NULL)return;
-	int pos = hash_pjw(e->name);
+	unsigned int pos = hash_pjw(e->name);
 	e->right = hash_table[pos];
 	hash_table[pos] = e;
 	e->down = stack_table[stack_top];
@@ -95,7 +95,12 @@ void array_insert(struct type_t *head, int num)
 
 void parse_tree(struct _node *cur)
 {
-	if(strcmp(cur->token_name, "TYPE") == 0)		
+	if(strcmp(cur->token_name, "ExtDecList") == 0)
+	{
+		cur->left->type = cur->type;
+		parse_tree(cur->left);
+	}
+	else if(strcmp(cur->token_name, "TYPE") == 0)		
 	{
 		assert(cur->left == NULL);
         assert(cur->right == NULL);
@@ -169,18 +174,30 @@ void parse_tree(struct _node *cur)
 	}
 	else if(strcmp(cur->token_name, "VarDec") == 0)
 	{
-		if(strcmp(cur->token_name, "VarDec") == 0)
+		if(strcmp(cur->left->token_name, "VarDec") == 0)
 		{
-			if(cur->type_a == NULL)
-			{
-				MALLOC(struct type_t);
-				temp->kind = ARRAY;
-				cur->type_a = temp;
-			}
-			array_insert(cur->type_a, cur->right->right->int_val);
+			struct type_t *temp1 = malloc(sizeof(struct type_t));
+			temp1->kind = ARRAY;
 
+			struct array_t *temp = malloc(sizeof(struct array_t));
+			temp->elem = cur->type;
+			temp->dim = cur->left->right->right->int_val;
+
+			temp1->array = temp;
+			temp1->size = temp->dim * temp->elem->size;
+
+			cur->left->type = temp1;
+			parse_tree(cur->left);
 		}
-		
+		else if(strcmp(cur->left->token_name, "ID") == 0)add_entry(cur->left->text, cur->type);
+		else if(cur->right != NULL)
+		{
+			if(strcmp(cur->right->token_name, "COMMA") == 0)
+			{
+				cur->right->right->type = cur->type;
+				parse_tree(cur->right);
+			}
+		}
 	}
 
 	if(cur->left != NULL)parse_tree(cur->left);

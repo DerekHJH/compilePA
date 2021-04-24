@@ -5,7 +5,7 @@
 struct array_t 
 {
 	struct type_t *elem; 
-	int size;
+	int dim;
 };
 struct type_t
 {
