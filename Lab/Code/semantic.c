@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include "common.h"
 #include <string.h>
+#define LEN_NAME (16)
 struct entry_t *hash_table[0x3fff] = {0};
 struct entry_t *stack_table[0x3fff] = {0};
 int stack_top = 0;
+
+int hujunhao = 0;
 
 unsigned int hash_pjw(char *name)
 {
@@ -59,17 +62,64 @@ void parse_tree(struct _node *cur)
 {
 	if(strcmp(cur->token_name, "TYPE") == 0)		
 	{
+		assert(cur->left == NULL);
+        assert(cur->right == NULL);
+
 		cur->type = malloc(sizeof(struct type_t));
 		cur->type->kind = BASIC;
 		if(strcmp(cur->text, "INT") == 0)cur->type->basic = 1;
 		else if(strcmp(cur->text, "FLOAT") == 0)cur->type->basic = 2;
 	}
-	else if(strcmp(cur->token_name, "Specifier") == 0)
+	else if(strcmp(cur->token_name, "STRUCT") == 0)
 	{
-		parse_tree(cur->left);
-		cur->type = cur->left->type;
-		//TODO();
+		assert(cur->left == NULL); 	
+        assert(cur->right != NULL);
+		
+		parse_tree(cur->right);
+		cur->type = cur->right->type;
+	}
+	else if(strcmp(cur->token_name, "OptTag") == 0)
+	{ 	
+		assert(cur->right != NULL);
+		char *name = NULL;
+		if(cur->left != NULL)name = cur->left->text;
+		else 
+		{
+			name = malloc(LEN_NAME);
+			sprintf(name, "hujunhao%d", hujunhao);
+			hujunhao++;
+		}
+
+		parse_tree(cur->right);
+		assert(strcmp(cur->right->right->token_name, "DefList") == 0);
+		cur->type = cur->right->right->type;
 
 	}
+	else if(strcmp(cur->token_name, "Tag") == 0)
+	{
+		
+
+	}
+	else if(strcmp(cur->token_name, "StructSpecifier") == 0)
+	{
+		assert(cur->left != NULL);
+		assert(cur->right == NULL);
+
+		parse_tree(cur->left);
+		cur->type = cur->left->type;
+	}
+	else if(strcmp(cur->token_name, "Specifier") == 0)
+	{
+		assert(cur->left != NULL);
+		assert(cur->right != NULL);
+
+		parse_tree(cur->left);
+		cur->type = cur->left->type;
+
+		cur->right->type = cur->type;
+		parse_tree(cur->right);
+	}
+	if(cur->left != NULL)parse_tree(cur->left);
+	if(cur->right != NULL)parse_tree(cur->right);
 
 }
