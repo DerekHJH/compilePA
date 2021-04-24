@@ -1,14 +1,22 @@
 #ifndef COMMON
 #define COMMON
+
+
+struct array_t 
+{
+	struct type_t *elem; 
+	int size;
+};
 struct type_t
 {
 	enum{BASIC, ARRAY, STRUCTURE} kind;
 	union
 	{
 		int basic;// 1 for int and 2 for float
-		struct {struct type_t *elem; int size;} *array;
+		struct array_t *array;
 		struct fieldlist_t *structure;
 	};
+	int size;
 };
 struct fieldlist_t
 {
@@ -42,8 +50,9 @@ struct _node
 
 
 	struct type_t *type;
-
-
+	struct type_t *type_a;
+	struct type_t *type_s;
+	
 
 	struct _node *left;
 	struct _node *right;

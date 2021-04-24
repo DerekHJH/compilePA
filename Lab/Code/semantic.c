@@ -3,7 +3,17 @@
 #include <stdlib.h>
 #include "common.h"
 #include <string.h>
-#define LEN_NAME (16)
+void raise_error()
+{
+
+}
+
+
+#define LEN_NAME (32)
+#define MALLOC(ARG) \
+	ARG *temp = malloc(sizeof(ARG));\
+	memset(temp, 0, sizeof(ARG))
+
 struct entry_t *hash_table[0x3fff] = {0};
 struct entry_t *stack_table[0x3fff] = {0};
 int stack_top = 0;
@@ -22,15 +32,28 @@ unsigned int hash_pjw(char *name)
 	return val;
 }
 
-void hash_insert(int pos, struct entry_t *a)
+struct entry_t *hash_search(char *name)
 {
-	if(a == NULL)return;
-	a->right = hash_table[pos];
-	hash_table[pos] = a;
-	a->down = stack_table[stack_top];
-	stack_table[stack_top] = a;
-	a->hash_pos = pos;
-	a->stack_pos = stack_top;
+	int pos = hash_pjw(name);
+	struct entry_t *cur = hash_table[pos];
+	while(cur)
+	{
+		if(strcmp(cur->name, name) == 0)return cur;
+		cur = cur->right;
+	}
+	return NULL;
+}
+
+void hash_insert(struct entry_t *e)
+{
+	if(e == NULL)return;
+	int pos = hash_pjw(e->name);
+	e->right = hash_table[pos];
+	hash_table[pos] = e;
+	e->down = stack_table[stack_top];
+	stack_table[stack_top] = e;
+	e->hash_pos = pos;
+	e->stack_pos = stack_top;
 }
 
 void stack_new()
@@ -52,10 +75,22 @@ void stack_delete()
 	stack_top--;
 }
 
-void add_entry(char *name)
+void add_entry(char *name, struct type_t *type)
 {
-	struct entry_t *temp = malloc(sizeof(struct entry_t));
-	temp->name = name;
+	struct entry_t *e = hash_search(name);
+	if(e != NULL && e->stack_pos == stack_top)raise_error();
+	else
+	{
+		MALLOC(struct entry_t);
+		temp->name = name;
+		temp->type = type;
+		hash_insert(temp);
+	}
+}
+
+void array_insert(struct type_t *head, int num)
+{
+	MALLOC(struct type_t);
 }
 
 void parse_tree(struct _node *cur)
@@ -81,24 +116,37 @@ void parse_tree(struct _node *cur)
 	else if(strcmp(cur->token_name, "OptTag") == 0)
 	{ 	
 		assert(cur->right != NULL);
-		char *name = NULL;
-		if(cur->left != NULL)name = cur->left->text;
-		else 
-		{
-			name = malloc(LEN_NAME);
-			sprintf(name, "hujunhao%d", hujunhao);
-			hujunhao++;
-		}
+		assert(strcmp(cur->right->right->token_name, "DefList") == 0);
 
 		parse_tree(cur->right);
-		assert(strcmp(cur->right->right->token_name, "DefList") == 0);
 		cur->type = cur->right->right->type;
 
+		char *name = malloc(LEN_NAME);
+        if(cur->left != NULL)sprintf(name, "hujunhao%s", cur->left->text);
+        else 
+        {
+        	sprintf(name, "hujunhao%d", hujunhao);
+        	hujunhao++;
+        }
+		add_entry(name, cur->type);
+	}
+	else if(strcmp(cur->token_name, "DefList") == 0)
+	{
+		//TODO();
+		
 	}
 	else if(strcmp(cur->token_name, "Tag") == 0)
 	{
-		
+		assert(cur->left != NULL);
+		assert(cur->right == NULL);
+		assert(strcmp(cur->left->token_name, "ID") == 0);
 
+		char *name = malloc(LEN_NAME);
+		sprintf(name, "hujunhao%s", cur->left->text);
+		struct entry_t *e = hash_search(name); 
+		
+		if(e == NULL)raise_error();
+		else cur->type = e->type;
 	}
 	else if(strcmp(cur->token_name, "StructSpecifier") == 0)
 	{
@@ -119,6 +167,22 @@ void parse_tree(struct _node *cur)
 		cur->right->type = cur->type;
 		parse_tree(cur->right);
 	}
+	else if(strcmp(cur->token_name, "VarDec") == 0)
+	{
+		if(strcmp(cur->token_name, "VarDec") == 0)
+		{
+			if(cur->type_a == NULL)
+			{
+				MALLOC(struct type_t);
+				temp->kind = ARRAY;
+				cur->type_a = temp;
+			}
+			array_insert(cur->type_a, cur->right->right->int_val);
+
+		}
+		
+	}
+
 	if(cur->left != NULL)parse_tree(cur->left);
 	if(cur->right != NULL)parse_tree(cur->right);
 
