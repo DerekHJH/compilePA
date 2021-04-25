@@ -2077,18 +2077,6 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 
 	
 	temp->type = NULL;
-	temp->type_a = NULL;
-	temp->type_s = NULL;
-
-
-
-
-
-
-
-
-
-
 
 
 	return temp;

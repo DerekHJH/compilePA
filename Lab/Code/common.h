@@ -9,20 +9,14 @@ struct array_t
 };
 struct type_t
 {
-	enum{BASIC, ARRAY, STRUCTURE} kind;
+	enum{BASIC, ARRAY, STRUCTURE, FUNCTION} kind;
 	union
 	{
 		int basic;// 1 for int and 2 for float
 		struct array_t *array;
-		struct fieldlist_t *structure;
+		struct entry_t *structure;
 	};
 	int size;
-};
-struct fieldlist_t
-{
-	char *name;
-	struct type_t *type;
-	struct fieldlist_t *next;
 };
 
 struct entry_t
@@ -50,9 +44,6 @@ struct _node
 
 
 	struct type_t *type;
-	struct type_t *type_a;
-	struct type_t *type_s;
-	
 
 	struct _node *left;
 	struct _node *right;
