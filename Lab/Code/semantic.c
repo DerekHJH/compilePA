@@ -183,7 +183,10 @@ void parse_tree(struct _node *cur)
 		parse_tree(cur->right);
 		cur->type = cur->right->right->right->type;
 
-		if(cur->left != NULL)add_entry(cur->left->text, cur->type);
+		if(cur->left != NULL)
+		{
+			if(add_entry(cur->left->text, cur->type) == 0)raise_error(16, cur->lineno);
+		}
 	}
 	else if(strcmp(cur->token_name, "RC") == 0)cur->type = stack_delete();	
 	else if(strcmp(cur->token_name, "Tag") == 0)
@@ -233,7 +236,10 @@ void parse_tree(struct _node *cur)
 			cur->left->type = temp1;
 			parse_tree(cur->left);
 		}
-		else if(strcmp(cur->left->token_name, "ID") == 0)add_entry(cur->left->text, cur->type);
+		else if(strcmp(cur->left->token_name, "ID") == 0)
+		{
+			if(add_entry(cur->left->text, cur->type) == 0)raise_error(3, cur->lineno);
+		}
 		
 		//handle the right part
 		if(cur->right != NULL)
@@ -269,7 +275,7 @@ void parse_tree(struct _node *cur)
 		if(strcmp(cur->right->token_name, "CompSt") == 0)
 		{
 			parse_tree(cur->right);
-			add_entry(cur->left->text, cur->type);
+			if(add_entry(cur->left->text, cur->type) == 0)raise_error(4, cur->lineno);
 		}
 		else if(strcmp(cur->right->token_name, "SEMI") == 0)
 		{
