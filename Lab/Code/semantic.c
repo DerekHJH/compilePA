@@ -5,7 +5,7 @@
 #include <string.h>
 void raise_error(int code, int line)
 {
-	printf("Error Type %d at Line %d: semantic error!\n", code, line);
+	printf("Error type %d at Line %d: semantic error!\n", code, line);
 }
 
 
