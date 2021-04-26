@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include "common.h"
 #include <string.h>
-void raise_error()
+void raise_error(int code, int line)
 {
-
+	printf("Error Type %d at Line %d: semantic error!", code, line);
 }
 
 
@@ -84,7 +84,7 @@ void add_entry(char *name, struct type_t *type)
 {
 	if(name == NULL || type == NULL)return;
 	struct entry_t *e = hash_search(name);
-	if(e != NULL && e->stack_pos == stack_top)raise_error();
+	if(e != NULL && e->stack_pos == stack_top)raise_error(0, 0);
 	else
 	{
 		MALLOC(temp, struct entry_t);
@@ -94,6 +94,43 @@ void add_entry(char *name, struct type_t *type)
 	}
 }
 
+int is_type_equal(struct type_t *t1, struct type_t *t2)
+{
+	if(t1->kind != t2->kind)return 0;
+	if(t1->kind == BASIC && t1->basic != t2->basic)return 0;
+	if(t1->kind == ARRAY && is_type_equal(t1->array->elem, t2->array->elem) == 0)return 0;
+	if(t1->kind == STRUCTURE)
+	{
+		struct entry_t *e1 = t1->structure;
+		struct entry_t *e2 = t2->structure;
+		while(e1 != NULL && e2 != NULL)
+		{
+			if(is_type_equal(e1->type, e2->type) == 0)return 0;
+			e1 = e1->down;
+			e2 = e2->down;
+		}
+		if(e1 != NULL || e2 != NULL)return 0;
+	}
+	return 1;
+}
+void print_table(struct type_t *t)
+{
+	struct entry_t *e = t->structure;
+	if(e != NULL)printf("stack_top = %d\n", e->stack_pos);
+	while(e)
+	{
+		printf("kind of %d, name is %s\n", e->type->kind, e->name);
+		e = e->down;
+	}
+	printf("\n*****************************\n");
+
+	e = t->structure;
+	if(e != NULL && e->stack_pos == 2)
+	{
+		printf("hhahahab%d\n", is_type_equal(e->type, e->down->type));
+	}
+
+}
 void parse_tree(struct _node *cur)
 {
 	if(strcmp(cur->token_name, "ExtDecList") == 0)
@@ -139,7 +176,7 @@ void parse_tree(struct _node *cur)
 		assert(strcmp(cur->left->token_name, "ID") == 0);
 
 		struct entry_t *e = hash_search(cur->left->text); 
-		if(e == NULL)raise_error();
+		if(e == NULL)raise_error(0, 0);
 		else cur->type = e->type;
 	}
 	else if(strcmp(cur->token_name, "StructSpecifier") == 0)
@@ -191,7 +228,8 @@ void parse_tree(struct _node *cur)
 			}
 			else if(strcmp(cur->right->token_name, "ASSIGNOP") == 0)
 			{
-				//TODO();
+				parse_tree(cur->right->right);
+				if(is_type_equal(cur->type, cur->right->right->type) == 0)raise_error(5, cur->lineno);
 			}
 		}
 	}
@@ -209,16 +247,16 @@ void parse_tree(struct _node *cur)
 		
 		stack_new();
 		if(strcmp(cur->left->right->right->token_name, "VarList") == 0)parse_tree(cur->left->right->right);
-		cur->type->structure->next = stack_table[stack_top];
+		cur->type->structure->down = stack_table[stack_top];
 
 		if(strcmp(cur->right->token_name, "CompSt") == 0)
 		{
-			add_entry(cur->left->left->text, cur->type);
 			parse_tree(cur->right);
+			add_entry(cur->left->text, cur->type);
 		}
 		else if(strcmp(cur->right->token_name, "SEMI") == 0)
 		{
-
+			//TODO();
 		}
 	}
 	else if(strcmp(cur->token_name, "DecList") == 0)
@@ -230,6 +268,8 @@ void parse_tree(struct _node *cur)
 	{
 		if(cur->right != NULL)cur->right->right->type = cur->type;
 		cur->left->type = cur->type;
+		parse_tree(cur->left);
+		if(cur->right != NULL)parse_tree(cur->right);
 	}
 	else
 	{
