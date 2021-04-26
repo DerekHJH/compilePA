@@ -1,12 +1,13 @@
-int main()
+int foo(int a, float b)
 {
-	int i = 1024;
-	int j = i + 1;
-
-	haha
-	while(j < i)
+	struct 
 	{
-		j = j + 2
-	}
-	return 0;
+		int a, b, c;
+		float x[1][2][3];
+	}m;
+	struct node_t
+	{
+		int x, y, z;
+		float a[9][2][3];
+	}n;
 }

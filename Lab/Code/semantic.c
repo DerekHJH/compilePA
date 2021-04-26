@@ -5,7 +5,7 @@
 #include <string.h>
 void raise_error(int code, int line)
 {
-	printf("Error Type %d at Line %d: semantic error!", code, line);
+	printf("Error Type %d at Line %d: semantic error!\n", code, line);
 }
 
 
@@ -80,17 +80,18 @@ struct type_t *stack_delete()
 	return temp;
 }
 
-void add_entry(char *name, struct type_t *type)
+int add_entry(char *name, struct type_t *type)
 {
-	if(name == NULL || type == NULL)return;
+	if(name == NULL || type == NULL)return 0;
 	struct entry_t *e = hash_search(name);
-	if(e != NULL && e->stack_pos == stack_top)raise_error(0, 0);
+	if(e != NULL && e->stack_pos == stack_top)return 0;
 	else
 	{
 		MALLOC(temp, struct entry_t);
 		temp->name = name;
 		temp->type = type;
 		hash_insert(temp);
+		return 1;
 	}
 }
 
@@ -131,6 +132,24 @@ void print_table(struct type_t *t)
 	}
 
 }
+struct type_t *Int = NULL;
+struct type_t *Float = NULL;
+void parse_tree(struct _node *cur);
+void Parse_Tree(struct _node *cur)
+{
+	Int = malloc(sizeof(struct type_t));
+	Int->kind = BASIC;
+	Int->basic = 1;
+	Int->size = 4;
+	
+	Float = malloc(sizeof(struct type_t));
+    Float->kind = BASIC;
+    Float->basic = 2;
+	Float->size = 4;
+
+	parse_tree(cur);
+}
+
 void parse_tree(struct _node *cur)
 {
 	if(strcmp(cur->token_name, "ExtDecList") == 0)
@@ -143,11 +162,9 @@ void parse_tree(struct _node *cur)
 		assert(cur->left == NULL);
         assert(cur->right == NULL);
 
-		cur->type = malloc(sizeof(struct type_t));
-		cur->type->kind = BASIC;
-		if(strcmp(cur->text, "INT") == 0)cur->type->basic = 1;
-		else if(strcmp(cur->text, "FLOAT") == 0)cur->type->basic = 2;
-		cur->type->size = 4;
+		if(strcmp(cur->text, "int") == 0)cur->type = Int;
+        else if(strcmp(cur->text, "float") == 0)cur->type = Float;
+		
 	}
 	else if(strcmp(cur->token_name, "STRUCT") == 0)
 	{
@@ -176,7 +193,7 @@ void parse_tree(struct _node *cur)
 		assert(strcmp(cur->left->token_name, "ID") == 0);
 
 		struct entry_t *e = hash_search(cur->left->text); 
-		if(e == NULL)raise_error(0, 0);
+		if(e == NULL)raise_error(17, cur->lineno);
 		else cur->type = e->type;
 	}
 	else if(strcmp(cur->token_name, "StructSpecifier") == 0)
@@ -270,6 +287,43 @@ void parse_tree(struct _node *cur)
 		cur->left->type = cur->type;
 		parse_tree(cur->left);
 		if(cur->right != NULL)parse_tree(cur->right);
+	}
+else if(strcmp(cur->token_name, "Exp") == 0)
+	{
+		parse_tree(cur->left);
+		if(cur->right != NULL)parse_tree(cur->right);
+		if(strcmp(cur->left->token_name, "INT") == 0)cur->type = Int;
+		else if(strcmp(cur->left->token_name, "FLOAT") == 0)cur->type = Float;
+		else if(strcmp(cur->left->token_name, "ID") == 0)
+		{
+			struct entry_t *e = hash_search(cur->left->text);
+			if(e == NULL)raise_error(1, cur->lineno);
+			else cur->type = e->type;
+		}
+		else if(strcmp(cur->left->right->token_name, "ASSIGNOP") == 0)
+		{
+			parse_tree(cur->left);
+			if(is_type_equal(cur->left->type, cur->left->right->right->type) == 0)raise_error(5, cur->lineno);
+			else cur->type = cur->left->type;
+		}
+		else if(strcmp(cur->left->token_name, "AND") == 0 || strcmp(cur->left->token_name, "OR") == 0 || strcmp(cur->left->token_name, "RELOP") == 0)
+		{
+			if(!(is_type_equal(cur->left->type, Int) && is_type_equal(cur->left->right->right->type, Int)))raise_error(7, cur->lineno);
+			else cur->type = Int;
+		}
+		else if(strcmp(cur->left->token_name, "PLUS") == 0 || strcmp(cur->left->token_name, "MINUS") == 0 || strcmp(cur->left->token_name, "STAR") == 0 || strcmp(cur->left->token_name, "DIV") == 0)
+		{
+			if(is_type_equal(cur->left->type, cur->left->right->right->type) == 0)raise_error(7, cur->lineno);
+			else cur->type = cur->left->type;
+		}
+		else if(strcmp(cur->left->token_name, "LP") == 0)cur->type = cur->left->right->type;
+		else if(strcmp(cur->left->token_name, "MINUS") == 0)cur->type = cur->left->right->type;
+		else if(strcmp(cur->left->token_name, "NOT") == 0)
+		{
+			if(!(is_type_equal(cur->left->right->type, Int)))raise_error(7, cur->lineno);	
+			else cur->type = cur->left->right->type;
+		}
+
 	}
 	else
 	{
