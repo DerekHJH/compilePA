@@ -44,6 +44,7 @@ struct _node
 
 
 	struct type_t *type;
+	struct type_t *ret_type;
 
 	struct _node *left;
 	struct _node *right;

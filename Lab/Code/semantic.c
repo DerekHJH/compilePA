@@ -329,6 +329,11 @@ void parse_tree(struct _node *cur)
 			if(!(is_type_equal(cur->left->right->type, Int)))raise_error(7, cur->lineno);	
 			else cur->type = cur->left->right->type;
 		}
+		else if(strcmp(cur->left->right->token_name, "LB") == 0)
+		{
+			if(!(is_type_equal(cur->left->right->type, Int)))raise_error(10, cur->lineno);	
+			cur->type = cur->left->type;
+		}
 
 	}
 	else

@@ -155,6 +155,7 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 
 	
 	temp->type = NULL;
+	temp->ret_type = NULL;
 
 
 	return temp;
