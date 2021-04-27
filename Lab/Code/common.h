@@ -16,7 +16,6 @@ struct type_t
 		struct array_t *array;
 		struct entry_t *structure;
 	};
-	int size;
 };
 
 struct entry_t
@@ -43,7 +42,7 @@ struct _node
 	char *token_name;
 
 
-	struct type_t *type;
+	struct type_t *pre_type;
 	struct type_t *ret_type;
 
 	struct _node *left;
