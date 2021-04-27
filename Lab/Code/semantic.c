@@ -240,32 +240,33 @@ void parse_tree(struct _node *cur)
 			}
 		}
 	}
-	/*else if(strcmp(cur->token_name, "FunDec") == 0)
+	else if(strcmp(cur->token_name, "FunDec") == 0)
 	{
 		MALLOC(temp, struct type_t);
 		temp->kind = FUNCTION;
 
 		MALLOC(temp1, struct entry_t);
-		temp1->type = cur->type;
+		temp1->type = cur->pre_type;
 
 		temp->structure = temp1;
 
-		cur->type = temp;
+		cur->ret_type = temp;
 		
 		stack_new();
 		if(strcmp(cur->left->right->right->token_name, "VarList") == 0)parse_tree(cur->left->right->right);
-		cur->type->structure->down = stack_table[stack_top];
+		cur->ret_type->structure->down = stack_table[stack_top];
 
 		if(strcmp(cur->right->token_name, "CompSt") == 0)
 		{
+			//TODO();
 			parse_tree(cur->right);
-			if(add_entry(cur->left->text, cur->type) == 0)raise_error(4, cur->lineno);
+			if(add_entry(cur->left->text, cur->ret_type) == 0)raise_error(4, cur->lineno);
 		}
 		else if(strcmp(cur->right->token_name, "SEMI") == 0)
 		{
 			//TODO();
 		}
-	}*/
+	}
 	else if(strcmp(cur->token_name, "DecList") == 0)
 	{
 		cur->left->pre_type = cur->pre_type;
@@ -312,6 +313,16 @@ void parse_tree(struct _node *cur)
 			if(is_type_equal(cur->left->right->ret_type, Int) == 0)raise_error(7, cur->lineno);	
 			else cur->ret_type = cur->left->right->ret_type;
 		}
+		else if(strcmp(cur->left->right->token_name, "LP") == 0)
+		{
+			struct entry_t *e = hash_search(cur->left->text);
+            if(e == NULL || e->type->kind != FUNCTION)raise_error(2, cur->lineno);
+			else
+			{
+				/*if()
+				else cur->ret_type = e->type;*/
+			}
+		}
 		else if(strcmp(cur->left->right->token_name, "LB") == 0)
 		{
 			if(is_type_equal(cur->left->right->ret_type, Int) == 0)raise_error(12, cur->lineno);	
@@ -327,6 +338,22 @@ void parse_tree(struct _node *cur)
 				if(t == NULL)raise_error(14, cur->lineno), cur->ret_type = NULL;	
 				else cur->ret_type = t;
 			}
+		}
+	}
+	else if(strcmp(cur->token_name, "Args") == 0)
+	{
+		parse_tree(cur->left);
+		struct entry_t *e = cur->ret_type->structure;
+		
+		MALLOC(temp, struct entry_t);
+		temp->type = cur->left->ret_type;
+		
+		temp->down = e->down;
+		e->down = temp;
+		if(cur->left->right != NULL)
+		{
+			cur->left->right->right->ret_type = cur->ret_type;
+			parse_tree(cur->left->right->right);
 		}
 	}
 	else
