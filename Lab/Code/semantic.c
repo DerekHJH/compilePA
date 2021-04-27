@@ -129,7 +129,7 @@ struct type_t *is_in_struct(struct type_t *t, char *name)
 {
 	if(t->kind != STRUCTURE)return NULL;
 	struct entry_t *e = t->structure;
-	while(t)
+	while(e)
 	{
 		if(strcmp(e->name, name) == 0)return e->type;
 		e = e->down;
