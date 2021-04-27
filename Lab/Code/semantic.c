@@ -114,23 +114,16 @@ int is_type_equal(struct type_t *t1, struct type_t *t2)
 	}
 	return 1;
 }
-void print_table(struct type_t *t)
+void print_table()
 {
-	struct entry_t *e = t->structure;
-	if(e != NULL)printf("stack_top = %d\n", e->stack_pos);
+	printf("stack_top is %d\n", stack_top);
+	struct entry_t *e  = stack_table[stack_top];
 	while(e)
 	{
 		printf("kind of %d, name is %s\n", e->type->kind, e->name);
 		e = e->down;
 	}
-	printf("\n*****************************\n");
-
-	e = t->structure;
-	if(e != NULL && e->stack_pos == 2)
-	{
-		printf("hhahahab%d\n", is_type_equal(e->type, e->down->type));
-	}
-
+	printf("*****************************\n");
 }
 struct type_t *is_in_struct(struct type_t *t, char *name)
 {
@@ -173,8 +166,10 @@ void parse_tree(struct _node *cur)
 			stack_new();
 			parse_tree(child);
 
-			child->right->type = child->type;//for CompSt, for RETURN
+			child->right->type = child->type->structure->type;//for CompSt, for RETURN
 			parse_tree(child->right);
+
+			//print_table();
 
 			stack_delete();
 			if(add_entry(child->left->text, child->type) == 0)raise_error(4, cur->lineno);
@@ -256,6 +251,12 @@ void parse_tree(struct _node *cur)
 		if(strcmp(child->right->right->token_name, "VarList") == 0)parse_tree(child->right->right);
 		cur->type->structure->down = stack_table[stack_top];
 	}
+	else if(strcmp(cur->token_name, "ParamDec") == 0)
+	{
+		parse_tree(child);
+		child->right->type = child->type;
+		parse_tree(child->right);
+	}
 	else if(strcmp(cur->token_name, "CompSt") == 0)
 	{
 		parse_tree(child->right);
@@ -281,7 +282,7 @@ void parse_tree(struct _node *cur)
 		else if(strcmp(child->token_name, "RETURN") == 0)
 		{
 			parse_tree(child->right);
-			if(is_type_equal(cur->type, child->type) == 0)raise_error(8, cur->lineno);
+			if(is_type_equal(cur->type, child->right->type) == 0)raise_error(8, cur->lineno);
 		}
 		else if(strcmp(child->token_name, "IF") == 0)
         {
@@ -298,6 +299,12 @@ void parse_tree(struct _node *cur)
 			parse_tree(child->right->right->right->right);
 		}
 	}
+	else if(strcmp(cur->token_name, "Def") == 0)
+	{
+		parse_tree(child);
+		child->right->type = child->type;
+		parse_tree(child->right);
+	}
 	else if(strcmp(cur->token_name, "Dec") == 0)
 	{
 		child->type = cur->type;
@@ -312,7 +319,7 @@ void parse_tree(struct _node *cur)
 	{
 		if(strcmp(child->token_name, "INT") == 0)cur->type = Int;
 		else if(strcmp(child->token_name, "FLOAT") == 0)cur->type = Float;
-		else if(strcmp(child->token_name, "ID") == 0)
+		else if(strcmp(child->token_name, "ID") == 0 && child->right == NULL)
 		{
 			struct entry_t *e = hash_search(child->text);
 			if(e == NULL)raise_error(1, cur->lineno);
@@ -346,7 +353,6 @@ void parse_tree(struct _node *cur)
 		}
 		else if(strcmp(child->token_name, "MINUS") == 0)
 		{
-
 			parse_tree(child->right);
             cur->type = child->right->type;
 		}
@@ -420,275 +426,3 @@ void parse_tree(struct _node *cur)
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-void parse_tree(struct _node *cur)
-{
-	if(strcmp(cur->token_name, "ExtDecList") == 0)
-	{
-		cur->left->pre_type = cur->pre_type;
-		parse_tree(cur->left);
-	}
-	else if(strcmp(cur->token_name, "Specifier") == 0)
-    {
-    	assert(cur->left != NULL);
-    	assert(cur->right != NULL);
-                                                             
-    	parse_tree(cur->left);
-    	cur->ret_type = cur->left->ret_type;
-                                                             
-    	cur->right->pre_type = cur->ret_type;
-    	parse_tree(cur->right);
-    }
-	else if(strcmp(cur->token_name, "TYPE") == 0)		
-	{
-		if(strcmp(cur->text, "int") == 0)cur->ret_type = Int;
-        else if(strcmp(cur->text, "float") == 0)cur->ret_type = Float;
-	}
-	else if(strcmp(cur->token_name, "StructSpecifier") == 0)
-    {
-    	parse_tree(cur->left->right);
-    	cur->ret_type = cur->left->right->ret_type;
-    }
-	else if(strcmp(cur->token_name, "OptTag") == 0)
-	{ 	
-		stack_new();
-		parse_tree(cur->right->right);
-		cur->ret_type = cur->right->right->right->ret_type;
-
-		if(cur->left != NULL)
-			if(add_entry(cur->left->text, cur->ret_type) == 0)raise_error(16, cur->lineno);
-	}
-	else if(strcmp(cur->token_name, "RC") == 0)cur->ret_type = stack_delete();	
-	else if(strcmp(cur->token_name, "Tag") == 0)
-	{
-		struct entry_t *e = hash_search(cur->left->text); 
-		if(e == NULL)raise_error(17, cur->lineno);
-		else cur->ret_type = e->type;
-	}
-	else if(strcmp(cur->token_name, "VarDec") == 0)
-	{
-		if(strcmp(cur->left->token_name, "VarDec") == 0)
-		{
-			MALLOC(temp1, struct type_t);
-			temp1->kind = ARRAY;
-
-			MALLOC(temp, struct array_t);
-			temp->elem = cur->pre_type;
-			temp->dim = cur->left->right->right->int_val;
-
-			temp1->array = temp;
-
-			cur->left->pre_type = temp1;
-			parse_tree(cur->left);
-			cur->ret_type = cur->left->ret_type;
-		}
-		else if(strcmp(cur->left->token_name, "ID") == 0)
-		{
-			cur->ret_type = cur->pre_type;
-			if(add_entry(cur->left->text, cur->ret_type) == 0)raise_error(3, cur->lineno);
-		}
-		
-		if(cur->right != NULL)
-		{
-			if(strcmp(cur->right->token_name, "COMMA") == 0)
-			{
-				cur->right->right->pre_type = cur->pre_type;
-				parse_tree(cur->right->right);
-			}
-			else if(strcmp(cur->right->token_name, "ASSIGNOP") == 0)
-			{
-				parse_tree(cur->right->right);
-				if(is_type_equal(cur->ret_type, cur->right->right->ret_type) == 0)raise_error(5, cur->lineno);
-			}
-		}
-	}
-	else if(strcmp(cur->token_name, "FunDec") == 0)
-	{
-		MALLOC(temp, struct type_t);
-		temp->kind = FUNCTION;
-
-		MALLOC(temp1, struct entry_t);
-		temp1->type = cur->pre_type;
-
-		temp->structure = temp1;
-
-		cur->ret_type = temp;
-		
-		stack_new();
-		if(strcmp(cur->left->right->right->token_name, "VarList") == 0)parse_tree(cur->left->right->right);
-		cur->ret_type->structure->down = stack_table[stack_top];
-
-		if(strcmp(cur->right->token_name, "CompSt") == 0)
-		{
-			//TODO();
-			parse_tree(cur->right);
-			if(add_entry(cur->left->text, cur->ret_type) == 0)raise_error(4, cur->lineno);
-		}
-		else if(strcmp(cur->right->token_name, "SEMI") == 0)
-		{
-			//TODO();
-		}
-	}
-	else if(strcmp(cur->token_name, "DecList") == 0)
-	{
-		cur->left->pre_type = cur->pre_type;
-		parse_tree(cur->left);
-	}
-	else if(strcmp(cur->token_name, "Dec") == 0)
-	{
-		if(cur->right != NULL)cur->right->right->pre_type = cur->pre_type;
-		cur->left->pre_type = cur->pre_type;
-		parse_tree(cur->left);
-		if(cur->right != NULL)parse_tree(cur->right);
-	}
-	else if(strcmp(cur->token_name, "Exp") == 0)
-	{
-		parse_tree(cur->left);
-		if(cur->right != NULL)parse_tree(cur->right);
-		if(strcmp(cur->left->token_name, "INT") == 0)cur->ret_type = Int;
-		else if(strcmp(cur->left->token_name, "FLOAT") == 0)cur->ret_type = Float;
-		else if(strcmp(cur->left->token_name, "ID") == 0)
-		{
-			struct entry_t *e = hash_search(cur->left->text);
-			if(e == NULL)raise_error(1, cur->lineno);
-			else cur->ret_type = e->type;
-		}
-		else if(strcmp(cur->left->right->token_name, "ASSIGNOP") == 0)
-		{
-			if(is_type_equal(cur->left->ret_type, cur->left->right->right->ret_type) == 0)raise_error(5, cur->lineno);
-			else cur->ret_type = cur->left->ret_type;
-		}
-		else if(strcmp(cur->left->right->token_name, "AND") == 0 || strcmp(cur->left->right->token_name, "OR") == 0 || strcmp(cur->left->right->token_name, "RELOP") == 0)
-		{
-			if(!(is_type_equal(cur->left->ret_type, Int) && is_type_equal(cur->left->right->right->ret_type, Int)))raise_error(7, cur->lineno);
-			else cur->ret_type = Int;
-		}
-		else if(strcmp(cur->left->right->token_name, "PLUS") == 0 || strcmp(cur->left->right->token_name, "MINUS") == 0 || strcmp(cur->left->right->token_name, "STAR") == 0 || strcmp(cur->left->right->token_name, "DIV") == 0)
-		{
-			if(is_type_equal(cur->left->ret_type, cur->left->right->right->ret_type) == 0)raise_error(7, cur->lineno);
-			else cur->ret_type = cur->left->ret_type;
-		}
-		else if(strcmp(cur->left->token_name, "LP") == 0)cur->ret_type = cur->left->right->ret_type;
-		else if(strcmp(cur->left->token_name, "MINUS") == 0)cur->ret_type = cur->left->right->ret_type;
-		else if(strcmp(cur->left->token_name, "NOT") == 0)
-		{
-			if(is_type_equal(cur->left->right->ret_type, Int) == 0)raise_error(7, cur->lineno);	
-			else cur->ret_type = cur->left->right->ret_type;
-		}
-		else if(strcmp(cur->left->right->token_name, "LP") == 0)
-		{
-			struct entry_t *e = hash_search(cur->left->text);
-            if(e == NULL || e->type->kind != FUNCTION)raise_error(2, cur->lineno);
-			else
-			{
-				//if()
-				//else cur->ret_type = e->type;
-			}
-		}
-		else if(strcmp(cur->left->right->token_name, "LB") == 0)
-		{
-			if(is_type_equal(cur->left->right->ret_type, Int) == 0)raise_error(12, cur->lineno);	
-			if(cur->left->ret_type->kind != ARRAY)raise_error(10, cur->lineno), cur->ret_type = NULL;
-			else cur->ret_type = cur->left->ret_type->array->elem;
-		}
-		else if(strcmp(cur->left->right->token_name, "DOT") == 0)
-		{
-			if(cur->left->ret_type->kind != STRUCTURE)raise_error(13, cur->lineno), cur->ret_type = NULL;	
-			else
-			{
-				struct type_t *t = is_in_struct(cur->left->ret_type, cur->left->right->right->text);
-				if(t == NULL)raise_error(14, cur->lineno), cur->ret_type = NULL;	
-				else cur->ret_type = t;
-			}
-		}
-	}
-	else if(strcmp(cur->token_name, "Args") == 0)
-	{
-		parse_tree(cur->left);
-		struct entry_t *e = cur->ret_type->structure;
-		
-		MALLOC(temp, struct entry_t);
-		temp->type = cur->left->ret_type;
-		
-		temp->down = e->down;
-		e->down = temp;
-		if(cur->left->right != NULL)
-		{
-			cur->left->right->right->ret_type = cur->ret_type;
-			parse_tree(cur->left->right->right);
-		}
-	}
-	else
-	{
-		struct _node *child = cur->left;
-		while(child)
-		{
-			parse_tree(child);
-			child = child->right;
-		}
-	}
-
-}
-*/

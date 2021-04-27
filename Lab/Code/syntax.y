@@ -57,7 +57,6 @@ ExtDefList: {$$ = make_node("ExtDefList", NULL, @$.first_line); }
 ExtDef: Specifier ExtDecList SEMI {$$ = make_node("ExtDef", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | Specifier SEMI {$$ = make_node("ExtDef", NULL, @$.first_line); insert_node($$, $2); insert_node($$, $1);}
 | Specifier FunDec CompSt {$$ = make_node("ExtDef", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
-| Specifier FunDec SEMI {$$ = make_node("ExtDef", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
 | error SEMI {}
 | error FunDec CompSt {}
 ;
