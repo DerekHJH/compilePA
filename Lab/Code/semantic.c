@@ -97,6 +97,7 @@ int add_entry(char *name, struct type_t *type)
 
 int is_type_equal(struct type_t *t1, struct type_t *t2)
 {
+	if(t1 == NULL || t2 == NULL)return 0;
 	if(t1->kind != t2->kind)return 0;
 	if(t1->kind == BASIC && t1->basic != t2->basic)return 0;
 	if(t1->kind == ARRAY && is_type_equal(t1->array->elem, t2->array->elem) == 0)return 0;
@@ -294,7 +295,7 @@ void parse_tree(struct _node *cur)
 		parse_tree(cur->left);
 		if(cur->right != NULL)parse_tree(cur->right);
 	}
-else if(strcmp(cur->token_name, "Exp") == 0)
+	else if(strcmp(cur->token_name, "Exp") == 0)
 	{
 		parse_tree(cur->left);
 		if(cur->right != NULL)parse_tree(cur->right);
@@ -308,16 +309,15 @@ else if(strcmp(cur->token_name, "Exp") == 0)
 		}
 		else if(strcmp(cur->left->right->token_name, "ASSIGNOP") == 0)
 		{
-			parse_tree(cur->left);
 			if(is_type_equal(cur->left->type, cur->left->right->right->type) == 0)raise_error(5, cur->lineno);
 			else cur->type = cur->left->type;
 		}
-		else if(strcmp(cur->left->token_name, "AND") == 0 || strcmp(cur->left->token_name, "OR") == 0 || strcmp(cur->left->token_name, "RELOP") == 0)
+		else if(strcmp(cur->left->right->token_name, "AND") == 0 || strcmp(cur->left->right->token_name, "OR") == 0 || strcmp(cur->left->right->token_name, "RELOP") == 0)
 		{
 			if(!(is_type_equal(cur->left->type, Int) && is_type_equal(cur->left->right->right->type, Int)))raise_error(7, cur->lineno);
 			else cur->type = Int;
 		}
-		else if(strcmp(cur->left->token_name, "PLUS") == 0 || strcmp(cur->left->token_name, "MINUS") == 0 || strcmp(cur->left->token_name, "STAR") == 0 || strcmp(cur->left->token_name, "DIV") == 0)
+		else if(strcmp(cur->left->right->token_name, "PLUS") == 0 || strcmp(cur->left->right->token_name, "MINUS") == 0 || strcmp(cur->left->right->token_name, "STAR") == 0 || strcmp(cur->left->right->token_name, "DIV") == 0)
 		{
 			if(is_type_equal(cur->left->type, cur->left->right->right->type) == 0)raise_error(7, cur->lineno);
 			else cur->type = cur->left->type;
