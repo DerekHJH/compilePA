@@ -330,6 +330,7 @@ void parse_tree(struct _node *cur)
 			parse_tree(child);
 			parse_tree(child->right->right);
 			if(is_type_equal(child->type, child->right->right->type) == 0)raise_error(5, cur->lineno);
+			else if(!((strcmp(child->left->token_name, "ID") == 0 && child->left->right == NULL) || (child->left->right != NULL && strcmp(child->left->right->token_name, "LB") == 0) || (child->left->right!= NULL && strcmp(child->left->right->token_name, "DOT") == 0)))raise_error(6, cur->lineno);
 			else cur->type = child->type;
 		}
 		else if(strcmp(child->right->token_name, "AND") == 0 || strcmp(child->right->token_name, "OR") == 0 || strcmp(child->right->token_name, "RELOP") == 0)
@@ -364,7 +365,8 @@ void parse_tree(struct _node *cur)
 		else if(strcmp(child->right->token_name, "LP") == 0)
 		{
 			struct entry_t *e = hash_search(child->text);
-            if(e == NULL || e->type->kind != FUNCTION)raise_error(2, cur->lineno);
+            if(e == NULL)raise_error(2, cur->lineno);
+			else if(e->type->kind != FUNCTION)raise_error(11, cur->lineno);
 			else
 			{
 				struct type_t *temp = malloc(sizeof(struct type_t));
