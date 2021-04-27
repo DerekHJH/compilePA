@@ -42,8 +42,7 @@ struct _node
 	char *token_name;
 
 
-	struct type_t *pre_type;
-	struct type_t *ret_type;
+	struct type_t *type;
 
 	struct _node *left;
 	struct _node *right;
