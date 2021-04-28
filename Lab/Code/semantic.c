@@ -4,10 +4,33 @@
 #include "common.h"
 #include <string.h>
 int def_in_struct = 0;
+char *error_msg[20] = {"no error.", 
+"Undefined variable", 
+"Undefined function",
+"Redefined variable",
+"Redefined function",
+"Type mismatched for assignment",
+"The left-hand side of an assignment must be a variable",
+"Type mismatched for operands",
+"Type mismatched for return",
+"Function is not applicable for arguments",
+"Variable is not an array",
+"Variable is not a function",
+"Index of an array must be an integer",
+"Illegal use of \".\"",
+"Non-existent field",
+"Redefined field",
+"Duplicated name for structures",
+"Undefined structure",
+"Undefined function",
+"Inconsistent of declaration of function"
+};
+
+
 void raise_error(int code, int line)
 {
 	if(code == 3 && def_in_struct)code = 15;
-	printf("Error type %d at Line %d: semantic error!\n", code, line);
+	printf("Error type %d at Line %d: %s.\n", code, line, error_msg[code]);
 }
 
 
