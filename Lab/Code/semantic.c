@@ -152,6 +152,13 @@ void Parse_Tree(struct _node *cur)
     Float->basic = 2;
 
 	parse_tree(cur);
+	
+	struct entry_t *e = stack_table[0];
+	while(e)
+	{
+		if(e->type->kind == FUNCTION && e->type->structure->name != NULL)raise_error(18, (size_t)e->type->structure->name);
+		e = e->down;
+	}
 }
 
 void parse_tree(struct _node *cur)
@@ -194,7 +201,7 @@ void parse_tree(struct _node *cur)
             stack_delete();
 			if(child->left->text != NULL && child->type != NULL)
 			{
-				child->type->structure->name = (void *)0x12345678;
+				child->type->structure->name = (void *)(size_t)cur->lineno;
 				struct entry_t *e = hash_search(child->left->text);
 				if(e == NULL)add_entry(child->left->text, child->type);
 				else if(is_type_equal(child->type, e->type) == 0)raise_error(19, cur->lineno);
