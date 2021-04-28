@@ -109,6 +109,7 @@ int add_entry(char *name, struct type_t *type)
 	if(name == NULL || type == NULL)return 2;
 	struct entry_t *e = hash_search(name);
 	if(e != NULL && e->stack_pos == stack_top)return 0;
+	if(e != NULL && e->type->kind == STRUCTURE)return 0;
 	else
 	{
 		MALLOC(temp, struct entry_t);
@@ -356,6 +357,7 @@ void parse_tree(struct _node *cur)
 		else if(strcmp(child->token_name, "CompSt") == 0)
 		{
 			stack_new();
+			child->type = cur->type;
 			parse_tree(child);
 			stack_delete();
 		}
@@ -366,16 +368,21 @@ void parse_tree(struct _node *cur)
 		}
 		else if(strcmp(child->token_name, "IF") == 0)
         {
+			child->right->right->type = cur->type;
         	parse_tree(child->right->right);
         	if(is_type_equal(child->right->right->type, Int) == 0)raise_error(7, cur->lineno);
         	parse_tree(child->right->right->right->right);
 			if(child->right->right->right->right->right!= NULL)
+			{
+				child->right->right->right->right->right->right->type = cur->type;
 				parse_tree(child->right->right->right->right->right->right);
+			}
         }
 		else if(strcmp(child->token_name, "WHILE") == 0)
 		{
 			parse_tree(child->right->right);
 			if(is_type_equal(child->right->right->type, Int) == 0)raise_error(7, cur->lineno);
+			child->right->right->right->right->type = cur->type;
 			parse_tree(child->right->right->right->right);
 		}
 	}
