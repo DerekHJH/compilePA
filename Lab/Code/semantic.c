@@ -19,7 +19,7 @@ char *error_msg[20] = {"no error.",
 "Index of an array must be an integer",
 "Illegal use of \".\"",
 "Non-existent field",
-"Redefined field",
+"Redefined field or inappropriate assignment inside a structure definition",
 "Duplicated name for structures",
 "Undefined structure",
 "Undefined function",
@@ -183,6 +183,7 @@ void Parse_Tree(struct _node *cur)
 		if(e->type->kind == FUNCTION && e->type->structure->name != NULL)raise_error(18, (size_t)e->type->structure->name);
 		e = e->down;
 	}
+	print_table();
 }
 
 void parse_tree(struct _node *cur)
@@ -209,7 +210,8 @@ void parse_tree(struct _node *cur)
 					stack_top++;
 				}
                 else if(e->type->structure->name != NULL && is_type_equal(child->type, e->type))e->type->structure->name = NULL;	
-            	else raise_error(4, cur->lineno);
+            	else if(e->type->structure->name == NULL)raise_error(4, cur->lineno);
+				else raise_error(19, cur->lineno);
             }
 
 			child->right->type = child->type->structure->type;//for CompSt, for RETURN
@@ -314,6 +316,8 @@ void parse_tree(struct _node *cur)
 
 			child->type = temp1;
 			parse_tree(child);
+			//cur->type has been used and expired
+			cur->type = child->type;
 		}
 		else if(add_entry(child->text, cur->type) == 0)raise_error(3, cur->lineno); //child is ID
 	}
@@ -398,8 +402,12 @@ void parse_tree(struct _node *cur)
 		parse_tree(child);
 		if(child->right != NULL)
 		{
-			parse_tree(child->right->right);
-            if(is_type_equal(child->type, child->right->right->type) == 0)raise_error(5, cur->lineno);
+			if(def_in_struct == 0)
+			{
+				parse_tree(child->right->right);
+				if(is_type_equal(child->type, child->right->right->type) == 0)raise_error(5, cur->lineno);
+			}
+			else raise_error(15, cur->lineno);
 		}
 	}
 	else if(strcmp(cur->token_name, "Exp") == 0)
