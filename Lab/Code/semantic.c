@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include "common.h"
 #include <string.h>
+int def_in_struct = 0;
 void raise_error(int code, int line)
 {
+	if(code == 3 && def_in_struct)code = 15;
 	printf("Error type %d at Line %d: semantic error!\n", code, line);
 }
 
@@ -81,7 +83,7 @@ struct type_t *stack_delete()
 
 int add_entry(char *name, struct type_t *type)
 {
-	if(name == NULL || type == NULL)return 0;
+	if(name == NULL || type == NULL)return 2;
 	struct entry_t *e = hash_search(name);
 	if(e != NULL && e->stack_pos == stack_top)return 0;
 	else
@@ -205,7 +207,9 @@ void parse_tree(struct _node *cur)
 		if(child->right != NULL) //child is OptTag
 		{
 			stack_new();
+			def_in_struct = 1;
             parse_tree(child->right->right);
+			def_in_struct = 0;
             cur->type = stack_delete();
 
             if(child->left != NULL)
@@ -337,8 +341,11 @@ void parse_tree(struct _node *cur)
 		{
 			parse_tree(child);
             parse_tree(child->right->right);
-			if(!(is_type_equal(child->type, Int) && is_type_equal(child->right->right->type, Int)))raise_error(7, cur->lineno);
-			else cur->type = Int;
+			if(child->type != NULL && child->right != NULL)
+			{
+				if(!(is_type_equal(child->type, Int) && is_type_equal(child->right->right->type, Int)))raise_error(7, cur->lineno);
+				else cur->type = Int;
+			}
 		}
 		else if(strcmp(child->right->token_name, "PLUS") == 0 || strcmp(child->right->token_name, "MINUS") == 0 || strcmp(child->right->token_name, "STAR") == 0 || strcmp(child->right->token_name, "DIV") == 0)
 		{
