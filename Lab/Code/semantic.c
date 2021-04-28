@@ -198,19 +198,24 @@ void parse_tree(struct _node *cur)
 			stack_new();
 			parse_tree(child);
 
+			if(child->left->text != NULL && child->type != NULL)
+            {
+                struct entry_t *e = hash_search(child->left->text);
+            	if(e == NULL)
+				{
+					stack_top--;
+					add_entry(child->left->text, child->type);
+					stack_top++;
+				}
+                else if(e->type->structure->name != NULL && is_type_equal(child->type, e->type))e->type->structure->name = NULL;	
+            	else raise_error(4, cur->lineno);
+            }
+
 			child->right->type = child->type->structure->type;//for CompSt, for RETURN
 			parse_tree(child->right);
 
 			//print_table();
-
 			stack_delete();
-			if(child->left->text != NULL && child->type != NULL)
-			{
-                struct entry_t *e = hash_search(child->left->text);
-				if(e == NULL)add_entry(child->left->text, child->type);
-                else if(e->type->structure->name != NULL && is_type_equal(child->type, e->type))e->type->structure->name = NULL;	
-				else raise_error(4, cur->lineno);
-			}
 		}
 		else parse_tree(child);
 	}
@@ -279,7 +284,12 @@ void parse_tree(struct _node *cur)
             cur->type = stack_delete();
 
             if(child->left != NULL)
+			{
+				int temp_stack_top = stack_top;
+				stack_top = 0;
             	if(add_entry(child->left->text, cur->type) == 0)raise_error(16, cur->lineno);
+				stack_top = temp_stack_top;
+			}
 		}
 		else //child is Tag
 		{
@@ -460,12 +470,14 @@ void parse_tree(struct _node *cur)
 			parse_tree(child);
 			parse_tree(child->right->right);
 			if(is_type_equal(child->right->right->type, Int) == 0)raise_error(12, cur->lineno);	
-			else if(child->type->kind != ARRAY)raise_error(10, cur->lineno);
-			else cur->type = child->type->array->elem;
+			else if(child->type != NULL && child->type->kind != ARRAY)raise_error(10, cur->lineno);
+			else if(child->type != NULL)cur->type = child->type->array->elem;
+			//child->type== NULL
 		}
 		else if(strcmp(cur->left->right->token_name, "DOT") == 0)
 		{
 			parse_tree(child);
+			if(child->type == NULL)return; //child->type == NULL
 			if(child->type->kind != STRUCTURE)raise_error(13, cur->lineno);	
 			else
 			{
@@ -478,6 +490,7 @@ void parse_tree(struct _node *cur)
 	else if(strcmp(cur->token_name, "Args") == 0)
 	{
 		parse_tree(child);
+		if(child->type == NULL)return;//child->type == NULL;
 		struct entry_t *e = cur->type->structure;
 		
 		MALLOC(temp, struct entry_t);
