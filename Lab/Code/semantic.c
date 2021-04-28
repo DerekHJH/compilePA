@@ -174,23 +174,59 @@ void parse_tree(struct _node *cur)
 			//print_table();
 
 			stack_delete();
-			if(add_entry(child->left->text, child->type) == 0)raise_error(4, cur->lineno);
+			if(child->left->text != NULL && child->type != NULL)
+			{
+                struct entry_t *e = hash_search(child->left->text);
+				if(e == NULL)add_entry(child->left->text, child->type);
+                else if(e->type->structure->name != NULL && is_type_equal(child->type, e->type))e->type->structure->name = NULL;	
+				else raise_error(4, cur->lineno);
+			}
 		}
 		else parse_tree(child);
 	}
-	else if(strcmp(cur->token_name, "ExtDecList") == 0 || strcmp(cur->token_name, "DecList") == 0)
+	else if(strcmp(cur->token_name, "ExtDecList") == 0)
 	{
-		child->type = cur->type;
-		parse_tree(child);
-
-		child = child->right;
-		if(child != NULL)
+		if(strcmp(child->token_name, "FunDec") == 0)
 		{
-			child = child->right;
+			stack_new();
+			child->type = cur->type;
+            parse_tree(child);
+            stack_delete();
+			if(child->left->text != NULL && child->type != NULL)
+			{
+				child->type->structure->name = (void *)0x12345678;
+				struct entry_t *e = hash_search(child->left->text);
+				if(e == NULL)add_entry(child->left->text, child->type);
+				else if(is_type_equal(child->type, e->type) == 0)raise_error(19, cur->lineno);
+			}
+		}
+		else
+		{
 			child->type = cur->type;
 			parse_tree(child);
+
+			child = child->right;
+			if(child != NULL)
+			{
+				child = child->right;
+				child->type = cur->type;
+				parse_tree(child);
+			}
 		}
 	}
+	else if(strcmp(cur->token_name, "DecList") == 0)
+    {
+    	child->type = cur->type;
+    	parse_tree(child);
+                                                                                                   
+    	child = child->right;
+    	if(child != NULL)
+    	{
+    		child = child->right;
+    		child->type = cur->type;
+    		parse_tree(child);
+    	}
+    }
 	else if(strcmp(cur->token_name, "Specifier") == 0)
     {
     	parse_tree(child);

@@ -62,6 +62,7 @@ ExtDef: Specifier ExtDecList SEMI {$$ = make_node("ExtDef", NULL, @$.first_line)
 ;
 ExtDecList: VarDec {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $1);}
 | VarDec COMMA ExtDecList {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| FunDec {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $1);}
 ;
 
 
