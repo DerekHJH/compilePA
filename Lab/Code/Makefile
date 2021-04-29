@@ -1,6 +1,5 @@
 .PHONY:run, git
 run: parser
-	./parser ~/test/tests/m20.cmm
 	./parser ../Test/test.cmm
 
 # GNU make手册：http://www.gnu.org/software/make/manual/make.html

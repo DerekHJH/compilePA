@@ -1,8 +1,12 @@
-struct A
+int func(int a)
 {
-	int xyz;
-}a;
-struct hjh
+	return 0;
+}
+int main()
 {
-	struct A a[1];
-}hahaha[10];
+	while(!func)
+	{
+
+	}
+	return 0;
+}

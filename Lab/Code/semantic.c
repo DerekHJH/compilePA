@@ -211,7 +211,11 @@ void parse_tree(struct _node *cur)
 				}
                 else if(e->type->structure->name != NULL && is_type_equal(child->type, e->type))e->type->structure->name = NULL;	
             	else if(e->type->structure->name == NULL)raise_error(4, cur->lineno);
-				else raise_error(19, cur->lineno);
+				else 
+				{
+					e->type = child->type;
+					raise_error(19, cur->lineno);
+				}
             }
 
 			child->right->type = child->type->structure->type;//for CompSt, for RETURN
@@ -459,6 +463,7 @@ void parse_tree(struct _node *cur)
 		}
 		else if(strcmp(child->token_name, "NOT") == 0)
 		{
+			parse_tree(child->right);
 			if(is_type_equal(child->right->type, Int) == 0)raise_error(7, cur->lineno);	
 			else cur->type = Int;
 		}
