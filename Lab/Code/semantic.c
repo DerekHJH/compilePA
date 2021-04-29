@@ -448,7 +448,7 @@ void parse_tree(struct _node *cur)
 		{
 			parse_tree(child);
             parse_tree(child->right->right);
-			if(is_type_equal(child->type, child->right->right->type) == 0)raise_error(7, cur->lineno);
+			if(!((is_type_equal(child->type, Int) == 1 && is_type_equal(child->right->right->type, Int)) || (is_type_equal(child->type, Float) == 1 && is_type_equal(child->right->right->type, Float))))raise_error(7, cur->lineno);
 			else cur->type = child->type;
 		}
 		else if(strcmp(child->token_name, "LP") == 0)
@@ -459,7 +459,8 @@ void parse_tree(struct _node *cur)
 		else if(strcmp(child->token_name, "MINUS") == 0)
 		{
 			parse_tree(child->right);
-            cur->type = child->right->type;
+			if(!(is_type_equal(child->right->type, Int) == 1 || is_type_equal(child->right->type, Float) == 1))raise_error(7, cur->lineno);
+            else cur->type = child->right->type;
 		}
 		else if(strcmp(child->token_name, "NOT") == 0)
 		{
