@@ -4,7 +4,7 @@
 #include "common.h"
 #include <string.h>
 int def_in_struct = 0;
-char *error_msg[20] = {"no error.", 
+char *error_msg[20] = {"no error", 
 "Undefined variable", 
 "Undefined function",
 "Redefined variable",
@@ -183,7 +183,6 @@ void Parse_Tree(struct _node *cur)
 		if(e->type->kind == FUNCTION && e->type->structure->name != NULL)raise_error(18, (size_t)e->type->structure->name);
 		e = e->down;
 	}
-	print_table();
 }
 
 void parse_tree(struct _node *cur)
