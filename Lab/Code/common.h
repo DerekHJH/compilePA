@@ -23,7 +23,8 @@ struct entry_t
 	char *name;
 	struct type_t *type;
 
-	
+	int is_struct;	
+
 	struct entry_t *down;
 	struct entry_t *right;
 	int hash_pos;

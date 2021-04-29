@@ -1,0 +1,8 @@
+struct A
+{
+	int xyz;
+}a;
+struct hjh
+{
+	struct A a[1];
+}hahaha[10];

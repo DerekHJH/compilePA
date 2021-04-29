@@ -103,18 +103,19 @@ struct type_t *stack_delete()
 
 	return temp;
 }
-
+int is_struct = 0;
 int add_entry(char *name, struct type_t *type)
 {
 	if(name == NULL || type == NULL)return 2;
 	struct entry_t *e = hash_search(name);
 	if(e != NULL && e->stack_pos == stack_top)return 0;
-	if(e != NULL && e->type->kind == STRUCTURE)return 0;
+	if(e != NULL && e->type->kind == STRUCTURE && e->is_struct)return 0;
 	else
 	{
 		MALLOC(temp, struct entry_t);
 		temp->name = name;
 		temp->type = type;
+		temp->is_struct = is_struct;
 		hash_insert(temp);
 		return 1;
 	}
@@ -289,14 +290,16 @@ void parse_tree(struct _node *cur)
 			{
 				int temp_stack_top = stack_top;
 				stack_top = 0;
+				is_struct = 1;
             	if(add_entry(child->left->text, cur->type) == 0)raise_error(16, cur->lineno);
+				is_struct = 0;
 				stack_top = temp_stack_top;
 			}
 		}
 		else //child is Tag
 		{
 			struct entry_t *e = hash_search(child->left->text); 
-            if(e == NULL)raise_error(17, cur->lineno);
+            if(e == NULL || e->is_struct == 0)raise_error(17, cur->lineno);
             else cur->type = e->type;
 		}
     }
@@ -416,7 +419,7 @@ void parse_tree(struct _node *cur)
 		else if(strcmp(child->token_name, "ID") == 0 && child->right == NULL)
 		{
 			struct entry_t *e = hash_search(child->text);
-			if(e == NULL)raise_error(1, cur->lineno);
+			if(e == NULL || e->is_struct == 1)raise_error(1, cur->lineno);
 			else cur->type = e->type;
 		}
 		else if(strcmp(child->right->token_name, "ASSIGNOP") == 0)
