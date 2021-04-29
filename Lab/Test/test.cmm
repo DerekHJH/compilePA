@@ -1,12 +1,12 @@
+int func(int a)
+{
+	return 0;
+}
 int main()
 {
-	int i = 1024;
-	int j = i + 1;
-
-	haha
-	while(j < i)
+	while(!func)
 	{
-		j = j + 2
+
 	}
 	return 0;
 }

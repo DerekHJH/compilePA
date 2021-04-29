@@ -62,6 +62,7 @@ ExtDef: Specifier ExtDecList SEMI {$$ = make_node("ExtDef", NULL, @$.first_line)
 ;
 ExtDecList: VarDec {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $1);}
 | VarDec COMMA ExtDecList {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $3); insert_node($$, $2); insert_node($$, $1);}
+| FunDec {$$ = make_node("ExtDecList", NULL, @$.first_line); insert_node($$, $1);}
 ;
 
 
@@ -167,28 +168,7 @@ void insert_node(struct _node *father, struct _node *child)
 	child->right = father->left;
 	father->left = child;
 }
-void print_tree(struct _node *cur, int Width)
-{
-	if(cur->text == NULL && cur->left == NULL)
-	{
-		if(cur->right != NULL)print_tree(cur->right, Width);
-		return;
-	}
-	for(int i = 1; i <= Width; i++)
-		printf(" ");
-	printf("%s", cur->token_name);
-	if(cur->text == NULL)printf(" (%d)\n", cur->lineno);
-	else if(strcmp(cur->token_name, "ID") == 0)printf(": %s\n", cur->text);
-	else if(strcmp(cur->token_name, "TYPE") == 0)printf(": %s\n", cur->text);
-	else if(strcmp(cur->token_name, "INT") == 0)printf(": %lld\n", cur->int_val);
-	else if(strcmp(cur->token_name, "FLOAT") == 0)printf(": %f\n", cur->float_val);
-	else printf("\n");
-
-	if(cur->left != NULL)print_tree(cur->left, Width + 2);
-	if(cur->right != NULL)print_tree(cur->right, Width);
-}
 int yyerror(char *msg)
 {
-	is_print_tree = 0;
 	fprintf(stdout, "Error type B at Line %d: syntax error.\n", yylineno);
 }

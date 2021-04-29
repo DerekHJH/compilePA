@@ -1,4 +1,4 @@
-.PHONY:run
+.PHONY:run, git
 run: parser
 	./parser ../Test/test.cmm
 
