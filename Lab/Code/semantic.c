@@ -106,7 +106,7 @@ struct type_t *stack_delete()
 int is_struct = 0;
 int add_entry(char *name, struct type_t *type)
 {
-	if(name == NULL || type == NULL)return 2;
+	if(name == NULL || type == NULL)return REPORT_ALL_ERROR;
 	struct entry_t *e = hash_search(name);
 	if(e != NULL && e->stack_pos == stack_top)return 0;
 	if(e != NULL && e->type->kind == STRUCTURE && e->is_struct)return 0;

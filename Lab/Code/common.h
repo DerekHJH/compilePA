@@ -1,6 +1,7 @@
 #ifndef COMMON
 #define COMMON
 
+#define REPORT_ALL_ERROR 2
 
 struct array_t 
 {
