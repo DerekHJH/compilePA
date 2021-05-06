@@ -2077,6 +2077,7 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 
 	
 	temp->type = NULL;
+	temp->var_no = 0;
 
 
 	return temp;

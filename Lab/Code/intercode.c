@@ -15,12 +15,20 @@ void code_insert(struct intercode_t *code)
 	code_head->prev->next = code;
 	code_head->prev = code;
 }
-void generate_code(int kind, struct operand_t *result, struct operand_t *op1, struct operand_t *op2)
+void generate_code(int kind, int result, int op1, int op2)
 {
 	MALLOC(temp, struct intercode_t);
+	MALLOC(temp1, struct operand_t);
+	MALLOC(temp2, struct operand_t);
+	MALLOC(temp3, struct operand_t);
 	temp->kind = kind;
-	temp->op1 = op1;
-	temp->op2 = op2;
+	temp1->value = result;
+	temp2->value = op1;
+	temp3->value = op2;
+	if(kind == codeASSIGN || kind == codeDEC)temp2->kind = CONSTANT;	
+	temp->result = temp1;
+	temp->op1 = temp2;
+	temp->op2 = temp3;
 	code_insert(temp);
 }
 void print_code()

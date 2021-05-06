@@ -42,6 +42,7 @@ struct entry_t
 	struct type_t *type;
 
 	int is_struct;	
+	int var_no;
 
 	struct entry_t *down;
 	struct entry_t *right;
@@ -62,6 +63,7 @@ struct _node
 
 
 	struct type_t *type;
+	int var_no;
 
 	struct _node *left;
 	struct _node *right;

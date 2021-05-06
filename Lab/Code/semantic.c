@@ -168,6 +168,7 @@ struct type_t *Float = NULL;
 
 //translate code
 extern struct intercode_t *code_head;
+extern int Label, Variable, Function;
 void code_insert(struct intercode_t *code);
 void generate_code();
 void print_code();
@@ -433,13 +434,25 @@ void parse_tree(struct _node *cur)
 	}
 	else if(strcmp(cur->token_name, "Exp") == 0)
 	{
-		if(strcmp(child->token_name, "INT") == 0)cur->type = Int;
-		else if(strcmp(child->token_name, "FLOAT") == 0)cur->type = Float;
+		if(strcmp(child->token_name, "INT") == 0)
+		{
+			cur->type = Int;
+			//translate code
+			generate_code(codeASSIGN, ++Variable, child->int_val);
+			cur->var_no = Variable;
+		}
+		else if(strcmp(child->token_name, "FLOAT") == 0)cur->type = Float;//no const float number
 		else if(strcmp(child->token_name, "ID") == 0 && child->right == NULL)
 		{
 			struct entry_t *e = hash_search(child->text);
 			if(e == NULL || e->is_struct == 1)raise_error(1, cur->lineno);
-			else cur->type = e->type;
+			else 
+			{
+				cur->type = e->type;
+				//translate
+				if(e->var_no == 0)e->var_no = ++Variable;
+				cur->var_no = e->var_no;
+			}
 		}
 		else if(strcmp(child->right->token_name, "ASSIGNOP") == 0)
 		{
