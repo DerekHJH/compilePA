@@ -39,7 +39,18 @@ void print_code()
 		else if(temp->kind == codeRSTAR)printf("t%d := *t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeLSTAR)printf("t%d := *t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeGOTO)printf("GOTO L%d :\n", temp->result->value);
-
-		
+		else if(temp->kind == codeE)printf("IF t%d == t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeNE)printf("IF t%d != t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeG)printf("IF t%d > t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeGE)printf("IF t%d >= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeL)printf("IF t%d < t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeLE)printf("IF t%d <= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeRETURN)printf("RETURN t%d\n", temp->result->value);
+		else if(temp->kind == codeDEC)printf("DEC t%d %d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeARG)printf("ARG t%d\n", temp->result->value);
+		else if(temp->kind == codeCALL)printf("t%d := CALL F%d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codePARAM)printf("PARAM t%d\n", temp->result->value);
+		else if(temp->kind == codeREAD)printf("READ t%d\n", temp->result->value);
+		else if(temp->kind == codeWRITE)printf("WRITE t%d\n", temp->result->value);
 	}
 }

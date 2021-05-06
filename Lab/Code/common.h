@@ -10,7 +10,8 @@ struct operand_t
 struct intercode_t
 {
 	enum {codeLABEL, codeFUNCTION, codeASSIGN, codeADD, codeSUB, codeMUL, codeDIV, codeAND,
-	codeLSTAR, codeRSTAR, codeGOTO} kind;
+	codeLSTAR, codeRSTAR, codeGOTO, codeE, codeNE, codeG, codeGE, codeL, codeLE, codeRETURN,
+	codeDEC, codeARG, codeCALL, codePARAM, codeREAD, codeWRITE} kind;
 
 	struct operand_t *result;
 	struct operand_t *op1;
