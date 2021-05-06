@@ -5,21 +5,17 @@
 struct operand_t 
 {
 	enum {VARIABLE, CONSTANT, ADDRESS} kind;
-	union
-	{
-		int var_no;
-		int value;
-	};
+	int value;
 };
 struct intercode_t
 {
-	enum {aSSIGN, aDD, sUB, sTAR, dIV} kind;
-	struct 
-	{
-		struct operand_t *result;
-		struct operand_t *op1;
-		struct operand_t *op2;
-	};
+	enum {codeLABEL, codeFUNCTION, codeASSIGN, codeADD, codeSUB, codeMUL, codeDIV, codeAND,
+	codeLSTAR, codeRSTAR, codeGOTO} kind;
+
+	struct operand_t *result;
+	struct operand_t *op1;
+	struct operand_t *op2;
+
 	struct intercode_t *prev;
     struct intercode_t *next;
 };
