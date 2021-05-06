@@ -7,7 +7,7 @@
 	memset(arg1, 0, sizeof(arg2))
 
 struct intercode_t *code_head = NULL;
-int Label = 0, Variable = 0, Function = 0;
+int Label = 0, Variable = 2, Function = 0, t0 = 1, t1 = 2;
 void code_insert(struct intercode_t *code)
 {
 	code->next = code_head;
