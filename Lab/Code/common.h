@@ -2,7 +2,27 @@
 #define COMMON
 
 #define REPORT_ALL_ERROR 2
-
+struct operand_t 
+{
+	enum {VARIABLE, CONSTANT, ADDRESS} kind;
+	union
+	{
+		int var_no;
+		int value;
+	};
+};
+struct intercode_t
+{
+	enum {aSSIGN, aDD, sUB, sTAR, dIV} kind;
+	struct 
+	{
+		struct operand_t *result;
+		struct operand_t *op1;
+		struct operand_t *op2;
+	};
+	struct intercode_t *prev;
+    struct intercode_t *next;
+};
 struct array_t 
 {
 	struct type_t *elem; 

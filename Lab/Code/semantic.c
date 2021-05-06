@@ -165,6 +165,15 @@ struct type_t *is_in_struct(struct type_t *t, char *name)
 }
 struct type_t *Int = NULL;
 struct type_t *Float = NULL;
+
+//translate code
+extern struct intercode_t *code_head;
+void code_insert(struct intercode_t *code);
+void generate_code();
+void print_code();
+//translate code
+
+
 void parse_tree(struct _node *cur);
 void Parse_Tree(struct _node *cur)
 {
@@ -175,6 +184,12 @@ void Parse_Tree(struct _node *cur)
 	Float = malloc(sizeof(struct type_t));
     Float->kind = BASIC;
     Float->basic = 2;
+
+	//translate code
+	code_head = malloc(sizeof(struct intercode_t));
+	code_head->prev = code_head;
+	code_head->next = code_head;
+	//translate code
 
 	parse_tree(cur);
 	
