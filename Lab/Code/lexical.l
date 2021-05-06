@@ -156,6 +156,8 @@ struct _node *make_node(char *token_name, char *text, int lineno)
 	
 	temp->type = NULL;
 	temp->var_no = 0;
+	temp->true_label = 0;
+	temp->false_label = 0; 
 
 
 	return temp;

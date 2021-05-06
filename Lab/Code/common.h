@@ -64,6 +64,8 @@ struct _node
 
 	struct type_t *type;
 	int var_no;
+	int true_label;
+	int false_label;
 
 	struct _node *left;
 	struct _node *right;

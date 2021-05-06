@@ -391,25 +391,62 @@ void parse_tree(struct _node *cur)
 		{
 			parse_tree(child->right);
 			if(is_type_equal(cur->type, child->right->type) == 0)raise_error(8, cur->lineno);
+			else
+			{
+				//translate
+				generate_code(codeRETURN, child->right->var_no, 0, 0);
+			}
 		}
 		else if(strcmp(child->token_name, "IF") == 0)
         {
-			child->right->right->type = cur->type;
+			//translate
+			int label1 = ++Label;
+			int label2 = ++Label;
+			int label3 = 0;
+			//translate
+			child->right->right->type = cur->type;//Is this line of code neccessary?
+
+			//translate
+			child->right->right->true_label = label1;
+			child->right->right->false_label = label2;
+			//translate
         	parse_tree(child->right->right);
+
         	if(is_type_equal(child->right->right->type, Int) == 0)raise_error(7, cur->lineno);
+			generate_code(codeLABEL, label1, 0, 0);//translate
         	parse_tree(child->right->right->right->right);
 			if(child->right->right->right->right->right!= NULL)
 			{
+				//translate
+				label3 = ++Label;
+				generate_code(codeGOTO, label3, 0, 0);
+				generate_code(codeLABEL, label2, 0, 0);
+				//translate
 				child->right->right->right->right->right->right->type = cur->type;
 				parse_tree(child->right->right->right->right->right->right);
+				generate_code(codeLABEL, label3, 0, 0);
 			}
+			else generate_code(codeLABEL, label2, 0, 0);//translate
         }
 		else if(strcmp(child->token_name, "WHILE") == 0)
 		{
+			//translate
+			int label1 = ++Label;
+            int label2 = ++Label;
+            int label3 = ++Label;
+			child->right->right->true_label = label2;
+			child->right->right->false_label = label3;
+			generate_code(codeLABEL, label1, 0, 0);
+			//translate
 			parse_tree(child->right->right);
+			generate_code(codeLABEL, label2, 0, 0);//translate
 			if(is_type_equal(child->right->right->type, Int) == 0)raise_error(7, cur->lineno);
 			child->right->right->right->right->type = cur->type;
 			parse_tree(child->right->right->right->right);
+			//translate
+			generate_code(codeGOTO, label1, 0, 0);
+			generate_code(codeLABEL, label3, 0, 0);
+			//translate
 		}
 	}
 	else if(strcmp(cur->token_name, "Def") == 0)
@@ -438,8 +475,8 @@ void parse_tree(struct _node *cur)
 		{
 			cur->type = Int;
 			//translate code
-			generate_code(codeASSIGN, ++Variable, child->int_val);
-			cur->var_no = Variable;
+			cur->var_no = ++Variable;
+			generate_code(codeASSIGN, cur->var_no, child->int_val, 0);
 		}
 		else if(strcmp(child->token_name, "FLOAT") == 0)cur->type = Float;//no const float number
 		else if(strcmp(child->token_name, "ID") == 0 && child->right == NULL)
@@ -460,7 +497,12 @@ void parse_tree(struct _node *cur)
 			parse_tree(child->right->right);
 			if(is_type_equal(child->type, child->right->right->type) == 0)raise_error(5, cur->lineno);
 			else if(!((strcmp(child->left->token_name, "ID") == 0 && child->left->right == NULL) || (child->left->right != NULL && strcmp(child->left->right->token_name, "LB") == 0) || (child->left->right!= NULL && strcmp(child->left->right->token_name, "DOT") == 0)))raise_error(6, cur->lineno);
-			else cur->type = child->type;
+			else 
+			{
+				cur->type = child->type;
+				//translate
+				cur->var_no = cur->right->right->var_no;
+			}
 		}
 		else if(strcmp(child->right->token_name, "AND") == 0 || strcmp(child->right->token_name, "OR") == 0 || strcmp(child->right->token_name, "RELOP") == 0)
 		{
@@ -477,7 +519,13 @@ void parse_tree(struct _node *cur)
 			parse_tree(child);
             parse_tree(child->right->right);
 			if(!((is_type_equal(child->type, Int) == 1 && is_type_equal(child->right->right->type, Int)) || (is_type_equal(child->type, Float) == 1 && is_type_equal(child->right->right->type, Float))))raise_error(7, cur->lineno);
-			else cur->type = child->type;
+			else 
+			{
+				cur->type = child->type;
+				//translate
+				cur->var_no = ++Variable;
+				generate_code(codeADD, cur->var_no, child->var_no, child->right->right->var_no);
+			}
 		}
 		else if(strcmp(child->token_name, "LP") == 0)
 		{
@@ -488,7 +536,15 @@ void parse_tree(struct _node *cur)
 		{
 			parse_tree(child->right);
 			if(!(is_type_equal(child->right->type, Int) == 1 || is_type_equal(child->right->type, Float) == 1))raise_error(7, cur->lineno);
-            else cur->type = child->right->type;
+            else 
+			{
+				cur->type = child->right->type;
+				//translate
+				int t = ++Variable;
+				generate_code(codeASSIGN, t, 0, 0);
+				cur->var_no = ++Variable;
+				generate_code(codeSUB, cur->var_no, t, child->right->var_no);
+			}
 		}
 		else if(strcmp(child->token_name, "NOT") == 0)
 		{
