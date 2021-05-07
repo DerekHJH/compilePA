@@ -154,13 +154,16 @@ void print_table()
 	}
 	printf("*****************************\n");
 }
+int struct_offset = 0;
 struct type_t *is_in_struct(struct type_t *t, char *name)
 {
+	struct_offset = 0;
 	if(t->kind != STRUCTURE)return NULL;
 	struct entry_t *e = t->structure;
 	while(e)
 	{
 		if(strcmp(e->name, name) == 0)return e->type;
+		struct_offset += e->type->size;
 		e = e->down;
 	}
 	return NULL;
@@ -543,7 +546,7 @@ void parse_tree(struct _node *cur)
 				else if(strcmp(child->right->text, ">=") == 0)generate_code(codeGE, cur->true_label, child->var_no, child->right->var_no);
 				else if(strcmp(child->right->text, "<") == 0)generate_code(codeL, cur->true_label, child->var_no, child->right->var_no);
 				else if(strcmp(child->right->text, "<=") == 0)generate_code(codeLE, cur->true_label, child->var_no, child->right->var_no);
-				generate_code(codeASSIGN, cur->var_no, t0, 0);
+				generate_code(codeASSIGN, cur->var_no, T0, 0);
 				generate_code(codeGOTO, cur->false_label, 0, 0);
             }
 			else
@@ -551,16 +554,16 @@ void parse_tree(struct _node *cur)
 				int label = ++Label;
 				if(strcmp(child->right->token_name, "AND") == 0)
 				{
-					generate_code(codeASSIGN, cur->var_no, t0, 0);
+					generate_code(codeASSIGN, cur->var_no, T0, 0);
 					child->true_label = label;
 					child->false_label = cur->false_label;
 					parse_tree(child);
-                    generate_code(codeE, cur->false_label, child->var_no, t0);
+                    generate_code(codeE, cur->false_label, child->var_no, T0);
                     generate_code(codeLABEL, label, 0, 0);
                     child->right->right->true_label = cur->true_label;
                     child->right->right->false_label = cur->false_label;
                     parse_tree(child->right->right);
-                    generate_code(codeE, cur->false_label, child->right->right->var_no, t0);
+                    generate_code(codeE, cur->false_label, child->right->right->var_no, T0);
                     generate_code(codeASSIGN, cur->var_no, T1, 0);
                     generate_code(codeGOTO, cur->true_label, 0, 0);
 				}
@@ -570,13 +573,13 @@ void parse_tree(struct _node *cur)
 					child->true_label = cur->true_label;
 					child->false_label = label;
 					parse_tree(child);
-                    generate_code(codeNE, cur->true_label, child->var_no, t0);
+                    generate_code(codeNE, cur->true_label, child->var_no, T0);
                     generate_code(codeLABEL, label, 0, 0);
                     child->right->right->true_label = cur->true_label;
                     child->right->right->false_label = cur->false_label;
                     parse_tree(child->right->right);
-                    generate_code(codeNE, cur->true_label, child->right->right->var_no, t0);
-                    generate_code(codeASSIGN, cur->var_no, t0, 0);
+                    generate_code(codeNE, cur->true_label, child->right->right->var_no, T0);
+                    generate_code(codeASSIGN, cur->var_no, T0, 0);
                     generate_code(codeGOTO, cur->false_label, 0, 0);
 				}
 			}
@@ -615,7 +618,7 @@ void parse_tree(struct _node *cur)
 				cur->type = child->right->type;
 				//translate
 				cur->var_no = ++Variable;
-				generate_code(codeSUB, cur->var_no, t0, child->right->var_no);
+				generate_code(codeSUB, cur->var_no, T0, child->right->var_no);
 			}
 		}
 		else if(strcmp(child->token_name, "NOT") == 0)
@@ -628,8 +631,8 @@ void parse_tree(struct _node *cur)
 			//trnaslate
 			cur->var_no = ++Variable;
 			generate_code(codeASSIGN, cur->var_no, T1, 0);
-			generate_code(codeE, cur->true_label, child->right->var_no, t0);
-			generate_code(codeASSIGN, cur->var_no, t0, 0);
+			generate_code(codeE, cur->true_label, child->right->var_no, T0);
+			generate_code(codeASSIGN, cur->var_no, T0, 0);
 			generate_code(codeGOTO, cur->false_label, 0, 0);
 			//translate
 			if(is_type_equal(child->right->type, Int) == 0)raise_error(7, cur->lineno);	
@@ -687,7 +690,21 @@ void parse_tree(struct _node *cur)
 			{
 				struct type_t *t = is_in_struct(child->type, child->right->right->text);
 				if(t == NULL)raise_error(14, cur->lineno);	
-				else cur->type = t;
+				else 
+				{
+					cur->type = t;
+					//translate
+					int t1 = ++Variable;
+					int t2 = ++Variable;
+					generate_code(codeASSIGN, t1, struct_offset, 1);
+					generate_code(codeADD, t2, child->var_no, t1);	
+					cur->var_no = t2;
+					if(cur->type->kind == BASIC)
+                    {
+                    	cur->var_no = ++Variable;
+                    	generate_code(codeRSTAR, cur->var_no, t2, 0);
+                    }
+				}
 			}
 		}
 	}
