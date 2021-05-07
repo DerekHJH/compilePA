@@ -24,7 +24,6 @@ struct array_t
 {
 	struct type_t *elem; 
 	int dim;
-	int size;
 };
 struct type_t
 {

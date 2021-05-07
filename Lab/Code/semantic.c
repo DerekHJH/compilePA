@@ -170,7 +170,7 @@ struct type_t *Float = NULL;
 
 //translate code
 extern struct intercode_t *code_head;
-extern int Label, Variable, Function, t0, t1;
+extern int Label, Variable, Function, T0, T1;
 void code_insert(struct intercode_t *code);
 void generate_code();
 void print_code();
@@ -194,8 +194,8 @@ void Parse_Tree(struct _node *cur)
 	code_head = malloc(sizeof(struct intercode_t));
 	code_head->prev = code_head;
 	code_head->next = code_head;
-	generate_code(codeASSIGN, t0, 0, 0);
-	generate_code(codeASSIGN, t1, 1, 0);
+	generate_code(codeASSIGN, T0, 0, 0);
+	generate_code(codeASSIGN, T1, 1, 0);
 	//translate code
 
 	parse_tree(cur);
@@ -338,11 +338,10 @@ void parse_tree(struct _node *cur)
 
 			MALLOC(temp, struct array_t);
 			temp->elem = cur->type;
-			temp->dim = child->right->right->int_val;
-			temp->size = cur->type->size * temp->dim;
+			temp->dim = child->right->right->int_val;	
 
 			temp1->array = temp;
-			temp1->size = temp->size;
+			temp1->size = temp->elem->size * temp->dim;;
 
 			child->type = temp1;
 			parse_tree(child);
@@ -526,6 +525,7 @@ void parse_tree(struct _node *cur)
 				cur->type = child->type;
 				//translate
 				cur->var_no = cur->right->right->var_no;
+				//TODO();
 			}
 		}
 		else if(strcmp(child->right->token_name, "AND") == 0 || strcmp(child->right->token_name, "OR") == 0 || strcmp(child->right->token_name, "RELOP") == 0)
@@ -536,7 +536,7 @@ void parse_tree(struct _node *cur)
             {
 				parse_tree(child);
 				parse_tree(child->right->right);
-				generate_code(codeASSIGN, cur->var_no, t1, 0);
+				generate_code(codeASSIGN, cur->var_no, T1, 0);
             	if(strcmp(child->right->text, "==") == 0)generate_code(codeE, cur->true_label, child->var_no, child->right->var_no);
 				else if(strcmp(child->right->text, "!=") == 0)generate_code(codeNE, cur->true_label, child->var_no, child->right->var_no);
 				else if(strcmp(child->right->text, ">") == 0)generate_code(codeG, cur->true_label, child->var_no, child->right->var_no);
@@ -561,12 +561,12 @@ void parse_tree(struct _node *cur)
                     child->right->right->false_label = cur->false_label;
                     parse_tree(child->right->right);
                     generate_code(codeE, cur->false_label, child->right->right->var_no, t0);
-                    generate_code(codeASSIGN, cur->var_no, t1, 0);
+                    generate_code(codeASSIGN, cur->var_no, T1, 0);
                     generate_code(codeGOTO, cur->true_label, 0, 0);
 				}
 				else if(strcmp(child->right->token_name, "OR") == 0)
 				{
-					generate_code(codeASSIGN, cur->var_no, t1, 0);
+					generate_code(codeASSIGN, cur->var_no, T1, 0);
 					child->true_label = cur->true_label;
 					child->false_label = label;
 					parse_tree(child);
@@ -604,6 +604,7 @@ void parse_tree(struct _node *cur)
 		{
 			parse_tree(child->right);
 			cur->type = child->right->type;
+			cur->var_no = child->var_no;//translate
 		}
 		else if(strcmp(child->token_name, "MINUS") == 0)
 		{
@@ -626,7 +627,7 @@ void parse_tree(struct _node *cur)
 			parse_tree(child->right);
 			//trnaslate
 			cur->var_no = ++Variable;
-			generate_code(codeASSIGN, cur->var_no, t1, 0);
+			generate_code(codeASSIGN, cur->var_no, T1, 0);
 			generate_code(codeE, cur->true_label, child->right->var_no, t0);
 			generate_code(codeASSIGN, cur->var_no, t0, 0);
 			generate_code(codeGOTO, cur->false_label, 0, 0);
@@ -662,6 +663,20 @@ void parse_tree(struct _node *cur)
 			else if(child->type != NULL && child->type->kind != ARRAY)raise_error(10, cur->lineno);
 			else if(child->type != NULL)cur->type = child->type->array->elem;
 			//child->type== NULL
+
+			//translate
+			int t1 = ++Variable;
+			int t2 = ++Variable;
+			int t3 = ++Variable;
+			generate_code(codeASSIGN, t1, cur->type->size, 1);
+			generate_code(codeMUL, t2, child->right->right->var_no, t1);
+			generate_code(codeADD, t3, t2, child->var_no);
+			cur->var_no = t3;
+			if(cur->type->kind == BASIC)
+			{
+				cur->var_no = ++Variable;
+				generate_code(codeRSTAR, cur->var_no, t3, 0);
+			}
 		}
 		else if(strcmp(cur->left->right->token_name, "DOT") == 0)
 		{
