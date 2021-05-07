@@ -90,12 +90,14 @@ struct type_t *stack_delete()
 	MALLOC(temp, struct type_t);
 	temp->kind = STRUCTURE;
 	temp->structure = stack_table[stack_top];
+	temp->size = 0;
 	struct entry_t *cur = stack_table[stack_top];
 	while(cur)
 	{
 		assert(hash_table[cur->hash_pos] == cur);
 
 		hash_table[cur->hash_pos] = cur->right;
+		temp->size += cur->type->size;
 		cur = cur->down;
 	}
 	stack_table[stack_top] = NULL;
@@ -181,10 +183,12 @@ void Parse_Tree(struct _node *cur)
 	Int = malloc(sizeof(struct type_t));
 	Int->kind = BASIC;
 	Int->basic = 1;
+	Int->size = 4;
 	
 	Float = malloc(sizeof(struct type_t));
     Float->kind = BASIC;
     Float->basic = 2;
+	Float->size = 4;
 
 	//translate code
 	code_head = malloc(sizeof(struct intercode_t));
@@ -303,9 +307,9 @@ void parse_tree(struct _node *cur)
 		if(child->right != NULL) //child is OptTag
 		{
 			stack_new();
-			def_in_struct = 1;
+			def_in_struct++;
             parse_tree(child->right->right);
-			def_in_struct = 0;
+			def_in_struct--;
             cur->type = stack_delete();
 
             if(child->left != NULL)
@@ -335,8 +339,10 @@ void parse_tree(struct _node *cur)
 			MALLOC(temp, struct array_t);
 			temp->elem = cur->type;
 			temp->dim = child->right->right->int_val;
+			temp->size = cur->type->size * temp->dim;
 
 			temp1->array = temp;
+			temp1->size = temp->size;
 
 			child->type = temp1;
 			parse_tree(child);
@@ -460,16 +466,32 @@ void parse_tree(struct _node *cur)
 	else if(strcmp(cur->token_name, "Dec") == 0)
 	{
 		child->type = cur->type;
-		parse_tree(child);
+		parse_tree(child);	
 		if(child->right != NULL)
 		{
 			if(def_in_struct == 0)
 			{
 				parse_tree(child->right->right);
 				if(is_type_equal(child->type, child->right->right->type) == 0)raise_error(5, cur->lineno);
+				//translate
+				struct entry_t *e = hash_search(child->left->text);
+                assert(e != NULL && e->var_no == 0);
+                e->var_no = ++Variable;
+				generate_code(codeASSIGN, e->var_no, child->right->right->var_no, 0);
+				//translate
 			}
 			else raise_error(15, cur->lineno);
 		}
+		//translate
+        if(child->type->kind != BASIC)
+        {
+			while(child->left != NULL)child = child->left;
+        	struct entry_t *e = hash_search(child->text);
+            assert(e != NULL && e->var_no == 0);
+            e->var_no = ++Variable;
+        	generate_code(codeDEC, e->var_no, e->type->size, 0);
+        }
+        //translate
 	}
 	else if(strcmp(cur->token_name, "Exp") == 0)
 	{
@@ -478,7 +500,7 @@ void parse_tree(struct _node *cur)
 			cur->type = Int;
 			//translate code
 			cur->var_no = ++Variable;
-			generate_code(codeASSIGN, cur->var_no, child->int_val, 0);
+			generate_code(codeASSIGN, cur->var_no, child->int_val, 1);
 		}
 		else if(strcmp(child->token_name, "FLOAT") == 0)cur->type = Float;//no const float number
 		else if(strcmp(child->token_name, "ID") == 0 && child->right == NULL)

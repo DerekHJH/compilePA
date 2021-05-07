@@ -38,7 +38,11 @@ void print_code()
 	{
 		if(temp->kind == codeLABEL)printf("LABEL L%d :\n", temp->result->value);
 		else if(temp->kind == codeFUNCTION)printf("FUNCTION F%d :\n", temp->result->value);
-		else if(temp->kind == codeASSIGN)printf("t%d := %d\n", temp->result->value, temp->op1->value);//only t = #5 is allowed: variable = constant
+		else if(temp->kind == codeASSIGN)
+		{
+			if(temp->op2->value != 0)printf("t%d := %d\n", temp->result->value, temp->op1->value);
+			else printf("t%d := t%d\n", temp->result->value, temp->op1->value);
+		}
 		else if(temp->kind == codeADD)printf("t%d := t%d + t%d\n", temp->result->value, temp->op1->value, temp->op2->value);//only t1 = t2 + t3 is allowed: variable = variable + variable, no constant is involved
 		else if(temp->kind == codeSUB)printf("t%d := t%d - t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
 		else if(temp->kind == codeMUL)printf("t%d := t%d * t%d\n", temp->result->value, temp->op1->value, temp->op2->value);

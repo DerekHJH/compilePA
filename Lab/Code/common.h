@@ -24,6 +24,7 @@ struct array_t
 {
 	struct type_t *elem; 
 	int dim;
+	int size;
 };
 struct type_t
 {
@@ -34,6 +35,7 @@ struct type_t
 		struct array_t *array;
 		struct entry_t *structure;
 	};
+	int size;
 };
 
 struct entry_t
