@@ -1,32 +1,39 @@
 t1 := 0
 t2 := 1
-FUNCTION main :
-READ t4
-t3 := t4
-t6 := 0
-t5 := t2
-IF t3 > t0 GOTO L1
-t5 := t1
+FUNCTION F4 :
+PARAM t3
+t5 := 1
+t4 := t2
+IF t3 == t5 GOTO L1
+t4 := t1
 GOTO L2 :
 LABEL L1 :
-t7 := 1
-WRITE t7
+RETURN t3
 GOTO L3 :
 LABEL L2 :
-t10 := 0
-t9 := t2
-IF t3 < t0 GOTO L4
-t9 := t1
+t6 := 1
+t7 := t3 - t6
+ARG t7
+t8 := CALL F4
+t9 := t3 * t8
+RETURN t9
+LABEL L3 :
+FUNCTION main :
+READ t11
+t10 := t11
+t13 := 1
+t12 := t2
+IF t10 > t13 GOTO L4
+t12 := t1
 GOTO L5 :
 LABEL L4 :
-t11 := 1
-t12 := t1 - t11
-WRITE t12
+t15 := 1
+t14 := t15
 GOTO L6 :
 LABEL L5 :
-t14 := 0
-WRITE t14
+t16 := 1
+t14 := t16
 LABEL L6 :
-LABEL L3 :
-t16 := 0
-RETURN t16
+WRITE t14
+t18 := 0
+RETURN t18

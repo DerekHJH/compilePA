@@ -576,12 +576,12 @@ void parse_tree(struct _node *cur)
 				parse_tree(child);
 				parse_tree(child->right->right);
 				generate_code(codeASSIGN, cur->var_no, T1, 0);
-            	if(strcmp(child->right->text, "==") == 0)generate_code(codeE, cur->true_label, child->var_no, child->right->var_no);
-				else if(strcmp(child->right->text, "!=") == 0)generate_code(codeNE, cur->true_label, child->var_no, child->right->var_no);
-				else if(strcmp(child->right->text, ">") == 0)generate_code(codeG, cur->true_label, child->var_no, child->right->var_no);
-				else if(strcmp(child->right->text, ">=") == 0)generate_code(codeGE, cur->true_label, child->var_no, child->right->var_no);
-				else if(strcmp(child->right->text, "<") == 0)generate_code(codeL, cur->true_label, child->var_no, child->right->var_no);
-				else if(strcmp(child->right->text, "<=") == 0)generate_code(codeLE, cur->true_label, child->var_no, child->right->var_no);
+            	if(strcmp(child->right->text, "==") == 0)generate_code(codeE, cur->true_label, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->text, "!=") == 0)generate_code(codeNE, cur->true_label, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->text, ">") == 0)generate_code(codeG, cur->true_label, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->text, ">=") == 0)generate_code(codeGE, cur->true_label, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->text, "<") == 0)generate_code(codeL, cur->true_label, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->text, "<=") == 0)generate_code(codeLE, cur->true_label, child->var_no, child->right->right->var_no);
 				generate_code(codeASSIGN, cur->var_no, T0, 0);
 				generate_code(codeGOTO, cur->false_label, 0, 0);
             }
@@ -636,14 +636,17 @@ void parse_tree(struct _node *cur)
 				cur->type = child->type;
 				//translate
 				cur->var_no = ++Variable;
-				generate_code(codeADD, cur->var_no, child->var_no, child->right->right->var_no);
+				if(strcmp(child->right->token_name, "PLUS") == 0)generate_code(codeADD, cur->var_no, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->token_name, "MINUS") == 0)generate_code(codeSUB, cur->var_no, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->token_name, "STAR") == 0)generate_code(codeMUL, cur->var_no, child->var_no, child->right->right->var_no);
+				else if(strcmp(child->right->token_name, "DIV") == 0)generate_code(codeDIV, cur->var_no, child->var_no, child->right->right->var_no);
 			}
 		}
 		else if(strcmp(child->token_name, "LP") == 0)
 		{
 			parse_tree(child->right);
 			cur->type = child->right->type;
-			cur->var_no = child->var_no;//translate
+			cur->var_no = child->right->var_no;//translate
 		}
 		else if(strcmp(child->token_name, "MINUS") == 0)
 		{
@@ -700,14 +703,13 @@ void parse_tree(struct _node *cur)
 					else if(strcmp(e->name, "write") == 0)generate_code(codeWRITE, child->right->right->type->structure->down->var_no, 0, 0);
 					else
 					{
-						struct entry_t *ee = cur->type->structure->down;
+						struct entry_t *ee = temp->structure->down;
 						while(ee)
 						{
 							generate_code(codeARG, ee->var_no, 0, 0);
 							ee = ee->down;
 						}
 						generate_code(codeCALL, cur->var_no, e->var_no, 0);
-
 					}
 				}
 			}
