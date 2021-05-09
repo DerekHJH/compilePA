@@ -1,6 +1,6 @@
 .PHONY:run, git
 run: parser
-	./parser ../Test/test5.cmm out.ir
+	./parser ../Test/test.cmm out.ir
 
 # GNU make手册：http://www.gnu.org/software/make/manual/make.html
 # ************ 遇到不明白的地方请google以及阅读手册 *************
