@@ -198,8 +198,8 @@ void Parse_Tree(struct _node *cur)
 	code_head = malloc(sizeof(struct intercode_t));
 	code_head->prev = code_head;
 	code_head->next = code_head;
-	generate_code(codeASSIGN, T0, 0, 0);
-	generate_code(codeASSIGN, T1, 1, 0);
+	generate_code(codeASSIGN, T0, 0, 1);
+	generate_code(codeASSIGN, T1, 1, 1);
 
 	MALLOC(temp, struct type_t);
     temp->kind = FUNCTION;
@@ -217,7 +217,7 @@ void Parse_Tree(struct _node *cur)
 	temp3->down = temp4;
 
     add_entry("read", temp);
-	add_entry("write", temp);
+	add_entry("write", temp2);
 	//translate code
 
 	parse_tree(cur);
@@ -564,8 +564,7 @@ void parse_tree(struct _node *cur)
 			{
 				cur->type = child->type;
 				//translate
-				cur->var_no = cur->right->right->var_no;
-				//TODO();
+				generate_code(codeASSIGN, child->var_no, child->right->right->var_no, 0);
 			}
 		}
 		else if(strcmp(child->right->token_name, "AND") == 0 || strcmp(child->right->token_name, "OR") == 0 || strcmp(child->right->token_name, "RELOP") == 0)
@@ -698,7 +697,7 @@ void parse_tree(struct _node *cur)
 					//translate
 					cur->var_no = ++Variable;
 					if(strcmp(e->name, "read") == 0)generate_code(codeREAD, cur->var_no, 0, 0);
-					else if(strcmp(e->name, "write") == 0)generate_code(codeWRITE, cur->var_no, 0, 0);
+					else if(strcmp(e->name, "write") == 0)generate_code(codeWRITE, child->right->right->type->structure->down->var_no, 0, 0);
 					else
 					{
 						struct entry_t *ee = cur->type->structure->down;

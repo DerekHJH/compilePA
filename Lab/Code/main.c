@@ -6,6 +6,7 @@ extern int yyparse();
 extern struct _node *Root;
 void Parse_Tree(struct _node *cur);
 FILE *fp = NULL;
+void print_code();
 int main(int argc, char** argv)
 {
 	if(argc == 3)
@@ -22,6 +23,7 @@ int main(int argc, char** argv)
 		}
 		yyparse();
         Parse_Tree(Root);
+		print_code();
 		fclose(fp);
 	}
 	else 

@@ -38,7 +38,11 @@ void print_code()
 	while(temp != code_head)
 	{
 		if(temp->kind == codeLABEL)fprintf(fp, "LABEL L%d :\n", temp->result->value);
-		else if(temp->kind == codeFUNCTION)fprintf(fp, "FUNCTION F%d :\n", temp->result->value);
+		else if(temp->kind == codeFUNCTION)
+		{
+			if(temp->result->value == 1)fprintf(fp, "FUNCTION main :\n");
+			else fprintf(fp, "FUNCTION F%d :\n", temp->result->value);
+		}
 		else if(temp->kind == codeASSIGN)
 		{
 			if(temp->op2->value != 0)fprintf(fp, "t%d := %d\n", temp->result->value, temp->op1->value);
@@ -65,5 +69,7 @@ void print_code()
 		else if(temp->kind == codePARAM)fprintf(fp, "PARAM t%d\n", temp->result->value);
 		else if(temp->kind == codeREAD)fprintf(fp, "READ t%d\n", temp->result->value);
 		else if(temp->kind == codeWRITE)fprintf(fp, "WRITE t%d\n", temp->result->value);
+		temp = temp->next;
 	}
+
 }
