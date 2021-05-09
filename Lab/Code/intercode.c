@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 #define MALLOC(arg1, arg2) \
 	arg2 *arg1 = malloc(sizeof(arg2));\
 	memset(arg1, 0, sizeof(arg2))
@@ -15,6 +16,12 @@ void code_insert(struct intercode_t *code)
 	code->prev = code_head->prev;
 	code_head->prev->next = code;
 	code_head->prev = code;
+}
+void code_delete(struct intercode_t *code)
+{
+	assert(code->prev != code);
+	code->prev->next = code->next;
+	code->next->prev = code->prev;
 }
 void generate_code(int kind, int result, int op1, int op2)
 {
@@ -32,6 +39,20 @@ void generate_code(int kind, int result, int op1, int op2)
 	temp->op2 = temp3;
 	code_insert(temp);
 }
+void label_optimize()
+{
+
+}
+void variable_optimize()
+{
+
+}
+void code_optimize()
+{
+	label_optimize();
+	variable_optimize();
+}
+
 void print_code()
 {
 	struct intercode_t *temp = code_head->next;
@@ -55,7 +76,7 @@ void print_code()
 		else if(temp->kind == codeAND)fprintf(fp, "t%d := &t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeRSTAR)fprintf(fp, "t%d := *t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeLSTAR)fprintf(fp, "*t%d := t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeGOTO)fprintf(fp, "GOTO L%d :\n", temp->result->value);
+		else if(temp->kind == codeGOTO)fprintf(fp, "GOTO L%d\n", temp->result->value);
 		else if(temp->kind == codeE)fprintf(fp, "IF t%d == t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
 		else if(temp->kind == codeNE)fprintf(fp, "IF t%d != t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
 		else if(temp->kind == codeG)fprintf(fp, "IF t%d > t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
@@ -73,3 +94,4 @@ void print_code()
 	}
 
 }
+

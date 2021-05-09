@@ -199,9 +199,7 @@ void Parse_Tree(struct _node *cur)
 	code_head = malloc(sizeof(struct intercode_t));
 	code_head->prev = code_head;
 	code_head->next = code_head;
-	generate_code(codeASSIGN, T0, 0, 1);
-	generate_code(codeASSIGN, T1, 1, 1);
-
+	
 	MALLOC(temp, struct type_t);
     temp->kind = FUNCTION;
 	MALLOC(temp1, struct entry_t);
@@ -286,6 +284,11 @@ void parse_tree(struct _node *cur)
 				e->var_no = End;
 				End--;
 				e = e->down;
+			}
+			if(strcmp(child->left->text, "main") == 0)
+			{
+				generate_code(codeASSIGN, T0, 0, 1);
+                generate_code(codeASSIGN, T1, 1, 1);
 			}
 			//translate
 
