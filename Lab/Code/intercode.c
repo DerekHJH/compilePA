@@ -7,7 +7,8 @@
 	memset(arg1, 0, sizeof(arg2))
 
 struct intercode_t *code_head = NULL;
-int Label = 0, Variable = 2, Function = 0, T0 = 1, T1 = 2;
+int Label = 0, Variable = 2, Function = 3, T0 = 1, T1 = 2;
+extern FILE *fp;
 void code_insert(struct intercode_t *code)
 {
 	code->next = code_head;
@@ -25,7 +26,7 @@ void generate_code(int kind, int result, int op1, int op2)
 	temp1->value = result;
 	temp2->value = op1;
 	temp3->value = op2;
-	if(kind == codeASSIGN || kind == codeDEC)temp2->kind = CONSTANT;	
+	if((kind == codeASSIGN && op2 == 1) || kind == codeDEC)temp2->kind = CONSTANT;	
 	temp->result = temp1;
 	temp->op1 = temp2;
 	temp->op2 = temp3;
@@ -36,33 +37,33 @@ void print_code()
 	struct intercode_t *temp = code_head->next;
 	while(temp != code_head)
 	{
-		if(temp->kind == codeLABEL)printf("LABEL L%d :\n", temp->result->value);
-		else if(temp->kind == codeFUNCTION)printf("FUNCTION F%d :\n", temp->result->value);
+		if(temp->kind == codeLABEL)fprintf(fp, "LABEL L%d :\n", temp->result->value);
+		else if(temp->kind == codeFUNCTION)fprintf(fp, "FUNCTION F%d :\n", temp->result->value);
 		else if(temp->kind == codeASSIGN)
 		{
-			if(temp->op2->value != 0)printf("t%d := %d\n", temp->result->value, temp->op1->value);
-			else printf("t%d := t%d\n", temp->result->value, temp->op1->value);
+			if(temp->op2->value != 0)fprintf(fp, "t%d := %d\n", temp->result->value, temp->op1->value);
+			else fprintf(fp, "t%d := t%d\n", temp->result->value, temp->op1->value);
 		}
-		else if(temp->kind == codeADD)printf("t%d := t%d + t%d\n", temp->result->value, temp->op1->value, temp->op2->value);//only t1 = t2 + t3 is allowed: variable = variable + variable, no constant is involved
-		else if(temp->kind == codeSUB)printf("t%d := t%d - t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
-		else if(temp->kind == codeMUL)printf("t%d := t%d * t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
-		else if(temp->kind == codeDIV)printf("t%d := t%d / t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
-		else if(temp->kind == codeAND)printf("t%d := &t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeRSTAR)printf("t%d := *t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeLSTAR)printf("t%d := *t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeGOTO)printf("GOTO L%d :\n", temp->result->value);
-		else if(temp->kind == codeE)printf("IF t%d == t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeNE)printf("IF t%d != t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeG)printf("IF t%d > t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeGE)printf("IF t%d >= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeL)printf("IF t%d < t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeLE)printf("IF t%d <= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeRETURN)printf("RETURN t%d\n", temp->result->value);
-		else if(temp->kind == codeDEC)printf("DEC t%d %d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeARG)printf("ARG t%d\n", temp->result->value);
-		else if(temp->kind == codeCALL)printf("t%d := CALL F%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codePARAM)printf("PARAM t%d\n", temp->result->value);
-		else if(temp->kind == codeREAD)printf("READ t%d\n", temp->result->value);
-		else if(temp->kind == codeWRITE)printf("WRITE t%d\n", temp->result->value);
+		else if(temp->kind == codeADD)fprintf(fp, "t%d := t%d + t%d\n", temp->result->value, temp->op1->value, temp->op2->value);//only t1 = t2 + t3 is allowed: variable = variable + variable, no constant is involved
+		else if(temp->kind == codeSUB)fprintf(fp, "t%d := t%d - t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
+		else if(temp->kind == codeMUL)fprintf(fp, "t%d := t%d * t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
+		else if(temp->kind == codeDIV)fprintf(fp, "t%d := t%d / t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
+		else if(temp->kind == codeAND)fprintf(fp, "t%d := &t%d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeRSTAR)fprintf(fp, "t%d := *t%d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeLSTAR)fprintf(fp, "t%d := *t%d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeGOTO)fprintf(fp, "GOTO L%d :\n", temp->result->value);
+		else if(temp->kind == codeE)fprintf(fp, "IF t%d == t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeNE)fprintf(fp, "IF t%d != t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeG)fprintf(fp, "IF t%d > t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeGE)fprintf(fp, "IF t%d >= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeL)fprintf(fp, "IF t%d < t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeLE)fprintf(fp, "IF t%d <= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
+		else if(temp->kind == codeRETURN)fprintf(fp, "RETURN t%d\n", temp->result->value);
+		else if(temp->kind == codeDEC)fprintf(fp, "DEC t%d %d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeARG)fprintf(fp, "ARG t%d\n", temp->result->value);
+		else if(temp->kind == codeCALL)fprintf(fp, "t%d := CALL F%d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codePARAM)fprintf(fp, "PARAM t%d\n", temp->result->value);
+		else if(temp->kind == codeREAD)fprintf(fp, "READ t%d\n", temp->result->value);
+		else if(temp->kind == codeWRITE)fprintf(fp, "WRITE t%d\n", temp->result->value);
 	}
 }

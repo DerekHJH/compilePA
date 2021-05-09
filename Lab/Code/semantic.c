@@ -193,12 +193,31 @@ void Parse_Tree(struct _node *cur)
     Float->basic = 2;
 	Float->size = 4;
 
+
 	//translate code
 	code_head = malloc(sizeof(struct intercode_t));
 	code_head->prev = code_head;
 	code_head->next = code_head;
 	generate_code(codeASSIGN, T0, 0, 0);
 	generate_code(codeASSIGN, T1, 1, 0);
+
+	MALLOC(temp, struct type_t);
+    temp->kind = FUNCTION;
+	MALLOC(temp1, struct entry_t);
+	temp1->type = Int;
+	temp->structure = temp1;
+
+	MALLOC(temp2, struct type_t);
+    temp2->kind = FUNCTION;
+	MALLOC(temp3, struct entry_t);
+    temp3->type = Int;
+	MALLOC(temp4, struct entry_t);
+	temp4->type = Int;
+	temp2->structure = temp3;
+	temp3->down = temp4;
+
+    add_entry("read", temp);
+	add_entry("write", temp);
 	//translate code
 
 	parse_tree(cur);
@@ -242,6 +261,24 @@ void parse_tree(struct _node *cur)
 					raise_error(19, cur->lineno);
 				}
             }
+			//translate
+			struct entry_t *e = hash_search(child->left->text);
+			if(strcmp(e->name, "main") == 0)generate_code(codeFUNCTION, 1, 0, 0);
+			else 
+			{
+				assert(e->var_no == 0);
+				e->var_no = ++Function;
+				generate_code(codeFUNCTION, e->var_no, 0, 0);
+			}
+			e = e->type->structure->down;
+			while(e)
+			{
+				assert(e->var_no == 0);
+				e->var_no = ++Variable;
+				generate_code(codePARAM, e->var_no, 0, 0);
+				e = e->down;
+			}
+			//translate
 
 			child->right->type = child->type->structure->type;//for CompSt, for RETURN
 			parse_tree(child->right);
@@ -655,7 +692,25 @@ void parse_tree(struct _node *cur)
 				if(child->right->right->right!= NULL)parse_tree(child->right->right);	
 
 				if(is_type_equal(child->right->right->type, e->type) == 0)raise_error(9, cur->lineno);
-				else cur->type = temp1->type;
+				else 
+				{
+					cur->type = temp1->type;
+					//translate
+					cur->var_no = ++Variable;
+					if(strcmp(e->name, "read") == 0)generate_code(codeREAD, cur->var_no, 0, 0);
+					else if(strcmp(e->name, "write") == 0)generate_code(codeWRITE, cur->var_no, 0, 0);
+					else
+					{
+						struct entry_t *ee = cur->type->structure->down;
+						while(ee)
+						{
+							generate_code(codeARG, ee->var_no, 0, 0);
+							ee = ee->down;
+						}
+						generate_code(codeCALL, cur->var_no, e->var_no, 0);
+
+					}
+				}
 			}
 		}
 		else if(strcmp(child->right->token_name, "LB") == 0)
@@ -716,6 +771,7 @@ void parse_tree(struct _node *cur)
 		
 		MALLOC(temp, struct entry_t);
 		temp->type = child->type;
+		temp->var_no = child->var_no;//translate
 		
 		temp->down = e->down;
 		e->down = temp;
