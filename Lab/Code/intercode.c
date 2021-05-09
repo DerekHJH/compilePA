@@ -45,7 +45,7 @@ void print_code()
 		}
 		else if(temp->kind == codeASSIGN)
 		{
-			if(temp->op2->value != 0)fprintf(fp, "t%d := %d\n", temp->result->value, temp->op1->value);
+			if(temp->op2->value != 0)fprintf(fp, "t%d := #%d\n", temp->result->value, temp->op1->value);
 			else fprintf(fp, "t%d := t%d\n", temp->result->value, temp->op1->value);
 		}
 		else if(temp->kind == codeADD)fprintf(fp, "t%d := t%d + t%d\n", temp->result->value, temp->op1->value, temp->op2->value);//only t1 = t2 + t3 is allowed: variable = variable + variable, no constant is involved
@@ -54,7 +54,7 @@ void print_code()
 		else if(temp->kind == codeDIV)fprintf(fp, "t%d := t%d / t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
 		else if(temp->kind == codeAND)fprintf(fp, "t%d := &t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeRSTAR)fprintf(fp, "t%d := *t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeLSTAR)fprintf(fp, "t%d := *t%d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeLSTAR)fprintf(fp, "*t%d := t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeGOTO)fprintf(fp, "GOTO L%d :\n", temp->result->value);
 		else if(temp->kind == codeE)fprintf(fp, "IF t%d == t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
 		else if(temp->kind == codeNE)fprintf(fp, "IF t%d != t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	

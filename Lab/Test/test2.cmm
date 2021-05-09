@@ -10,7 +10,7 @@ int main()
 	int m, result;
 	m = read();
 	if (m > 1)
-		result = 1;
+		result = fact(m);
 	else 
 		result = 1;
 	write(result);
