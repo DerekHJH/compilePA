@@ -272,11 +272,19 @@ void parse_tree(struct _node *cur)
 				generate_code(codeFUNCTION, e->var_no, 0, 0);
 			}
 			e = e->type->structure->down;
+			struct entry_t *temp_e = e;
+			while(temp_e)
+			{
+				Variable++;		
+				generate_code(codePARAM, Variable, 0, 0);
+				temp_e = temp_e->down;
+			}
+			int End = Variable;
 			while(e)
 			{
 				assert(e->var_no == 0);
-				e->var_no = ++Variable;
-				generate_code(codePARAM, e->var_no, 0, 0);
+				e->var_no = End;
+				End--;
 				e = e->down;
 			}
 			//translate
@@ -528,8 +536,10 @@ void parse_tree(struct _node *cur)
 			while(child->left != NULL)child = child->left;
         	struct entry_t *e = hash_search(child->text);
             assert(e != NULL && e->var_no == 0);
-            e->var_no = ++Variable;
-        	generate_code(codeDEC, e->var_no, e->type->size, 0);
+            int t1 = ++Variable;
+        	generate_code(codeDEC, t1, e->type->size, 0);
+			e->var_no = ++Variable;
+			generate_code(codeAND, e->var_no, t1, 0);
         }
         //translate
 	}

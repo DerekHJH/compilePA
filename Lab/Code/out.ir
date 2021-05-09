@@ -2,27 +2,17 @@ t1 := #0
 t2 := #1
 FUNCTION F4 :
 PARAM t3
-t4 := #4
+PARAM t4
 t5 := t3 + t4
-t6 := *t5
-t7 := #0
-t8 := t3 + t7
-t9 := *t8
-t10 := t6 + t9
-RETURN t10
+RETURN t5
 FUNCTION main :
-DEC t11 8
-t12 := #4
-t13 := t11 + t12
-t14 := #1
-*t13 := t14
-t15 := #0
-t16 := t11 + t15
-t17 := #2
-*t16 := t17
-ARG t11
-t19 := CALL F4
-t18 := t19
-WRITE t18
-t21 := #0
-RETURN t21
+t6 := #1
+t7 := t6
+t8 := #2
+t9 := t8
+ARG t9
+ARG t7
+t10 := CALL F4
+WRITE t10
+t12 := #0
+RETURN t12
