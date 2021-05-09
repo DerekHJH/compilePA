@@ -29,10 +29,10 @@ t16 := #5
 t17 := t16
 LABEL L4 :
 t18 := t2
-IF t15 < t17 GOTO L6
+IF t15 < t17 GOTO L5
 t18 := t1
-LABEL L6 :
-IF t18 == t1 GOTO L5
+GOTO L6
+LABEL L5 :
 t19 := #4
 t20 := t15 * t19
 t21 := t20 + t13
@@ -50,6 +50,6 @@ t30 := #1
 t31 := t15 + t30
 t15 := t31
 GOTO L4
-LABEL L5 :
+LABEL L6 :
 t32 := #0
 RETURN t32
