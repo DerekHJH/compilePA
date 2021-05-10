@@ -87,7 +87,11 @@ void print_code()
 		else if(temp->kind == codeRETURN)fprintf(fp, "RETURN t%d\n", temp->result->value);
 		else if(temp->kind == codeDEC)fprintf(fp, "DEC t%d %d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeARG)fprintf(fp, "ARG t%d\n", temp->result->value);
-		else if(temp->kind == codeCALL)fprintf(fp, "t%d := CALL F%d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeCALL)
+		{
+			if(temp->op1->value == 1)fprintf(fp, "t%d := CALL main\n", temp->result->value);
+			else fprintf(fp, "t%d := CALL F%d\n", temp->result->value, temp->op1->value);
+		}
 		else if(temp->kind == codePARAM)fprintf(fp, "PARAM t%d\n", temp->result->value);
 		else if(temp->kind == codeREAD)fprintf(fp, "READ t%d\n", temp->result->value);
 		else if(temp->kind == codeWRITE)fprintf(fp, "WRITE t%d\n", temp->result->value);

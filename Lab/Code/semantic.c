@@ -263,13 +263,13 @@ void parse_tree(struct _node *cur)
             }
 			//translate
 			struct entry_t *e = hash_search(child->left->text);
-			if(strcmp(e->name, "main") == 0)generate_code(codeFUNCTION, 1, 0, 0);
+			if(strcmp(e->name, "main") == 0)e->var_no = 1;
 			else 
 			{
 				assert(e->var_no == 0);
 				e->var_no = ++Function;
-				generate_code(codeFUNCTION, e->var_no, 0, 0);
 			}
+			generate_code(codeFUNCTION, e->var_no, 0, 0);
 			e = e->type->structure->down;
 			struct entry_t *temp_e = e;
 			while(temp_e)
@@ -575,6 +575,7 @@ void parse_tree(struct _node *cur)
 				//translate
 				if(strcmp(child->left->token_name, "ID") == 0 && child->left->right == NULL)generate_code(codeASSIGN, child->var_no, child->right->right->var_no, 0);
 				else generate_code(codeLSTAR, child->var_no, child->right->right->var_no, 0);
+				cur->var_no = child->var_no;
 			}
 		}
 		else if(strcmp(child->right->token_name, "AND") == 0 || strcmp(child->right->token_name, "OR") == 0 || strcmp(child->right->token_name, "RELOP") == 0)

@@ -1,59 +1,56 @@
-FUNCTION F4 :
-PARAM t1
-t2 := #1
-t3 := t2
-t4 := #1
-t5 := t4
-LABEL L1 :
-t7 := #0
-t8 := #1
-t6 := t8
-IF t5 <= t1 GOTO L3
-t6 := t7
-LABEL L3 :
-t9 := #0
-IF t6 == t9 GOTO L2
-t10 := t3 * t5
-t3 := t10
-t11 := #1
-t12 := t5 + t11
-t5 := t12
-GOTO L1
-LABEL L2 :
-RETURN t3
 FUNCTION main :
-DEC t13 20
-t14 := &t13
-t15 := #0
-t16 := t15
-t17 := #5
-t18 := t17
-LABEL L4 :
-t20 := #0
-t21 := #1
-t19 := t21
-IF t16 < t18 GOTO L6
-t19 := t20
-LABEL L6 :
-t22 := #0
-IF t19 == t22 GOTO L5
+DEC t1 8
+t2 := &t1
+READ t4
+t3 := t4
+t6 := #0
+t7 := #1
+t8 := #0
+t9 := #4
+t10 := t8 * t9
+t11 := t10 + t2
+t13 := #0
+t14 := #1
+t15 := #1
+t12 := t14
+IF t3 > t15 GOTO L2
+t12 := t13
+LABEL L2 :
+*t11 := t12
+t16 := #1
+t17 := #4
+t18 := t16 * t17
+t19 := t18 + t2
+t21 := #0
+t22 := #1
 t23 := #4
-t24 := t16 * t23
-t25 := t24 + t14
-t26 := #2
-t27 := t16 + t26
-*t25 := t27
-t28 := #4
-t29 := t16 * t28
-t30 := t29 + t14
-t31 := *t30
-ARG t31
-t32 := CALL F4
+t20 := t22
+IF t3 < t23 GOTO L3
+t20 := t21
+LABEL L3 :
+*t19 := t20
+t24 := t11 + t19
+t5 := t7
+IF t24 == t3 GOTO L1
+t5 := t6
+LABEL L1 :
+t25 := #0
+IF t5 == t25 GOTO L4
+t26 := #996
+WRITE t26
+LABEL L4 :
+t28 := #0
+t29 := #4
+t30 := t28 * t29
+t31 := t30 + t2
+t32 := *t31
 WRITE t32
 t34 := #1
-t35 := t16 + t34
-t16 := t35
-GOTO L4
-LABEL L5 :
-t36 := #0
-RETURN t36
+t35 := #4
+t36 := t34 * t35
+t37 := t36 + t2
+t38 := *t37
+WRITE t38
+WRITE t3
+t41 := #0
+RETURN t41
