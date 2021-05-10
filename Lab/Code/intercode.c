@@ -8,7 +8,7 @@
 	memset(arg1, 0, sizeof(arg2))
 
 struct intercode_t *code_head = NULL;
-int Label = 0, Variable = 2, Function = 3, T0 = 1, T1 = 2;
+int Label = 0, Variable = 0, Function = 3;
 extern FILE *fp;
 void code_insert(struct intercode_t *code)
 {
@@ -23,6 +23,7 @@ void code_delete(struct intercode_t *code)
 	code->prev->next = code->next;
 	code->next->prev = code->prev;
 }
+
 void generate_code(int kind, int result, int op1, int op2)
 {
 	MALLOC(temp, struct intercode_t);

@@ -39,6 +39,7 @@ void raise_error(int code, int line)
 	arg2 *arg1 = malloc(sizeof(arg2));\
 	memset(arg1, 0, sizeof(arg2))
 
+
 struct entry_t *hash_table[0x3fff] = {0};
 struct entry_t *stack_table[0x3fff] = {0};
 int stack_top = 0;
@@ -173,7 +174,7 @@ struct type_t *Float = NULL;
 
 //translate code
 extern struct intercode_t *code_head;
-extern int Label, Variable, Function, T0, T1;
+extern int Label, Variable, Function;
 void code_insert(struct intercode_t *code);
 void generate_code();
 void print_code();
@@ -284,11 +285,6 @@ void parse_tree(struct _node *cur)
 				e->var_no = End;
 				End--;
 				e = e->down;
-			}
-			if(strcmp(child->left->text, "main") == 0)
-			{
-				generate_code(codeASSIGN, T0, 0, 1);
-                generate_code(codeASSIGN, T1, 1, 1);
 			}
 			//translate
 
@@ -464,6 +460,8 @@ void parse_tree(struct _node *cur)
         	if(is_type_equal(child->right->right->type, Int) == 0)raise_error(7, cur->lineno);
 			//translate
 			int label1 = ++Label;
+			int T0 = ++Variable;
+            generate_code(codeASSIGN, T0, 0, 1);
 			generate_code(codeE, label1, child->right->right->var_no, T0);
 			//translate
         	parse_tree(child->right->right->right->right);
@@ -489,8 +487,11 @@ void parse_tree(struct _node *cur)
 			//translate
 			parse_tree(child->right->right);
 			if(is_type_equal(child->right->right->type, Int) == 0)raise_error(7, cur->lineno);
-
-			generate_code(codeE, label2, child->right->right->var_no, T0);//translate
+			//translate
+			int T0 = ++Variable;
+            generate_code(codeASSIGN, T0, 0, 1);
+			generate_code(codeE, label2, child->right->right->var_no, T0);
+			//translate
 
 			child->right->right->right->right->type = cur->type;
 			parse_tree(child->right->right->right->right);
@@ -581,6 +582,10 @@ void parse_tree(struct _node *cur)
 			//translate
 			cur->var_no = ++Variable;
 			int label = ++Label;
+			int T0 = ++Variable;
+            generate_code(codeASSIGN, T0, 0, 1);
+			int T1 = ++Variable;
+            generate_code(codeASSIGN, T1, 1, 1);
 			if(strcmp(child->right->token_name, "RELOP") == 0)	
             {
 				parse_tree(child);
@@ -656,6 +661,8 @@ void parse_tree(struct _node *cur)
 				cur->type = child->right->type;
 				//translate
 				cur->var_no = ++Variable;
+				int T0 = ++Variable;
+                generate_code(codeASSIGN, T0, 0, 1);
 				generate_code(codeSUB, cur->var_no, T0, child->right->var_no);
 			}
 		}
@@ -664,6 +671,10 @@ void parse_tree(struct _node *cur)
 			parse_tree(child->right);
 			//trnaslate
 			int label = ++Label;
+			int T0 = ++Variable;
+            generate_code(codeASSIGN, T0, 0, 1);
+			int T1 = ++Variable;
+            generate_code(codeASSIGN, T1, 1, 1);
 			cur->var_no = ++Variable;
 			generate_code(codeASSIGN, cur->var_no, T1, 0);
 			generate_code(codeE, label, child->right->var_no, T0);
