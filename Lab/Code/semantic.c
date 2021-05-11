@@ -242,6 +242,7 @@ void parse_tree(struct _node *cur)
 		if(strcmp(child->token_name, "FunDec") == 0)
 		{
 			stack_new();
+
 			parse_tree(child);
 
 			if(child->left->text != NULL && child->type != NULL)
@@ -527,7 +528,7 @@ void parse_tree(struct _node *cur)
 			else raise_error(15, cur->lineno);
 		}
 		//translate
-        if(child->type->kind != BASIC)
+        if(def_in_struct == 0 && child->type->kind != BASIC)
         {
 			while(child->left != NULL)child = child->left;
         	struct entry_t *e = hash_search(child->text);
@@ -575,7 +576,7 @@ void parse_tree(struct _node *cur)
 				//translate
 				if(strcmp(child->left->token_name, "ID") == 0 && child->left->right == NULL)generate_code(codeASSIGN, child->var_no, child->right->right->var_no, 0);
 				else generate_code(codeLSTAR, child->var_no, child->right->right->var_no, 0);
-				cur->var_no = child->var_no;
+				cur->var_no = child->right->right->var_no;
 			}
 		}
 		else if(strcmp(child->right->token_name, "AND") == 0 || strcmp(child->right->token_name, "OR") == 0 || strcmp(child->right->token_name, "RELOP") == 0)
