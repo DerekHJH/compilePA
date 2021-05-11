@@ -178,7 +178,6 @@ extern int Label, Variable, Function;
 void code_insert(struct intercode_t *code);
 void generate_code();
 void print_code();
-int is_left_value = 0;
 //translate code
 
 
@@ -564,9 +563,7 @@ void parse_tree(struct _node *cur)
 		}
 		else if(strcmp(child->right->token_name, "ASSIGNOP") == 0)
 		{
-			is_left_value++;
 			parse_tree(child);
-			is_left_value--;
 			parse_tree(child->right->right);
 			if(is_type_equal(child->type, child->right->right->type) == 0)raise_error(5, cur->lineno);
 			else if(!((strcmp(child->left->token_name, "ID") == 0 && child->left->right == NULL) || (child->left->right != NULL && strcmp(child->left->right->token_name, "LB") == 0) || (child->left->right!= NULL && strcmp(child->left->right->token_name, "DOT") == 0)))raise_error(6, cur->lineno);
@@ -740,13 +737,13 @@ void parse_tree(struct _node *cur)
 			generate_code(codeMUL, t2, child->right->right->var_no, t1);
 			generate_code(codeADD, t3, t2, child->var_no);
 			cur->var_no = t3;
-			if(cur->type->kind == BASIC && is_left_value == 0)
+			if(cur->type->kind == BASIC && !(cur->right != NULL && strcmp(cur->right->token_name, "ASSIGNOP") == 0))
 			{
 				cur->var_no = ++Variable;
 				generate_code(codeRSTAR, cur->var_no, t3, 0);
 			}
 		}
-		else if(strcmp(cur->left->right->token_name, "DOT") == 0)
+		else if(strcmp(child->right->token_name, "DOT") == 0)
 		{
 			parse_tree(child);
 			if(child->type == NULL)return; //child->type == NULL
@@ -764,7 +761,7 @@ void parse_tree(struct _node *cur)
 					generate_code(codeASSIGN, t1, struct_offset, 1);
 					generate_code(codeADD, t2, child->var_no, t1);	
 					cur->var_no = t2;
-					if(cur->type->kind == BASIC && is_left_value == 0)
+					if(cur->type->kind == BASIC && !(cur->right != NULL && strcmp(cur->right->token_name, "ASSIGNOP") == 0))
                     {
                     	cur->var_no = ++Variable;
                     	generate_code(codeRSTAR, cur->var_no, t2, 0);
