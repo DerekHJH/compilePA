@@ -40,18 +40,8 @@ void generate_code(int kind, int result, int op1, int op2)
 	temp->op2 = temp3;
 	code_insert(temp);
 }
-void label_optimize()
-{
-
-}
-void variable_optimize()
-{
-
-}
 void code_optimize()
 {
-	label_optimize();
-	variable_optimize();
 }
 
 void print_code()
