@@ -240,6 +240,7 @@ void parse_tree(struct _node *cur)
 		child = child->right;
 		if(strcmp(child->token_name, "FunDec") == 0)
 		{
+			if(child->left->text != NULL)add_entry(child->left->text, Int);
 			stack_new();
 
 			parse_tree(child);
@@ -247,12 +248,7 @@ void parse_tree(struct _node *cur)
 			if(child->left->text != NULL && child->type != NULL)
             {
                 struct entry_t *e = hash_search(child->left->text);
-            	if(e == NULL)
-				{
-					stack_top--;
-					add_entry(child->left->text, child->type);
-					stack_top++;
-				}
+            	if(e->type == Int)e->type = child->type;
                 else if(e->type->structure->name != NULL && is_type_equal(child->type, e->type))e->type->structure->name = NULL;	
             	else if(e->type->structure->name == NULL)raise_error(4, cur->lineno);
 				else 
