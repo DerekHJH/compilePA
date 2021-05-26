@@ -571,7 +571,26 @@ void parse_tree(struct _node *cur)
 			{
 				cur->type = child->type;
 				//translate
-				if(strcmp(child->left->token_name, "ID") == 0 && child->left->right == NULL)generate_code(codeASSIGN, child->var_no, child->right->right->var_no, 0);
+				if(child->type->kind != BASIC && child->right->right->type->kind != BASIC)
+				{// array assignment
+					int min_size = child->type->size;
+					if(min_size > child->right->right->type->size)min_size = child->right->right->type->size;
+					int t1 = ++Variable;
+					int t2 = ++Variable;
+					int t3 = ++Variable;
+					int t4 = ++Variable;
+					generate_code(codeASSIGN, t1, child->var_no, 0);
+					generate_code(codeASSIGN, t2, child->right->right->var_no, 0);
+					generate_code(codeASSIGN, t4, 4, 1);
+					for(int i = 0; i < min_size; i += 4)
+					{
+						generate_code(codeRSTAR, t3, t2, 0);
+						generate_code(codeLSTAR, t1, t3, 0);
+						generate_code(codeADD, t1, t1, t4);
+						generate_code(codeADD, t2, t2, t4);
+					}
+				}
+				else if(strcmp(child->left->token_name, "ID") == 0 && child->left->right == NULL)generate_code(codeASSIGN, child->var_no, child->right->right->var_no, 0);
 				else generate_code(codeLSTAR, child->var_no, child->right->right->var_no, 0);
 				cur->var_no = child->right->right->var_no;
 			}

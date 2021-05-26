@@ -34,7 +34,7 @@ void generate_code(int kind, int result, int op1, int op2)
 	temp1->value = result;
 	temp2->value = op1;
 	temp3->value = op2;
-	if((kind == codeASSIGN && op2 == 1) || kind == codeDEC)temp2->kind = CONSTANT;	
+	if((kind == codeASSIGN && op2 == 1) || kind == codeDEC)temp2->kind = opCONSTANT;	
 	temp->result = temp1;
 	temp->op1 = temp2;
 	temp->op2 = temp3;

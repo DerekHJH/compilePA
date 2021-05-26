@@ -4,7 +4,7 @@
 #define REPORT_ALL_ERROR 2
 struct operand_t 
 {
-	enum {VARIABLE, CONSTANT, ADDRESS} kind;
+	enum {opVARIABLE = 118, opTEMPVARIABLE = 116, opCONSTANT = 35, opADDRESS = 0, opLABEL = 76, opFUNCTION = 70} kind;
 	int value;
 };
 struct intercode_t
