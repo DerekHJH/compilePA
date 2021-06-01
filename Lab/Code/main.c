@@ -7,7 +7,7 @@ extern struct _node *Root;
 void Parse_Tree(struct _node *cur);
 FILE *fp = NULL;
 void code_optimize();
-void print_code();
+void print_mips();
 
 int optimize_flag = 1;
 int main(int argc, char** argv)
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 		yyparse();
         Parse_Tree(Root);
 		if(optimize_flag == 1)code_optimize();
-		print_code();
+		print_mips();
 		fclose(fp);
 	}
 	else 
