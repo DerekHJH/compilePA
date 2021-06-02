@@ -1,55 +1,14 @@
-#include "common.h"
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <assert.h>
-#define MALLOC(arg1, arg2) \
-	arg2 *arg1 = malloc(sizeof(arg2));\
-	memset(arg1, 0, sizeof(arg2))
-
-struct intercode_t *code_head = NULL;
-int Label = 0, Variable = 0, Function = 3;
+#include "common.h"
+extern struct intercode_t *code_head;
 extern FILE *fp;
-void code_insert(struct intercode_t *code)
+void print_mips()
 {
-	code->next = code_head;
-	code->prev = code_head->prev;
-	code_head->prev->next = code;
-	code_head->prev = code;
-}
-void code_delete(struct intercode_t *code)
-{
-	assert(code->prev != code);
-	code->prev->next = code->next;
-	code->next->prev = code->prev;
-}
-
-void generate_code(int kind, int result, int op1, int op2)
-{
-	MALLOC(temp, struct intercode_t);
-	MALLOC(temp1, struct operand_t);
-	MALLOC(temp2, struct operand_t);
-	MALLOC(temp3, struct operand_t);
-	temp->kind = kind;
-	temp1->value = result;
-	temp2->value = op1;
-	temp3->value = op2;
-	if((kind == codeASSIGN && op2 == 1) || kind == codeDEC)temp2->kind = opCONSTANT;	
-	temp->result = temp1;
-	temp->op1 = temp2;
-	temp->op2 = temp3;
-	code_insert(temp);
-}
-void code_optimize()
-{
-}
-
-void print_code()
-{
+	fprintf(fp, ".data\n_prompt: .asciiz \"Please fuck me a number:\"\n_ret: .asciiz \"\\n\"\n.globl main\n.text\nread:\nli $v0, 4\nla $a0, _prompt\nsyscall\nli $v0, 5\nsyscall\njr $ra\n\nwrite:\nli $v0, 1\nsyscall\nli $v0, 4\nla $a0, _ret\nsyscall\nmove $v0, $0\njr $ra\n\n");
 	struct intercode_t *temp = code_head->next;
 	while(temp != code_head)
 	{
-		if(temp->kind == codeLABEL)fprintf(fp, "LABEL L%d :\n", temp->result->value);
+		if(temp->kind == codeLABEL)fprintf(fp, "label%d:\n", temp->result->value);
 		else if(temp->kind == codeFUNCTION)
 		{
 			if(temp->result->value == 1)fprintf(fp, "FUNCTION main :\n");
@@ -57,7 +16,7 @@ void print_code()
 		}
 		else if(temp->kind == codeASSIGN)
 		{
-			if(temp->op2->value != 0)fprintf(fp, "t%d := #%d\n", temp->result->value, temp->op1->value);
+			if(temp->op2->value != 0)fprintf(fp, "li \n", temp->result->value, temp->op1->value);
 			else fprintf(fp, "t%d := t%d\n", temp->result->value, temp->op1->value);
 		}
 		else if(temp->kind == codeADD)fprintf(fp, "t%d := t%d + t%d\n", temp->result->value, temp->op1->value, temp->op2->value);//only t1 = t2 + t3 is allowed: variable = variable + variable, no constant is involved
@@ -88,3 +47,4 @@ void print_code()
 		temp = temp->next;
 	}
 }
+
