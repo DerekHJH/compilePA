@@ -1,5 +1,14 @@
+int main(){
+	
+	int a = 1, b = 2;
+	if(a < b)
+	{
+		a = b;
+	}
+	while(a == b)
+	{
+		a = b - 1;
+	}
 
-int idyh(int idux) 
-{
-  return idux;
+  return 0;
 }

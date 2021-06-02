@@ -199,6 +199,7 @@ void Parse_Tree(struct _node *cur)
 	code_head = malloc(sizeof(struct intercode_t));
 	code_head->prev = code_head;
 	code_head->next = code_head;
+	code_head->kind = 0;
 	
 	MALLOC(temp, struct type_t);
     temp->kind = FUNCTION;

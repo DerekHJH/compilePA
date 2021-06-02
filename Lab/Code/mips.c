@@ -16,7 +16,7 @@ void print_mips()
 		}
 		else if(temp->kind == codeASSIGN)
 		{
-			if(temp->op2->value != 0)fprintf(fp, "li \n", temp->result->value, temp->op1->value);
+			if(temp->op2->value != 0)fprintf(fp, "li %d%d\n", temp->result->value, temp->op1->value);
 			else fprintf(fp, "t%d := t%d\n", temp->result->value, temp->op1->value);
 		}
 		else if(temp->kind == codeADD)fprintf(fp, "t%d := t%d + t%d\n", temp->result->value, temp->op1->value, temp->op2->value);//only t1 = t2 + t3 is allowed: variable = variable + variable, no constant is involved

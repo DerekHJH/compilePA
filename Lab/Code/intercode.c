@@ -22,6 +22,10 @@ void code_delete(struct intercode_t *code)
 	assert(code->prev != code);
 	code->prev->next = code->next;
 	code->next->prev = code->prev;
+	free(code->result);
+	free(code->op1);
+	free(code->op2);
+	free(code);
 }
 
 void generate_code(int kind, int result, int op1, int op2)
@@ -40,8 +44,33 @@ void generate_code(int kind, int result, int op1, int op2)
 	temp->op2 = temp3;
 	code_insert(temp);
 }
+void clear_label()
+{
+	struct intercode_t *temp = code_head->next;
+	int *label_change = (int *)malloc((Label + 2) * sizeof(int));
+	for(int i = 0; i <= Label; i++)
+		label_change[i] = i;
+	while(temp != code_head)                   	
+	{
+		while(temp->kind == codeLABEL && temp->next != code_head && temp->next->kind == codeLABEL)
+		{
+			label_change[temp->next->result->value] = temp->result->value;
+			code_delete(temp->next);
+		}
+		temp = temp->next;
+	}
+	temp = code_head;
+	while(temp != code_head)
+	{
+		if(codeGOTO <= temp->kind && temp->kind <= codeLE)
+			temp->result->value = label_change[temp->result->value];
+		temp = temp->next;
+	}
+	free(label_change);
+}
 void code_optimize()
 {
+	clear_label();
 }
 
 void print_code()
