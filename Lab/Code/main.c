@@ -10,7 +10,7 @@ void code_optimize();
 void print_mips();
 void print_code();
 
-int optimize_flag = 0;
+int optimize_flag = 1;
 int main(int argc, char** argv)
 {
 	if(argc == 3)

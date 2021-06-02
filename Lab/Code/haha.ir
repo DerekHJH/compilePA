@@ -1,31 +1,184 @@
 FUNCTION main :
-t1 := #1
-t2 := t1
-t3 := #2
-t4 := t3
+READ t2
+t1 := t2
+READ t4
+t3 := t4
 t6 := #0
 t7 := #1
+t8 := #100
+t9 := t1 / t8
+t10 := #100
+t11 := t9 * t10
 t5 := t7
-IF t2 < t4 GOTO L1
+IF t1 == t11 GOTO L1
 t5 := t6
 LABEL L1 :
-t8 := #0
-IF t5 == t8 GOTO L2
-t2 := t4
-LABEL L2 :
-LABEL L3 :
-t10 := #0
-t11 := #1
-t9 := t11
-IF t2 == t4 GOTO L5
-t9 := t10
-LABEL L5 :
 t12 := #0
-IF t9 == t12 GOTO L4
-t13 := #1
-t14 := t4 - t13
-t2 := t14
-GOTO L3
+IF t5 == t12 GOTO L2
+t14 := #0
+t15 := #1
+t16 := #400
+t17 := t1 / t16
+t18 := #400
+t19 := t17 * t18
+t13 := t15
+IF t1 == t19 GOTO L3
+t13 := t14
+LABEL L3 :
+t20 := #0
+IF t13 == t20 GOTO L4
+t22 := #0
+t23 := #1
+t24 := #2
+t21 := t23
+IF t3 == t24 GOTO L5
+t21 := t22
+LABEL L5 :
+t25 := #0
+IF t21 == t25 GOTO L6
+t26 := #29
+WRITE t26
+GOTO L7
+LABEL L6 :
+t29 := #0
+t30 := #1
+t31 := #2
+t32 := t3 / t31
+t33 := #2
+t34 := t32 * t33
+t28 := t30
+IF t3 == t34 GOTO L8
+t28 := t29
+LABEL L8 :
+t35 := #0
+IF t28 == t35 GOTO L9
+t36 := #30
+WRITE t36
+GOTO L10
+LABEL L9 :
+t38 := #31
+WRITE t38
+LABEL L10 :
+LABEL L7 :
+GOTO L11
 LABEL L4 :
-t15 := #0
-RETURN t15
+t41 := #0
+t42 := #1
+t43 := #2
+t40 := t42
+IF t3 == t43 GOTO L12
+t40 := t41
+LABEL L12 :
+t44 := #0
+IF t40 == t44 GOTO L13
+t45 := #28
+WRITE t45
+GOTO L14
+LABEL L13 :
+t48 := #0
+t49 := #1
+t50 := #2
+t51 := t3 / t50
+t52 := #2
+t53 := t51 * t52
+t47 := t49
+IF t3 == t53 GOTO L15
+t47 := t48
+LABEL L15 :
+t54 := #0
+IF t47 == t54 GOTO L16
+t55 := #30
+WRITE t55
+GOTO L17
+LABEL L16 :
+t57 := #31
+WRITE t57
+LABEL L17 :
+LABEL L14 :
+LABEL L11 :
+GOTO L18
+LABEL L2 :
+t60 := #0
+t61 := #1
+t62 := #4
+t63 := t1 / t62
+t64 := #4
+t65 := t63 * t64
+t59 := t61
+IF t1 == t65 GOTO L19
+t59 := t60
+LABEL L19 :
+t66 := #0
+IF t59 == t66 GOTO L20
+t68 := #0
+t69 := #1
+t70 := #2
+t67 := t69
+IF t3 == t70 GOTO L21
+t67 := t68
+LABEL L21 :
+t71 := #0
+IF t67 == t71 GOTO L22
+t72 := #29
+WRITE t72
+GOTO L23
+LABEL L22 :
+t75 := #0
+t76 := #1
+t77 := #2
+t78 := t3 / t77
+t79 := #2
+t80 := t78 * t79
+t74 := t76
+IF t3 == t80 GOTO L24
+t74 := t75
+LABEL L24 :
+t81 := #0
+IF t74 == t81 GOTO L25
+t82 := #30
+WRITE t82
+GOTO L26
+LABEL L25 :
+t84 := #31
+WRITE t84
+LABEL L26 :
+LABEL L23 :
+GOTO L27
+LABEL L20 :
+t87 := #0
+t88 := #1
+t89 := #2
+t86 := t88
+IF t3 == t89 GOTO L28
+t86 := t87
+LABEL L28 :
+t90 := #0
+IF t86 == t90 GOTO L29
+t91 := #28
+WRITE t91
+GOTO L30
+LABEL L29 :
+t94 := #0
+t95 := #1
+t96 := #2
+t97 := t3 / t96
+t98 := #2
+t99 := t97 * t98
+t93 := t95
+IF t3 == t99 GOTO L31
+t93 := t94
+LABEL L31 :
+t100 := #0
+IF t93 == t100 GOTO L32
+t101 := #30
+WRITE t101
+GOTO L33
+LABEL L32 :
+t103 := #31
+WRITE t103
+LABEL L33 :
+LABEL L30 :
+LABEL L27 :
+LABEL L18 :
+t105 := #0
+RETURN t105

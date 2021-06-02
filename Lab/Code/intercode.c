@@ -59,7 +59,7 @@ void clear_label()
 		}
 		temp = temp->next;
 	}
-	temp = code_head;
+	temp = code_head->next;
 	while(temp != code_head)
 	{
 		if(codeGOTO <= temp->kind && temp->kind <= codeLE)
