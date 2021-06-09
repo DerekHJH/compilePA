@@ -22,7 +22,6 @@ move $v0, $0
 jr $ra
 
 F4:
-PARAM t1
 li $t1, 0
 la $t0, _data
 addi $t0, $t0, 12
@@ -86,7 +85,12 @@ sub $t3, $t1, $t2
 la $t0, _data
 addi $t0, $t0, 32
 sw $t3, 0($t0)
-ARG t8
+la $t0, _data
+addi $t0, $t0, 32
+lw $t1, 0($t0)
+la $t0, _data
+addi $t0, $t0, 4
+sw $t1, 0($t0)
 addi $sp, $sp, -8
 sw $fp, 4($sp)
 sw $ra, 0($sp)
@@ -174,7 +178,12 @@ la $t0, _data
 addi $t0, $t0, 68
 lw $t2, 0($t0)
 beq $t1, $t2, L5
-ARG t11
+la $t0, _data
+addi $t0, $t0, 44
+lw $t1, 0($t0)
+la $t0, _data
+addi $t0, $t0, 4
+sw $t1, 0($t0)
 addi $sp, $sp, -8
 sw $fp, 4($sp)
 sw $ra, 0($sp)

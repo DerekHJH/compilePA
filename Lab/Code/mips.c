@@ -1,8 +1,18 @@
 #include <stdio.h>
 #include "common.h"
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
 extern struct intercode_t *code_head;
 extern FILE *fp;
-extern int Variable;
+extern int Variable, Function;
+struct param_t
+{
+	struct param_t *next;
+	int var_no;
+};
+struct param_t **func = NULL;
+
 #define BEFORE_FUNCALL()\
 do\
 {\
@@ -38,6 +48,9 @@ void value_store(int reg_no, int var_no)
 //we only use t1, t2, t3 for ourselves and use t0 for special purpose. when reg_no is 0,it means v0
 void print_mips()
 {
+	func = malloc((Function + 1) * sizeof(struct param_t *));
+	memset(func, 0, (Function + 1) * sizeof(struct param_t *));
+
 	fprintf(fp, ".data\n_prompt: .asciiz \"Please throw me a number:\"\n_ret: .asciiz \"\\n\"\n_data: .space %d\n.globl main\n.text\nread:\nli $v0, 4\nla $a0, _prompt\nsyscall\nli $v0, 5\nsyscall\njr $ra\n\nwrite:\nli $v0, 1\nsyscall\nli $v0, 4\nla $a0, _ret\nsyscall\nmove $v0, $0\njr $ra\n\n", Variable * 4);
 	struct intercode_t *temp = code_head->next;
 	while(temp != code_head)
@@ -47,6 +60,16 @@ void print_mips()
 		{
 			if(temp->result->value == 1)fprintf(fp, "main:\n");
 			else fprintf(fp, "F%d:\n", temp->result->value);
+			int func_no = temp->result->value;
+			while(temp->next != code_head && temp->next->kind == codePARAM)
+			{
+				struct param_t *p = malloc(sizeof(struct param_t));
+				memset(p, 0, sizeof(struct param_t));
+				p->next = func[func_no];
+				p->var_no = temp->next->result->value;
+				func[func_no] = p;
+				temp = temp->next;
+			}
 		}
 		else if(temp->kind == codeASSIGN)
 		{
@@ -104,7 +127,22 @@ void print_mips()
 			fprintf(fp, "jr $ra\n");
 		}
 		else if(temp->kind == codeDEC)fprintf(fp, "DEC t%d %d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeARG)fprintf(fp, "ARG t%d\n", temp->result->value);
+		else if(temp->kind == codeARG)
+		{
+			struct intercode_t *find_func = temp;
+			while(find_func != code_head && find_func->kind != codeCALL)find_func = find_func->next;
+			struct param_t *p = func[find_func->op1->value];
+			value_load(1, temp->result->value);
+			value_store(1, p->var_no);
+			while(temp->next != code_head && temp->next->kind == codeARG)
+			{
+				assert(p != NULL && p->next != NULL);
+				value_load(1, temp->next->result->value);
+				value_store(1, p->next->var_no);
+				p = p->next;
+				temp = temp->next;
+			}
+		}
 		else if(temp->kind == codeCALL)
 		{
 			BEFORE_FUNCALL();
@@ -113,7 +151,6 @@ void print_mips()
 			AFTER_FUNCALL();
 			value_store(0, temp->result->value);
 		}
-		else if(temp->kind == codePARAM)fprintf(fp, "PARAM t%d\n", temp->result->value);
 		else if(temp->kind == codeREAD)
 		{
 			BEFORE_FUNCALL();
@@ -131,4 +168,5 @@ void print_mips()
 		}
 		temp = temp->next;
 	}
+	free(func);
 }
