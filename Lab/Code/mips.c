@@ -24,7 +24,8 @@ void value_load(int reg_no, int var_no)
 {
 	fprintf(fp, "la $t0, _data\n");
 	fprintf(fp, "addi $t0, $t0, %d\n", var_no * 4);
-	fprintf(fp, "lw $t%d, 0($t0)\n", reg_no);
+	if(reg_no != 0)fprintf(fp, "lw $t%d, 0($t0)\n", reg_no);
+	else fprintf(fp, "lw, $v%d, 0($t0)\n", reg_no);
 }
 
 void value_store(int reg_no, int var_no)
@@ -67,23 +68,50 @@ void print_mips()
 			}
 			value_store(3, temp->result->value);
 		}
-		else if(temp->kind == codeAND)fprintf(fp, "t%d := &t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeRSTAR)fprintf(fp, "t%d := *t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeLSTAR)fprintf(fp, "*t%d := t%d\n", temp->result->value, temp->op1->value);
-		else if(temp->kind == codeGOTO)fprintf(fp, "GOTO L%d\n", temp->result->value);
-		else if(temp->kind == codeE)fprintf(fp, "IF t%d == t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeNE)fprintf(fp, "IF t%d != t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeG)fprintf(fp, "IF t%d > t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeGE)fprintf(fp, "IF t%d >= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeL)fprintf(fp, "IF t%d < t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeLE)fprintf(fp, "IF t%d <= t%d GOTO L%d\n", temp->op1->value, temp->op2->value, temp->result->value);	
-		else if(temp->kind == codeRETURN)fprintf(fp, "RETURN t%d\n", temp->result->value);
+		else if(temp->kind == codeAND)
+		{
+			fprintf(fp, "la $t1, _data\n");
+            fprintf(fp, "addi $t1, $t1, %d\n", temp->op1->value * 4);
+			value_store(1, temp->result->value);
+		}
+		else if(temp->kind == codeRSTAR)
+		{
+			value_load(1, temp->op1->value);
+			fprintf(fp, "lw $t2, 0($t1)\n");
+			value_store(2, temp->result->value);
+		}
+		else if(temp->kind == codeLSTAR)
+		{
+			value_load(1, temp->op1->value);
+			value_load(2, temp->result->value);
+			fprintf(fp, "sw $t1, 0($t2)\n");
+		}
+		else if(temp->kind == codeGOTO)fprintf(fp, "j L%d\n", temp->result->value);
+		else if(temp->kind >= codeE && temp->kind <= codeLE)
+		{
+			value_load(1, temp->op1->value);
+            value_load(2, temp->op2->value);
+			if(temp->kind == codeE)fprintf(fp, "beq $t1, $t2, L%d\n", temp->result->value);	
+			else if(temp->kind == codeNE)fprintf(fp, "bne $t1, $t2, L%d\n", temp->result->value);	
+			else if(temp->kind == codeG)fprintf(fp, "bgt $t1, $t2, L%d\n", temp->result->value);	
+			else if(temp->kind == codeGE)fprintf(fp, "bge $t1, $t2, L%d\n", temp->result->value);	
+			else if(temp->kind == codeL)fprintf(fp, "blt $t1, $t2, L%d\n", temp->result->value);	
+            else if(temp->kind == codeLE)fprintf(fp, "ble $t1, $t2, L%d\n", temp->result->value);	
+		}
+		else if(temp->kind == codeRETURN)
+		{
+			value_load(0, temp->result->value);
+			fprintf(fp, "jr $ra\n");
+		}
 		else if(temp->kind == codeDEC)fprintf(fp, "DEC t%d %d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeARG)fprintf(fp, "ARG t%d\n", temp->result->value);
 		else if(temp->kind == codeCALL)
 		{
-			if(temp->op1->value == 1)fprintf(fp, "t%d := CALL main\n", temp->result->value);
-			else fprintf(fp, "t%d := CALL F%d\n", temp->result->value, temp->op1->value);
+			BEFORE_FUNCALL();
+			if(temp->op1->value == 1)fprintf(fp, "jal main\n");
+			else  fprintf(fp, "jal F%d\n", temp->op1->value);
+			AFTER_FUNCALL();
+			value_store(0, temp->result->value);
 		}
 		else if(temp->kind == codePARAM)fprintf(fp, "PARAM t%d\n", temp->result->value);
 		else if(temp->kind == codeREAD)
