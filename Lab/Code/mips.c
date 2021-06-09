@@ -49,13 +49,24 @@ void print_mips()
 		}
 		else if(temp->kind == codeASSIGN)
 		{
-			if(temp->op2->value != 0)fprintf(fp, "li %d%d\n", temp->result->value, temp->op1->value);
-			else fprintf(fp, "t%d := t%d\n", temp->result->value, temp->op1->value);
+			if(temp->op2->value != 0)fprintf(fp, "li $t1, %d\n", temp->op1->value);
+            else value_load(1, temp->op1->value);	
+			value_store(1, temp->result->value);
 		}
-		else if(temp->kind == codeADD)fprintf(fp, "t%d := t%d + t%d\n", temp->result->value, temp->op1->value, temp->op2->value);//only t1 = t2 + t3 is allowed: variable = variable + variable, no constant is involved
-		else if(temp->kind == codeSUB)fprintf(fp, "t%d := t%d - t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
-		else if(temp->kind == codeMUL)fprintf(fp, "t%d := t%d * t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
-		else if(temp->kind == codeDIV)fprintf(fp, "t%d := t%d / t%d\n", temp->result->value, temp->op1->value, temp->op2->value);
+		else if(temp->kind >= codeADD && temp->kind <= codeDIV)
+		{
+			value_load(1, temp->op1->value);
+			value_load(2, temp->op2->value);
+			if(temp->kind == codeADD)fprintf(fp, "add $t3, $t1, $t2\n");
+			else if(temp->kind == codeSUB)fprintf(fp, "sub $t3, $t1, $t2\n");
+			else if(temp->kind == codeMUL)fprintf(fp, "mul $t3, $t1, $t2\n");
+			else if(temp->kind == codeDIV)
+			{
+				fprintf(fp, "div $t1, $t2\n");
+				fprintf(fp, "mflo $t3\n");
+			}
+			value_store(3, temp->result->value);
+		}
 		else if(temp->kind == codeAND)fprintf(fp, "t%d := &t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeRSTAR)fprintf(fp, "t%d := *t%d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeLSTAR)fprintf(fp, "*t%d := t%d\n", temp->result->value, temp->op1->value);
@@ -93,4 +104,3 @@ void print_mips()
 		temp = temp->next;
 	}
 }
-
