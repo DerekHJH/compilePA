@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 		yyparse();
         Parse_Tree(Root);
 		if(optimize_flag == 1)code_optimize();
-		print_code();
+		print_mips();
 		fclose(fp);
 	}
 	else 
@@ -36,11 +36,5 @@ int main(int argc, char** argv)
 		fprintf(stderr, "Argument error!\n");
 		return 1;
 	}
-	
-	
 	return 0;
 }
-
-
-
-
