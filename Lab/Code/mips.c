@@ -6,30 +6,23 @@
 extern struct intercode_t *code_head;
 extern FILE *fp;
 extern int Variable, Function;
-struct param_t
+int *param_begin = NULL;
+int *param_size = NULL;
+int in_which_func = 0;
+void before_funcall()
 {
-	struct param_t *next;
-	int var_no;
-};
-struct param_t **func = NULL;
+	fprintf(fp, "addi $sp, $sp, -8\n");
+	fprintf(fp, "sw $fp, 4($sp)\n");
+	fprintf(fp, "sw $ra, 0($sp)\n");
+	fprintf(fp, "move $fp, $sp\n");
+}
 
-#define BEFORE_FUNCALL()\
-do\
-{\
-	fprintf(fp, "addi $sp, $sp, -8\n");\
-	fprintf(fp, "sw $fp, 4($sp)\n");\
-	fprintf(fp, "sw $ra, 0($sp)\n");\
-	fprintf(fp, "move $fp, $sp\n");\
-}while(0)
-
-#define AFTER_FUNCALL()\
-do\
-{\
-	fprintf(fp, "lw $fp, 4($sp)\n");\
-	fprintf(fp, "lw $ra, 0($sp)\n");\
-	fprintf(fp, "addi $sp, $sp, 8\n");\
-}while(0)
-
+void after_funcall()
+{
+	fprintf(fp, "lw $fp, 4($sp)\n");
+	fprintf(fp, "lw $ra, 0($sp)\n");
+	fprintf(fp, "addi $sp, $sp, 8\n");
+}
 void value_load(int reg_no, int var_no)
 {
 	fprintf(fp, "la $t0, _data\n");
@@ -45,11 +38,38 @@ void value_store(int reg_no, int var_no)
 	if(reg_no != 0)fprintf(fp, "sw $t%d, 0($t0)\n", reg_no);
 	else fprintf(fp, "sw $v%d, 0($t0)\n", reg_no);
 }
+void param_save()
+{
+	int p_begin = param_begin[in_which_func];
+	int p_size = param_size[in_which_func];
+	int p_end = p_begin + p_size;
+	fprintf(fp, "addi $sp, $sp, -%d\n", p_size * 4);
+	for(int i = p_begin; i < p_end; i++)
+	{
+		value_load(1, i);
+		fprintf(fp, "sw $t1, %d($sp)\n", 4 * (i - p_begin));
+	}
+}
+void param_restore()
+{
+	int p_begin = param_begin[in_which_func];
+    int p_size = param_size[in_which_func];
+    int p_end = p_begin + p_size;
+    for(int i = p_begin; i < p_end; i++)
+    {
+    	fprintf(fp, "lw $t1, %d($sp)\n", 4 * (i - p_begin));
+		value_store(1, i);
+    }
+    fprintf(fp, "addi $sp, $sp, %d\n", p_size * 4);
+}
+
 //we only use t1, t2, t3 for ourselves and use t0 for special purpose. when reg_no is 0,it means v0
 void print_mips()
 {
-	func = malloc((Function + 1) * sizeof(struct param_t *));
-	memset(func, 0, (Function + 1) * sizeof(struct param_t *));
+	param_begin = malloc(sizeof(int) * (Function + 1));
+	param_size = malloc(sizeof(int) * (Function + 1));
+	memset(param_begin, 0, sizeof(int) * (Function + 1));
+	memset(param_size, 0, sizeof(int) * (Function + 1));
 
 	fprintf(fp, ".data\n_prompt: .asciiz \"Please throw me a number:\"\n_ret: .asciiz \"\\n\"\n_data: .space %d\n.globl main\n.text\nread:\nli $v0, 4\nla $a0, _prompt\nsyscall\nli $v0, 5\nsyscall\njr $ra\n\nwrite:\nli $v0, 1\nsyscall\nli $v0, 4\nla $a0, _ret\nsyscall\nmove $v0, $0\njr $ra\n\n", Variable * 4);
 	struct intercode_t *temp = code_head->next;
@@ -58,16 +78,14 @@ void print_mips()
 		if(temp->kind == codeLABEL)fprintf(fp, "L%d:\n", temp->result->value);
 		else if(temp->kind == codeFUNCTION)
 		{
+			in_which_func = temp->result->value;
 			if(temp->result->value == 1)fprintf(fp, "main:\n");
 			else fprintf(fp, "F%d:\n", temp->result->value);
 			int func_no = temp->result->value;
 			while(temp->next != code_head && temp->next->kind == codePARAM)
 			{
-				struct param_t *p = malloc(sizeof(struct param_t));
-				memset(p, 0, sizeof(struct param_t));
-				p->next = func[func_no];
-				p->var_no = temp->next->result->value;
-				func[func_no] = p;
+				if(param_size[func_no] == 0)param_begin[func_no] = temp->next->result->value;
+				param_size[func_no]++;
 				temp = temp->next;
 			}
 		}
@@ -129,44 +147,47 @@ void print_mips()
 		else if(temp->kind == codeDEC)fprintf(fp, "DEC t%d %d\n", temp->result->value, temp->op1->value);
 		else if(temp->kind == codeARG)
 		{
+			param_save();	
 			struct intercode_t *find_func = temp;
 			while(find_func != code_head && find_func->kind != codeCALL)find_func = find_func->next;
-			struct param_t *p = func[find_func->op1->value];
-			value_load(1, temp->result->value);
-			value_store(1, p->var_no);
+			int p_size = param_size[find_func->op1->value];
+			int p_begin = param_begin[find_func->op1->value];
+			int p_end = p_begin + p_size;
 			while(temp->next != code_head && temp->next->kind == codeARG)
 			{
-				assert(p != NULL && p->next != NULL);
+				assert(p_begin < p_end);
 				value_load(1, temp->next->result->value);
-				value_store(1, p->next->var_no);
-				p = p->next;
+				value_store(1, p_begin);
+				p_begin++;
 				temp = temp->next;
 			}
 		}
 		else if(temp->kind == codeCALL)
 		{
-			BEFORE_FUNCALL();
+			before_funcall();
 			if(temp->op1->value == 1)fprintf(fp, "jal main\n");
 			else  fprintf(fp, "jal F%d\n", temp->op1->value);
-			AFTER_FUNCALL();
+			after_funcall();
+			param_restore();
 			value_store(0, temp->result->value);
 		}
 		else if(temp->kind == codeREAD)
 		{
-			BEFORE_FUNCALL();
+			before_funcall();
 			fprintf(fp, "jal read\n");
-			AFTER_FUNCALL();
+			after_funcall();
 			value_store(0, temp->result->value);
 		}
 		else if(temp->kind == codeWRITE)
 		{
 			value_load(1, temp->result->value);
 			fprintf(fp, "move $a0, $t1\n");
-			BEFORE_FUNCALL();
+			before_funcall();
             fprintf(fp, "jal write\n");
-            AFTER_FUNCALL();
+            after_funcall();
 		}
 		temp = temp->next;
 	}
-	free(func);
+	free(param_begin);
+	free(param_size);
 }
