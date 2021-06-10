@@ -1,9 +1,10 @@
-name := test
+filename := ~/Downloads/tests/A-0.cmm
+#filename := ./test.cmm
 .PHONY:run, git
 run: parser
-	./parser ../Test/$(name).cmm out.s
+	./parser $(filename) out.s
 haha:
-	../parser ../Test/$(name).cmm out.ir
+	../parser $(filename) out.ir
 
 # GNU make手册：http://www.gnu.org/software/make/manual/make.html
 # ************ 遇到不明白的地方请google以及阅读手册 *************

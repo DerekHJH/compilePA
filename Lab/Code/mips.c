@@ -75,7 +75,7 @@ void print_mips()
 	array_size = malloc(sizeof(int) * (Function + 1));    
     memset(array_size, 0, sizeof(int) * (Function + 1));
 
-	fprintf(fp, ".data\n_prompt: .asciiz \"Please throw me a number:\"\n_ret: .asciiz \"\\n\"\n_data: .space %d\n.globl main\n.text\nread:\nli $v0, 4\nla $a0, _prompt\nsyscall\nli $v0, 5\nsyscall\njr $ra\n\nwrite:\nli $v0, 1\nsyscall\nli $v0, 4\nla $a0, _ret\nsyscall\nmove $v0, $0\njr $ra\n\n", Variable * 4);
+	fprintf(fp, ".data\n_prompt: .asciiz \"Enter an integer:\"\n_ret: .asciiz \"\\n\"\n_data: .space %d\n.globl main\n.text\nread:\nli $v0, 4\nla $a0, _prompt\nsyscall\nli $v0, 5\nsyscall\njr $ra\n\nwrite:\nli $v0, 1\nsyscall\nli $v0, 4\nla $a0, _ret\nsyscall\nmove $v0, $0\njr $ra\n\n", Variable * 4);
 	struct intercode_t *temp = code_head->next;
 	while(temp != code_head)
 	{
@@ -165,19 +165,19 @@ void print_mips()
 			while(find_func != code_head && find_func->kind != codeCALL)find_func = find_func->next;
 			int p_size = param_size[find_func->op1->value];
 			int p_begin = param_begin[find_func->op1->value];
-			int p_end = p_begin + p_size;
+			int p_end = p_begin + p_size - 1;
 			value_load(1, temp->result->value);
-            value_store(1, p_begin);
-            p_begin++;
+            value_store(1, p_end);
+            p_end--;
 			while(temp->next != code_head && temp->next->kind == codeARG)
 			{
-				assert(p_begin < p_end);
+				assert(p_begin <= p_end);
 				value_load(1, temp->next->result->value);
-				value_store(1, p_begin);
-				p_begin++;
+				value_store(1, p_end);
+				p_end--;
 				temp = temp->next;
 			}
-			assert(p_begin == p_end);
+			assert(p_begin == p_end + 1);
 		}
 		else if(temp->kind == codeCALL)
 		{

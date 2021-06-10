@@ -1,29 +1,158 @@
-FUNCTION main :
-DEC t1 40
-t2 := &t1
+FUNCTION F4 :
+PARAM t1
 t3 := #0
-t4 := #4
-t5 := t3 * t4
-t6 := t5 + t2
-t7 := #10
-*t6 := t7
+t4 := #1
+t5 := #0
+t2 := t4
+IF t1 <= t5 GOTO L1
+t2 := t3
+LABEL L1 :
+t6 := #0
+IF t2 == t6 GOTO L2
+t7 := #1
+RETURN t7
+GOTO L3
+LABEL L2 :
 t8 := #1
-t9 := #4
-t10 := t8 * t9
-t11 := t10 + t2
-t12 := #9
-*t11 := t12
+t9 := t1 - t8
+ARG t9
+t10 := CALL F4
+t11 := t10 * t1
+RETURN t11
+LABEL L3 :
+FUNCTION F5 :
+PARAM t12
 t13 := #0
-t14 := #4
-t15 := t13 * t14
-t16 := t15 + t2
-t17 := *t16
-t18 := #1
-t19 := #4
-t20 := t18 * t19
-t21 := t20 + t2
-t22 := *t21
-t23 := t17 + t22
-WRITE t23
-t25 := #0
-RETURN t25
+t14 := t13
+LABEL L4 :
+t16 := #0
+t17 := #1
+t15 := t17
+IF t14 < t12 GOTO L6
+t15 := t16
+LABEL L6 :
+t18 := #0
+IF t15 == t18 GOTO L5
+t20 := #0
+t21 := #1
+t19 := t20
+t23 := #0
+t24 := #1
+t25 := t14 * t14
+t22 := t24
+IF t25 <= t12 GOTO L8
+t22 := t23
+LABEL L8 :
+IF t22 == t20 GOTO L7
+t27 := #0
+t28 := #1
+t29 := #1
+t30 := t14 + t29
+t31 := #1
+t32 := t14 + t31
+t33 := t30 * t32
+t26 := t28
+IF t33 > t12 GOTO L9
+t26 := t27
+LABEL L9 :
+IF t26 == t20 GOTO L7
+t19 := t21
+LABEL L7 :
+t34 := #0
+IF t19 == t34 GOTO L10
+RETURN t14
+LABEL L10 :
+t35 := #1
+t36 := t14 + t35
+t14 := t36
+GOTO L4
+LABEL L5 :
+t37 := #1
+t39 := #0
+t38 := t39 - t37
+RETURN t38
+FUNCTION F6 :
+PARAM t40
+PARAM t41
+t43 := #0
+t44 := #1
+t42 := t44
+t46 := #0
+t47 := #1
+t48 := #0
+t45 := t47
+IF t40 < t48 GOTO L12
+t45 := t46
+LABEL L12 :
+IF t45 != t43 GOTO L11
+t50 := #0
+t51 := #1
+t52 := #0
+t49 := t51
+IF t41 <= t52 GOTO L13
+t49 := t50
+LABEL L13 :
+IF t49 != t43 GOTO L11
+t42 := t43
+LABEL L11 :
+t53 := #0
+IF t42 == t53 GOTO L14
+t54 := #1
+t56 := #0
+t55 := t56 - t54
+RETURN t55
+GOTO L15
+LABEL L14 :
+WRITE t40
+t58 := t40 / t41
+t59 := t58 * t41
+t60 := t40 - t59
+RETURN t60
+LABEL L15 :
+FUNCTION F7 :
+PARAM t61
+t62 := #2
+t63 := t62
+ARG t61
+t64 := CALL F5
+t65 := t64
+LABEL L16 :
+t67 := #0
+t68 := #1
+t66 := t68
+IF t63 <= t65 GOTO L18
+t66 := t67
+LABEL L18 :
+t69 := #0
+IF t66 == t69 GOTO L17
+t71 := #0
+t72 := #1
+ARG t63
+ARG t61
+t73 := CALL F6
+t74 := #0
+t70 := t72
+IF t73 == t74 GOTO L19
+t70 := t71
+LABEL L19 :
+t75 := #0
+IF t70 == t75 GOTO L20
+t76 := #0
+RETURN t76
+LABEL L20 :
+t77 := #1
+t78 := t63 + t77
+t63 := t78
+GOTO L16
+LABEL L17 :
+t79 := #1
+RETURN t79
+FUNCTION main :
+t80 := #1
+t81 := #2
+ARG t81
+ARG t80
+t82 := CALL F6
+WRITE t82
+t84 := #0
+RETURN t84
