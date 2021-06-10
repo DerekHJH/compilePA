@@ -1,4 +1,4 @@
-name := test2
+name := test
 .PHONY:run, git
 run: parser
 	./parser ../Test/$(name).cmm out.s

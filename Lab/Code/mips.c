@@ -8,6 +8,7 @@ extern FILE *fp;
 extern int Variable, Function;
 int *param_begin = NULL;
 int *param_size = NULL;
+int *array_size = NULL;
 int in_which_func = 0;
 void before_funcall()
 {
@@ -71,6 +72,9 @@ void print_mips()
 	memset(param_begin, 0, sizeof(int) * (Function + 1));
 	memset(param_size, 0, sizeof(int) * (Function + 1));
 
+	array_size = malloc(sizeof(int) * (Function + 1));    
+    memset(array_size, 0, sizeof(int) * (Function + 1));
+
 	fprintf(fp, ".data\n_prompt: .asciiz \"Please throw me a number:\"\n_ret: .asciiz \"\\n\"\n_data: .space %d\n.globl main\n.text\nread:\nli $v0, 4\nla $a0, _prompt\nsyscall\nli $v0, 5\nsyscall\njr $ra\n\nwrite:\nli $v0, 1\nsyscall\nli $v0, 4\nla $a0, _ret\nsyscall\nmove $v0, $0\njr $ra\n\n", Variable * 4);
 	struct intercode_t *temp = code_head->next;
 	while(temp != code_head)
@@ -111,9 +115,11 @@ void print_mips()
 		}
 		else if(temp->kind == codeAND)
 		{
-			fprintf(fp, "la $t1, _data\n");
-            fprintf(fp, "addi $t1, $t1, %d\n", temp->op1->value * 4);
-			value_store(1, temp->result->value);
+			value_load(1, temp->op1->value);	
+            value_store(1, temp->result->value);
+			//fprintf(fp, "la $t1, _data\n");
+            //fprintf(fp, "addi $t1, $t1, %d\n", temp->op1->value * 4);
+			//value_store(1, temp->result->value);
 		}
 		else if(temp->kind == codeRSTAR)
 		{
@@ -141,10 +147,17 @@ void print_mips()
 		}
 		else if(temp->kind == codeRETURN)
 		{
+			fprintf(fp, "addi $sp, $sp, %d\n", array_size[in_which_func]);
 			value_load(0, temp->result->value);
 			fprintf(fp, "jr $ra\n");
 		}
-		else if(temp->kind == codeDEC)fprintf(fp, "DEC t%d %d\n", temp->result->value, temp->op1->value);
+		else if(temp->kind == codeDEC)
+		{
+			array_size[in_which_func] += temp->op1->value;
+			fprintf(fp, "addi $sp, $sp, -%d\n", temp->op1->value);
+			fprintf(fp, "move $t1, $sp\n");
+			value_store(1, temp->result->value);
+		}
 		else if(temp->kind == codeARG)
 		{
 			param_save();	
