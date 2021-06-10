@@ -1,27 +1,14 @@
 FUNCTION F4 :
 PARAM t1
-t3 := #0
-t4 := #1
-t5 := #1
-t2 := t4
-IF t1 == t5 GOTO L1
-t2 := t3
-LABEL L1 :
-t6 := #0
-IF t2 == t6 GOTO L2
-t7 := #1
-RETURN t7
-LABEL L2 :
-t8 := #1
-t9 := t1 - t8
-ARG t9
-t10 := CALL F4
-t11 := t1 + t10
-RETURN t11
+PARAM t2
+t3 := t1 + t2
+RETURN t3
 FUNCTION main :
-t12 := #5
-ARG t12
-t13 := CALL F4
-WRITE t13
-t15 := #0
-RETURN t15
+t4 := #3
+t5 := #2
+ARG t5
+ARG t4
+t6 := CALL F4
+WRITE t6
+t8 := #0
+RETURN t8

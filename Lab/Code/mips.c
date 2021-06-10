@@ -153,6 +153,9 @@ void print_mips()
 			int p_size = param_size[find_func->op1->value];
 			int p_begin = param_begin[find_func->op1->value];
 			int p_end = p_begin + p_size;
+			value_load(1, temp->result->value);
+            value_store(1, p_begin);
+            p_begin++;
 			while(temp->next != code_head && temp->next->kind == codeARG)
 			{
 				assert(p_begin < p_end);
@@ -161,6 +164,7 @@ void print_mips()
 				p_begin++;
 				temp = temp->next;
 			}
+			assert(p_begin == p_end);
 		}
 		else if(temp->kind == codeCALL)
 		{

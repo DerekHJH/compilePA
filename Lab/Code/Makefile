@@ -1,6 +1,9 @@
+name := test2
 .PHONY:run, git
 run: parser
-	./parser ../Test/test.cmm out.s
+	./parser ../Test/$(name).cmm out.s
+haha:
+	../parser ../Test/$(name).cmm out.ir
 
 # GNU make手册：http://www.gnu.org/software/make/manual/make.html
 # ************ 遇到不明白的地方请google以及阅读手册 *************
