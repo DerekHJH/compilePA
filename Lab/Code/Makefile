@@ -1,5 +1,4 @@
 filename := ../Test/test.cmm
-filename := ~/test/tests/2020-Advanced-A-1.cmm
 .PHONY:run, git, com
 run: parser
 	./parser $(filename) out.s
