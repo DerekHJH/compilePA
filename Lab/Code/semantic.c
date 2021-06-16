@@ -241,6 +241,9 @@ void parse_tree(struct _node *cur)
 		child = child->right;
 		if(strcmp(child->token_name, "FunDec") == 0)
 		{
+			//mips
+			int startVariable = Variable + 1;
+			//mips
 			if(child->left->text != NULL)add_entry(child->left->text, Int);
 			stack_new();
 
@@ -266,7 +269,7 @@ void parse_tree(struct _node *cur)
 				assert(e->var_no == 0);
 				e->var_no = ++Function;
 			}
-			generate_code(codeFUNCTION, e->var_no, 0, 0);
+			generate_code(codeFUNCTION, e->var_no, startVariable, 0);
 			e = e->type->structure->down;
 			struct entry_t *temp_e = e;
 			while(temp_e)

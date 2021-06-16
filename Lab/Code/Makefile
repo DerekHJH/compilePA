@@ -1,8 +1,11 @@
-filename := ~/Downloads/tests/A-0.cmm
-#filename := ./test.cmm
-.PHONY:run, git
+filename := ../Test/test.cmm
+filename := ~/test/tests/2020-Advanced-A-1.cmm
+.PHONY:run, git, com
 run: parser
 	./parser $(filename) out.s
+com: run
+	spim -stext 4000000 -file out.s > ans.out
+	vimdiff ans.out $(ansname) 
 haha:
 	../parser $(filename) out.ir
 

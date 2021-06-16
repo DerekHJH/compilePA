@@ -9,20 +9,19 @@ extern int Variable, Function;
 int *param_begin = NULL;
 int *param_size = NULL;
 int *array_size = NULL;
+int *var_begin = NULL;
+int *var_end = NULL;
 int in_which_func = 0;
 void before_funcall()
 {
-	fprintf(fp, "addi $sp, $sp, -8\n");
-	fprintf(fp, "sw $fp, 4($sp)\n");
+	fprintf(fp, "addi $sp, $sp, -4\n");
 	fprintf(fp, "sw $ra, 0($sp)\n");
-	fprintf(fp, "move $fp, $sp\n");
 }
 
 void after_funcall()
 {
-	fprintf(fp, "lw $fp, 4($sp)\n");
 	fprintf(fp, "lw $ra, 0($sp)\n");
-	fprintf(fp, "addi $sp, $sp, 8\n");
+	fprintf(fp, "addi $sp, $sp, 4\n");
 }
 void value_load(int reg_no, int var_no)
 {
@@ -72,11 +71,31 @@ void print_mips()
 	memset(param_begin, 0, sizeof(int) * (Function + 1));
 	memset(param_size, 0, sizeof(int) * (Function + 1));
 
+	var_begin = malloc(sizeof(int) * (Function + 1));
+    var_end = malloc(sizeof(int) * (Function + 1));
+	memset(var_begin, 0, sizeof(int) * (Function + 1));
+    memset(var_end, 0, sizeof(int) * (Function + 1));
+
 	array_size = malloc(sizeof(int) * (Function + 1));    
     memset(array_size, 0, sizeof(int) * (Function + 1));
 
 	fprintf(fp, ".data\n_prompt: .asciiz \"Enter an integer:\"\n_ret: .asciiz \"\\n\"\n_data: .space %d\n.globl main\n.text\nread:\nli $v0, 4\nla $a0, _prompt\nsyscall\nli $v0, 5\nsyscall\njr $ra\n\nwrite:\nli $v0, 1\nsyscall\nli $v0, 4\nla $a0, _ret\nsyscall\nmove $v0, $0\njr $ra\n\n", Variable * 4);
 	struct intercode_t *temp = code_head->next;
+	in_which_func = 0;
+	while(temp != code_head)
+	{
+		if(temp->kind == codeFUNCTION)
+		{
+			if(in_which_func != 0)var_end[in_which_func] = temp->op1->value - 1;		
+			in_which_func = temp->result->value;
+			var_begin[in_which_func] = temp->op1->value;
+		}
+		temp = temp->next;
+	}
+	var_end[in_which_func] = Variable;
+
+	in_which_func = 0;
+	temp = code_head->next;
 	while(temp != code_head)
 	{
 		if(temp->kind == codeLABEL)fprintf(fp, "L%d:\n", temp->result->value);
@@ -207,4 +226,7 @@ void print_mips()
 	}
 	free(param_begin);
 	free(param_size);
+	free(array_size);
+	free(var_begin);
+	free(var_end);
 }
