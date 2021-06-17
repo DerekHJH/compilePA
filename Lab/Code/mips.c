@@ -144,8 +144,8 @@ void print_mips()
 		}
 		else if(temp->kind == codeRETURN)
 		{
-			if(in_which_func == 1)after_funcall(1);
 			value_load(0, temp->result->value);
+			if(in_which_func == 1)after_funcall(1);
 			fprintf(fp, "jr $ra\n");
 		}
 		else if(temp->kind == codeDEC)
